@@ -214,6 +214,7 @@ async function logout(){
     <div class="nav-lbl">صفحات أخرى</div>
     <a class="ni" href="references.html"><span class="ni-ic">📖</span>المراجع القانونية</a>
     <a class="ni" href="tools.html"><span class="ni-ic">🛠</span>الأدوات والتطوير</a>
+    <div class="ni" onclick="openGuide()" style="cursor:pointer;"><span class="ni-ic">❓</span>الدليل الإرشادي</div>
   </div>
   <div style="margin-top:auto;padding:12px;border-top:1px solid rgba(255,255,255,0.08);">
     <div id="current-user-name" style="font-size:11px;color:rgba(255,255,255,0.6);text-align:center;margin-bottom:8px;padding:4px;"></div>
@@ -780,5 +781,478 @@ window.addEventListener('click',e=>{if(e.target.classList.contains('mo'))e.targe
 document.getElementById('dd').textContent=new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 rDash();
 </script>
+
+<!-- ============================================================ -->
+<!-- ONBOARDING GUIDE MODAL                                        -->
+<!-- ============================================================ -->
+<style>
+.gd-mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:5000;align-items:center;justify-content:center;padding:20px;}
+.gd-mo.on{display:flex;}
+.gd-md{background:white;border-radius:8px;width:100%;max-width:840px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.3);}
+.gd-hd{padding:18px 24px;background:linear-gradient(135deg,#0c1a2e 0%,#1a2a3e 100%);color:white;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--gold);}
+.gd-hd-t{font-family:'Amiri',serif;font-size:22px;font-weight:700;color:var(--gold-l);}
+.gd-hd-c{cursor:pointer;color:rgba(255,255,255,0.7);background:none;border:none;font-size:24px;padding:0 8px;}
+.gd-hd-c:hover{color:white;}
+.gd-tabs{display:flex;background:#fafaf7;border-bottom:1px solid var(--border);overflow-x:auto;}
+.gd-tab{padding:12px 16px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);border-bottom:2px solid transparent;background:none;border-right:none;border-left:none;border-top:none;font-family:'Cairo',sans-serif;white-space:nowrap;}
+.gd-tab.on{color:var(--gold);border-bottom-color:var(--gold);background:white;}
+.gd-tab:hover:not(.on){background:white;}
+.gd-bd{padding:24px 28px;overflow-y:auto;flex:1;line-height:1.9;color:var(--text);}
+.gd-pn{display:none;}
+.gd-pn.on{display:block;}
+.gd-pn h3{font-family:'Amiri',serif;font-size:22px;color:var(--navy);margin-bottom:14px;font-weight:700;}
+.gd-pn h4{font-size:15px;color:var(--gold);margin:18px 0 8px;font-weight:700;border-right:3px solid var(--gold);padding-right:10px;}
+.gd-pn p{font-size:14px;color:var(--text);margin-bottom:10px;}
+.gd-step{background:var(--gold-bg);border:1px solid var(--border2);border-radius:6px;padding:14px;margin-bottom:12px;display:flex;gap:14px;align-items:flex-start;}
+.gd-step-n{flex-shrink:0;width:32px;height:32px;background:var(--navy);color:var(--gold-l);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;font-family:'Amiri',serif;}
+.gd-step-c{flex:1;}
+.gd-step-c .t{font-weight:700;color:var(--navy);margin-bottom:4px;font-size:14px;}
+.gd-step-c .d{font-size:13px;color:var(--text2);line-height:1.8;}
+.gd-tip{background:#eff8ff;border-right:3px solid #2980b9;padding:10px 14px;border-radius:0 4px 4px 0;font-size:13px;color:var(--text2);margin:10px 0;line-height:1.8;}
+.gd-warn{background:#fff8f0;border-right:3px solid #d4860b;padding:10px 14px;border-radius:0 4px 4px 0;font-size:13px;color:var(--text2);margin:10px 0;line-height:1.8;}
+.gd-pn ul{list-style:disc;margin:8px 22px;font-size:13px;color:var(--text);}
+.gd-pn ul li{margin-bottom:6px;line-height:1.8;}
+.gd-feature{display:flex;gap:14px;padding:14px;background:#fafaf7;border:1px solid var(--border);border-radius:6px;margin-bottom:10px;}
+.gd-feature-ic{font-size:28px;flex-shrink:0;}
+.gd-feature-c{flex:1;}
+.gd-feature-c .t{font-weight:700;font-size:14px;color:var(--navy);margin-bottom:4px;}
+.gd-feature-c .d{font-size:12px;color:var(--text2);line-height:1.7;}
+.gd-ft{padding:14px 24px;border-top:1px solid var(--border);background:#fafaf7;display:flex;gap:10px;justify-content:space-between;align-items:center;}
+.gd-checkbox{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);cursor:pointer;}
+.gd-checkbox input{cursor:pointer;}
+.gd-nav{display:flex;gap:8px;}
+.gd-btn{padding:8px 18px;background:var(--navy);color:white;border:none;font-family:'Cairo',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;}
+.gd-btn:hover{background:#1a2a3e;}
+.gd-btn.sec{background:white;color:var(--navy);border:1px solid var(--border);}
+.gd-btn.sec:hover{background:var(--bg);}
+.gd-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.gd-welcome{text-align:center;padding:20px 0;}
+.gd-welcome .ic{font-size:64px;margin-bottom:14px;}
+.gd-welcome h3{font-size:26px;}
+.gd-welcome p{font-size:14px;color:var(--text2);max-width:500px;margin:0 auto;line-height:1.9;}
+</style>
+
+<div class="gd-mo" id="gd-modal">
+  <div class="gd-md">
+    <div class="gd-hd">
+      <div class="gd-hd-t">📖 الدليل الإرشادي</div>
+      <button class="gd-hd-c" onclick="closeGuide()">×</button>
+    </div>
+    <div class="gd-tabs" id="gd-tabs">
+      <button class="gd-tab on" onclick="gdTab('welcome',this)">مرحباً</button>
+      <button class="gd-tab" onclick="gdTab('overview',this)">نظرة عامة</button>
+      <button class="gd-tab" onclick="gdTab('clients',this)">الموكلين</button>
+      <button class="gd-tab" onclick="gdTab('cases',this)">القضايا</button>
+      <button class="gd-tab" onclick="gdTab('sessions',this)">الجلسات</button>
+      <button class="gd-tab" onclick="gdTab('fees',this)">الأتعاب</button>
+      <button class="gd-tab" onclick="gdTab('reports',this)">التقارير</button>
+      <button class="gd-tab" onclick="gdTab('tools',this)">الأدوات</button>
+      <button class="gd-tab" onclick="gdTab('refs',this)">المراجع</button>
+      <button class="gd-tab" onclick="gdTab('backup',this)">النسخ الاحتياطي</button>
+      <button class="gd-tab" onclick="gdTab('tips',this)">نصائح</button>
+    </div>
+    <div class="gd-bd">
+
+      <!-- WELCOME -->
+      <div class="gd-pn on" id="gd-welcome">
+        <div class="gd-welcome">
+          <div class="ic">⚖️</div>
+          <h3>أهلاً بيك في مشروع محامي</h3>
+          <p>السيستم ده مصمم خصيصاً لمساعدتك في إدارة مكتب المحاماة الخاص بيك بكفاءة. هتلاقي هنا كل اللي محتاجه: الموكلين، القضايا، الجلسات، الأتعاب، وأكتر.</p>
+        </div>
+        <h4>إيه اللي هتلاقيه في الدليل ده؟</h4>
+        <div class="gd-feature">
+          <div class="gd-feature-ic">📊</div>
+          <div class="gd-feature-c"><div class="t">شرح كل صفحة</div><div class="d">شرح تفصيلي لكل قسم في السيستم وإزاي تستخدمه</div></div>
+        </div>
+        <div class="gd-feature">
+          <div class="gd-feature-ic">📝</div>
+          <div class="gd-feature-c"><div class="t">خطوات عملية</div><div class="d">خطوات مرقمة لكل عملية شائعة (إضافة موكل، تسجيل جلسة، إلخ)</div></div>
+        </div>
+        <div class="gd-feature">
+          <div class="gd-feature-ic">💡</div>
+          <div class="gd-feature-c"><div class="t">نصائح وأفكار</div><div class="d">نصائح من خبرة الاستخدام عشان توفر وقتك وتنظم شغلك</div></div>
+        </div>
+        <div class="gd-tip">💡 تقدر ترجع للدليل ده أي وقت من زرار <strong>"الدليل الإرشادي ❓"</strong> في القائمة على اليمين.</div>
+      </div>
+
+      <!-- OVERVIEW -->
+      <div class="gd-pn" id="gd-overview">
+        <h3>نظرة عامة على السيستم</h3>
+        <p>السيستم بيشتغل على 3 صفحات رئيسية، كل واحدة ليها دور:</p>
+        
+        <div class="gd-feature">
+          <div class="gd-feature-ic">◈</div>
+          <div class="gd-feature-c"><div class="t">إدارة المكتب (الصفحة الحالية)</div><div class="d">القلب الرئيسي للسيستم — هنا بتدير الموكلين، القضايا، الجلسات، والأتعاب</div></div>
+        </div>
+        <div class="gd-feature">
+          <div class="gd-feature-ic">📖</div>
+          <div class="gd-feature-c"><div class="t">المراجع القانونية</div><div class="d">دليل المواعيد القانونية، قاموس المصطلحات، مكتبة الدفوع، ودليل المحكمة</div></div>
+        </div>
+        <div class="gd-feature">
+          <div class="gd-feature-ic">🛠</div>
+          <div class="gd-feature-c"><div class="t">الأدوات والتطوير</div><div class="d">حاسبة الأتعاب، نماذج العقود، مساري المهني، أهدافي السنوية، ودليل الصفات</div></div>
+        </div>
+
+        <h4>القائمة الجانبية</h4>
+        <p>كل أقسام السيستم منظمة في القائمة على اليمين:</p>
+        <ul>
+          <li><strong>لوحة التحكم</strong> — نظرة سريعة على المكتب والإحصائيات</li>
+          <li><strong>القضايا والملفات</strong> — كل قضاياك مع تفاصيلها</li>
+          <li><strong>العملاء والموكلين</strong> — قاعدة بيانات الموكلين</li>
+          <li><strong>الجلسات والمواعيد</strong> — جدولك القادم</li>
+          <li><strong>الأتعاب والفواتير</strong> — متابعة المدفوعات والمستحقات</li>
+          <li><strong>تقارير المكتب</strong> — تقارير شاملة عن الأداء</li>
+        </ul>
+        
+        <div class="gd-tip">💡 ابدأ دايماً بإضافة الموكل الأول، ثم القضية المرتبطة بيه، ثم الجلسات والأتعاب.</div>
+      </div>
+
+      <!-- CLIENTS -->
+      <div class="gd-pn" id="gd-clients">
+        <h3>👥 إدارة الموكلين</h3>
+        <p>قاعدة بيانات الموكلين هي الأساس. كل قضية لازم تكون مربوطة بموكل.</p>
+
+        <h4>إزاي تضيف موكل جديد؟</h4>
+        <div class="gd-step">
+          <div class="gd-step-n">١</div>
+          <div class="gd-step-c"><div class="t">روح لقسم "العملاء والموكلين"</div><div class="d">من القائمة الجانبية على اليمين</div></div>
+        </div>
+        <div class="gd-step">
+          <div class="gd-step-n">٢</div>
+          <div class="gd-step-c"><div class="t">اضغط زرار "+ موكل جديد"</div><div class="d">في أعلى الصفحة (الزرار الأسود)</div></div>
+        </div>
+        <div class="gd-step">
+          <div class="gd-step-n">٣</div>
+          <div class="gd-step-c"><div class="t">املأ البيانات</div><div class="d">الاسم، الهاتف، الإيميل، النوع (فرد/شركة)، وأي ملاحظات مهمة</div></div>
+        </div>
+        <div class="gd-step">
+          <div class="gd-step-n">٤</div>
+          <div class="gd-step-c"><div class="t">اضغط حفظ</div><div class="d">الموكل هيظهر في الجدول، وتقدر تستخدمه في إنشاء القضايا</div></div>
+        </div>
+
+        <h4>تعديل أو حذف موكل</h4>
+        <p>كل موكل في الجدول له زرارين:</p>
+        <ul>
+          <li><strong>تعديل</strong> — لتحديث البيانات في أي وقت</li>
+          <li><strong>حذف</strong> — لإزالة الموكل (مع تأكيد)</li>
+        </ul>
+
+        <div class="gd-warn">⚠️ حذف موكل لا يحذف قضاياه. لو محتاج تنضف بياناته، احذف القضايا المرتبطة الأول.</div>
+        
+        <div class="gd-tip">💡 الموكلين ممكن يكونوا أفراد أو شركات. للشركات، اكتب اسم الشركة كاملاً في خانة الاسم.</div>
+      </div>
+
+      <!-- CASES -->
+      <div class="gd-pn" id="gd-cases">
+        <h3>📁 إدارة القضايا</h3>
+        <p>كل قضية بتحتوي على معلومات شاملة وسجل كامل لكل اللي بيحصل فيها.</p>
+
+        <h4>إنشاء قضية جديدة</h4>
+        <div class="gd-step">
+          <div class="gd-step-n">١</div>
+          <div class="gd-step-c"><div class="t">اضغط "+ قضية جديدة"</div><div class="d">من صفحة القضايا أو لوحة التحكم</div></div>
+        </div>
+        <div class="gd-step">
+          <div class="gd-step-n">٢</div>
+          <div class="gd-step-c"><div class="t">اختار الموكل</div><div class="d">من القائمة المنسدلة (لازم تكون أضفته قبل كده)</div></div>
+        </div>
+        <div class="gd-step">
+          <div class="gd-step-n">٣</div>
+          <div class="gd-step-c"><div class="t">املأ تفاصيل القضية</div><div class="d">رقم القضية، النوع (مدني/جنائي/تجاري...)، المحكمة، تاريخ البدء</div></div>
+        </div>
+        <div class="gd-step">
+          <div class="gd-step-n">٤</div>
+          <div class="gd-step-c"><div class="t">احفظ القضية</div><div class="d">هتقدر تضيف لها جلسات وسجل أحداث بعد كده</div></div>
+        </div>
+
+        <h4>سجل القضية (Sajl)</h4>
+        <p>كل قضية بيكون لها سجل أحداث. تقدر تضيف فيه:</p>
+        <ul>
+          <li><strong>جلسة</strong> — هتظهر تلقائياً في صفحة الجلسات</li>
+          <li><strong>مذكرة</strong> — مذكرات قانونية تم تقديمها</li>
+          <li><strong>حكم</strong> — أي حكم صدر</li>
+          <li><strong>تأجيل</strong> — تأجيل جلسة</li>
+          <li><strong>دفعة</strong> — دفعة من الموكل</li>
+          <li><strong>اتصال / ملاحظة</strong> — أي تواصل أو ملاحظة مهمة</li>
+        </ul>
+
+        <h4>عرض تفاصيل قضية</h4>
+        <p>اضغط زرار <strong>"عرض"</strong> جنب أي قضية في الجدول، هيفتحلك نافذة فيها كل تفاصيلها وسجلها.</p>
+        
+        <div class="gd-tip">💡 لما تضيف "جلسة" في سجل قضية، السيستم بيضيفها تلقائياً في صفحة الجلسات والمواعيد.</div>
+      </div>
+
+      <!-- SESSIONS -->
+      <div class="gd-pn" id="gd-sessions">
+        <h3>📅 الجلسات والمواعيد</h3>
+        <p>صفحة الجلسات هتساعدك تتابع كل مواعيدك في المحاكم.</p>
+
+        <h4>إضافة جلسة</h4>
+        <p>عندك طريقتين:</p>
+        <div class="gd-step">
+          <div class="gd-step-n">أ</div>
+          <div class="gd-step-c"><div class="t">من صفحة الجلسات مباشرة</div><div class="d">اضغط "+ جلسة جديدة" واختار القضية والتاريخ والمحكمة</div></div>
+        </div>
+        <div class="gd-step">
+          <div class="gd-step-n">ب</div>
+          <div class="gd-step-c"><div class="t">من تفاصيل قضية معينة</div><div class="d">افتح القضية، اختار "جلسة" من قائمة سجل القضية، وحط التاريخ والملاحظات</div></div>
+        </div>
+
+        <h4>عرض الجلسات</h4>
+        <ul>
+          <li><strong>الكل</strong> — كل الجلسات (قديمة وجديدة)</li>
+          <li><strong>القادمة</strong> — الجلسات اللي لسه ما حصلتش</li>
+          <li><strong>اليوم</strong> — جلسات النهاردة بس</li>
+          <li><strong>هذا الأسبوع</strong> — جلسات الأسبوع الحالي</li>
+        </ul>
+
+        <h4>تعديل أو حذف جلسة</h4>
+        <p>كل جلسة في الجدول ليها زرار تعديل وحذف. لما تعدل أو تحذف جلسة، السيستم بيحدث سجل القضية المرتبطة تلقائياً.</p>
+        
+        <div class="gd-warn">⚠️ راجع جلساتك القادمة بشكل يومي عشان ما تفوّتش أي ميعاد. لوحة التحكم بتظهر أقرب 3 جلسات.</div>
+      </div>
+
+      <!-- FEES -->
+      <div class="gd-pn" id="gd-fees">
+        <h3>💰 الأتعاب والفواتير</h3>
+        <p>تتبّع المدفوعات والمستحقات لكل قضية.</p>
+
+        <h4>تسجيل أتعاب قضية</h4>
+        <div class="gd-step">
+          <div class="gd-step-n">١</div>
+          <div class="gd-step-c"><div class="t">روح لصفحة "الأتعاب والفواتير"</div><div class="d">من القائمة الجانبية</div></div>
+        </div>
+        <div class="gd-step">
+          <div class="gd-step-n">٢</div>
+          <div class="gd-step-c"><div class="t">اضغط "+ سجل أتعاب جديد"</div><div class="d">واختار القضية</div></div>
+        </div>
+        <div class="gd-step">
+          <div class="gd-step-n">٣</div>
+          <div class="gd-step-c"><div class="t">حط القيمة الإجمالية</div><div class="d">المبلغ المتفق عليه مع الموكل</div></div>
+        </div>
+        <div class="gd-step">
+          <div class="gd-step-n">٤</div>
+          <div class="gd-step-c"><div class="t">سجل المدفوعات أول بأول</div><div class="d">كل ما الموكل يدفع، تضيف الدفعة بتاريخها</div></div>
+        </div>
+
+        <h4>حالات الأتعاب</h4>
+        <ul>
+          <li><strong>مسدد</strong> — تم دفع كامل المبلغ ✓</li>
+          <li><strong>جزئي</strong> — تم دفع جزء فقط</li>
+          <li><strong>غير مسدد</strong> — لم يتم دفع شيء بعد</li>
+        </ul>
+        
+        <div class="gd-tip">💡 السيستم بيحسب المتبقي تلقائياً (الإجمالي - المدفوع). تقدر تشوف ملخص مالي شامل في صفحة التقارير.</div>
+      </div>
+
+      <!-- REPORTS -->
+      <div class="gd-pn" id="gd-reports">
+        <h3>📊 تقارير المكتب</h3>
+        <p>تقارير شاملة عن أداء مكتبك.</p>
+
+        <h4>التقارير المتاحة</h4>
+        <div class="gd-feature">
+          <div class="gd-feature-ic">📈</div>
+          <div class="gd-feature-c"><div class="t">إحصائيات عامة</div><div class="d">عدد الموكلين، القضايا، الجلسات، إجمالي الأتعاب</div></div>
+        </div>
+        <div class="gd-feature">
+          <div class="gd-feature-ic">⚖️</div>
+          <div class="gd-feature-c"><div class="t">القضايا حسب النوع</div><div class="d">توزيع قضاياك (مدني، جنائي، تجاري، إلخ)</div></div>
+        </div>
+        <div class="gd-feature">
+          <div class="gd-feature-ic">💰</div>
+          <div class="gd-feature-c"><div class="t">الملخص المالي</div><div class="d">إجمالي الأتعاب، المحصّل، المتبقي على الموكلين</div></div>
+        </div>
+        <div class="gd-feature">
+          <div class="gd-feature-ic">📅</div>
+          <div class="gd-feature-c"><div class="t">الجلسات القادمة</div><div class="d">قائمة بأقرب الجلسات لمتابعتها</div></div>
+        </div>
+        
+        <div class="gd-tip">💡 راجع التقارير شهرياً عشان تاخد قرارات صح بناءً على بيانات حقيقية.</div>
+      </div>
+
+      <!-- TOOLS -->
+      <div class="gd-pn" id="gd-tools">
+        <h3>🛠 الأدوات والتطوير</h3>
+        <p>صفحة الأدوات مليانة أدوات لمساعدتك في تطوير شغلك:</p>
+
+        <div class="gd-feature">
+          <div class="gd-feature-ic">🧮</div>
+          <div class="gd-feature-c"><div class="t">حاسبة الأتعاب</div><div class="d">احسب أتعابك بناءً على نوع القضية، صعوبتها، ومرحلتك المهنية</div></div>
+        </div>
+        <div class="gd-feature">
+          <div class="gd-feature-ic">📝</div>
+          <div class="gd-feature-c"><div class="t">نماذج العقود</div><div class="d">مكتبة عقود قانونية جاهزة للاستخدام</div></div>
+        </div>
+        <div class="gd-feature">
+          <div class="gd-feature-ic">💾</div>
+          <div class="gd-feature-c"><div class="t">النسخ الاحتياطي</div><div class="d">احفظ نسخة شاملة من بياناتك (PDF و Excel) — مهم جداً!</div></div>
+        </div>
+        <div class="gd-feature">
+          <div class="gd-feature-ic">🎯</div>
+          <div class="gd-feature-c"><div class="t">مساري المهني</div><div class="d">حدد مرحلتك الحالية وتابع أهدافها</div></div>
+        </div>
+        <div class="gd-feature">
+          <div class="gd-feature-ic">🏆</div>
+          <div class="gd-feature-c"><div class="t">أهدافي السنوية</div><div class="d">حدد دخلك المستهدف وأهدافك المهنية لكل سنة</div></div>
+        </div>
+        <div class="gd-feature">
+          <div class="gd-feature-ic">⭐</div>
+          <div class="gd-feature-c"><div class="t">دليل صفات المحامي</div><div class="d">100 صفة في 10 محاور — تطوير مستمر لشخصيتك المهنية</div></div>
+        </div>
+      </div>
+
+      <!-- REFERENCES -->
+      <div class="gd-pn" id="gd-refs">
+        <h3>📖 المراجع القانونية</h3>
+        <p>مكتبة قانونية شاملة في متناول يدك:</p>
+
+        <div class="gd-feature">
+          <div class="gd-feature-ic">⏰</div>
+          <div class="gd-feature-c"><div class="t">جدول المواعيد القانونية</div><div class="d">63 ميعاد قانوني (مرافعات + مدني) مع المادة المرجعية لكل واحد</div></div>
+        </div>
+        <div class="gd-feature">
+          <div class="gd-feature-ic">📚</div>
+          <div class="gd-feature-c"><div class="t">قاموس المصطلحات</div><div class="d">شرح للمصطلحات القانونية الشائعة</div></div>
+        </div>
+        <div class="gd-feature">
+          <div class="gd-feature-ic">⚖️</div>
+          <div class="gd-feature-c"><div class="t">مكتبة الدفوع</div><div class="d">111 دفع جنائي + 7 فئات دفوع مدنية وتجارية</div></div>
+        </div>
+        <div class="gd-feature">
+          <div class="gd-feature-ic">🏛️</div>
+          <div class="gd-feature-c"><div class="t">دليل المحكمة والدفوع</div><div class="d">12 مصطلح من مصطلحات المحكمة + دليل تفصيلي</div></div>
+        </div>
+        
+        <div class="gd-tip">💡 استخدم خانة البحث في كل صفحة عشان تلاقي اللي محتاجه بسرعة.</div>
+      </div>
+
+      <!-- BACKUP -->
+      <div class="gd-pn" id="gd-backup">
+        <h3>💾 النسخ الاحتياطي</h3>
+        <p style="color:var(--danger);font-weight:600;">أهم خطوة لازم تعملها بشكل دوري!</p>
+
+        <h4>ليه النسخ الاحتياطي مهم؟</h4>
+        <ul>
+          <li>لو حصلت أي مشكلة في السيستم، تكون عندك نسخة آمنة</li>
+          <li>لو محتاج بيانات قضية قديمة، تلاقيها في النسخة المحفوظة</li>
+          <li>للأرشفة الورقية ولأي طلب رسمي</li>
+        </ul>
+
+        <h4>إزاي تاخد نسخة احتياطية؟</h4>
+        <div class="gd-step">
+          <div class="gd-step-n">١</div>
+          <div class="gd-step-c"><div class="t">روح لصفحة "الأدوات والتطوير"</div><div class="d">من القائمة الجانبية</div></div>
+        </div>
+        <div class="gd-step">
+          <div class="gd-step-n">٢</div>
+          <div class="gd-step-c"><div class="t">اختار "النسخ الاحتياطي"</div><div class="d">من قسم "أدوات المكتب"</div></div>
+        </div>
+        <div class="gd-step">
+          <div class="gd-step-n">٣</div>
+          <div class="gd-step-c"><div class="t">حمّل نسخة شاملة (PDF)</div><div class="d">للأرشيف والطباعة — فيها كل التفاصيل</div></div>
+        </div>
+        <div class="gd-step">
+          <div class="gd-step-n">٤</div>
+          <div class="gd-step-c"><div class="t">حمّل ملف Excel</div><div class="d">للتحليل أو الاستيراد لأي سيستم تاني</div></div>
+        </div>
+        
+        <div class="gd-warn">⚠️ السيستم بيذكّرك تاخد نسخة كل أسبوع تلقائياً. متجاهلش التذكير ده!</div>
+      </div>
+
+      <!-- TIPS -->
+      <div class="gd-pn" id="gd-tips">
+        <h3>💡 نصائح للاستخدام الأمثل</h3>
+
+        <h4>عادات يومية</h4>
+        <ul>
+          <li>افتح <strong>لوحة التحكم</strong> أول حاجة الصبح عشان تشوف جلسات اليوم</li>
+          <li>سجل أي اتصال أو ملاحظة في سجل القضية فوراً</li>
+          <li>راجع الجلسات القادمة آخر اليوم وحضّر لكل واحدة</li>
+        </ul>
+
+        <h4>عادات أسبوعية</h4>
+        <ul>
+          <li>خد <strong>نسخة احتياطية</strong> كاملة (PDF + Excel) كل أسبوع</li>
+          <li>راجع الأتعاب المستحقة وذكّر الموكلين</li>
+          <li>راجع التقارير وشوف لو في قضية محتاجة متابعة</li>
+        </ul>
+
+        <h4>عادات شهرية</h4>
+        <ul>
+          <li>راجع <strong>أهدافك السنوية</strong> وقيّم تقدمك</li>
+          <li>خد جلسة تقييم ذاتي مع <strong>دليل الصفات</strong></li>
+          <li>راجع التقارير المالية واتخذ قرارات بناءً عليها</li>
+        </ul>
+
+        <h4>اختصارات مفيدة</h4>
+        <ul>
+          <li>زرار <strong>عرض</strong> في أي جدول → يفتح التفاصيل الكاملة</li>
+          <li>زرار <strong>تعديل</strong> → لتحديث أي بيانات بسرعة</li>
+          <li>خانة <strong>البحث</strong> في كل صفحة → بحث live في البيانات</li>
+        </ul>
+
+        <h4>أخطاء شائعة تجنبها</h4>
+        <div class="gd-warn">❌ ما تنساش تسجل الجلسات المؤجلة في السجل</div>
+        <div class="gd-warn">❌ ما تخليش الموكل ينسى دفعاته — سجل التذكير في النظام</div>
+        <div class="gd-warn">❌ ما تستناش لآخر السنة تاخد نسخة احتياطية</div>
+        
+        <div class="gd-tip" style="margin-top:18px;">💡 السيستم أداة، بس النجاح بيجي من <strong>الانتظام</strong> في استخدامها. خصص 10 دقائق يومياً للتحديث.</div>
+      </div>
+
+    </div>
+    <div class="gd-ft">
+      <label class="gd-checkbox">
+        <input type="checkbox" id="gd-noshow" onchange="toggleGuideAutoshow(this.checked)">
+        <span>لا تظهر هذه الرسالة تلقائياً</span>
+      </label>
+      <div class="gd-nav">
+        <button class="gd-btn sec" onclick="closeGuide()">إغلاق</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// ONBOARDING GUIDE
+// ============================================================
+function openGuide(){
+  document.getElementById('gd-modal').classList.add('on');
+  document.getElementById('gd-noshow').checked = localStorage.getItem('mm_guide_seen') === '1';
+}
+function closeGuide(){
+  document.getElementById('gd-modal').classList.remove('on');
+}
+function gdTab(tab, btn){
+  document.querySelectorAll('.gd-pn').forEach(p => p.classList.remove('on'));
+  document.getElementById('gd-' + tab).classList.add('on');
+  document.querySelectorAll('.gd-tab').forEach(t => t.classList.remove('on'));
+  btn.classList.add('on');
+  // Scroll body to top
+  document.querySelector('.gd-bd').scrollTop = 0;
+}
+function toggleGuideAutoshow(checked){
+  localStorage.setItem('mm_guide_seen', checked ? '1' : '0');
+}
+// Close on outside click
+document.getElementById('gd-modal').addEventListener('click', function(e){
+  if(e.target === this) closeGuide();
+});
+// Close on Escape
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape' && document.getElementById('gd-modal').classList.contains('on')) closeGuide();
+});
+// Auto-show first time
+setTimeout(() => {
+  if(localStorage.getItem('mm_guide_seen') !== '1' && document.getElementById('auth-loading').style.display === 'none'){
+    openGuide();
+    localStorage.setItem('mm_guide_seen', '1');
+    document.getElementById('gd-noshow').checked = true;
+  }
+}, 1500);
+</script>
+
 </body>
 </html>
