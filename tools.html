@@ -172,11 +172,11 @@ let currentUser = null, currentProfile = null;
   </div>
   <div class="nav-sec">
     <div class="nav-lbl">أدوات المكتب</div>
-    <div class="ni on" onclick="go('feecalc',this)"><span class="ni-ic">🧮</span>حاسبة الأتعاب</div>
-    <div class="ni" onclick="go('contracts',this)"><span class="ni-ic">📝</span>نماذج العقود</div>
-    <div class="ni" onclick="go('backup',this)"><span class="ni-ic">💾</span>النسخ الاحتياطي</div>
+    <div class="ni on" onclick="go('feecalc',this)" data-tour="t-feecalc"><span class="ni-ic">🧮</span>حاسبة الأتعاب</div>
+    <div class="ni" onclick="go('contracts',this)" data-tour="t-contracts"><span class="ni-ic">📝</span>نماذج العقود</div>
+    <div class="ni" onclick="go('backup',this)" data-tour="t-backup"><span class="ni-ic">💾</span>النسخ الاحتياطي</div>
   </div>
-  <div class="nav-sec">
+  <div class="nav-sec" data-tour="t-career-section">
     <div class="nav-lbl">مساري المهني</div>
     <div class="ni" onclick="go('career',this)"><span class="ni-ic">🎯</span>مرحلتي المهنية</div>
     <div class="ni" onclick="go('goals',this)"><span class="ni-ic">📋</span>أهدافي السنوية</div>
@@ -1404,5 +1404,247 @@ async function logout(){
   }
 }
 </script>
+
+<!-- ============================================================ -->
+<!-- INTERACTIVE TOUR ENGINE (continued from index.html)            -->
+<!-- ============================================================ -->
+<style>
+.tour-overlay{position:fixed;inset:0;z-index:9000;pointer-events:none;display:none;}
+.tour-overlay.on{display:block;}
+.tour-overlay svg{width:100%;height:100%;}
+.tour-tooltip{position:fixed;z-index:9100;background:white;border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,0.4);padding:0;width:380px;max-width:calc(100vw - 40px);font-family:'Cairo',sans-serif;display:none;border-top:4px solid var(--gold);}
+.tour-tooltip.on{display:block;animation:fadeIn 0.3s ease-out;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.tour-tooltip .tt-h{padding:14px 18px 10px;background:var(--gold-bg);border-bottom:1px solid var(--border);}
+.tour-tooltip .tt-step{font-size:11px;color:var(--gold);font-weight:600;letter-spacing:1px;}
+.tour-tooltip .tt-title{font-family:'Amiri',serif;font-size:18px;color:var(--navy);font-weight:700;margin-top:4px;}
+.tour-tooltip .tt-body{padding:14px 18px;font-size:13px;color:var(--text);line-height:1.9;}
+.tour-tooltip .tt-foot{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-top:1px solid var(--border);background:#fafaf7;border-radius:0 0 8px 8px;}
+.tour-tooltip .tt-btns{display:flex;gap:6px;}
+.tour-btn{padding:7px 14px;font-family:'Cairo',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border-radius:4px;border:none;}
+.tour-btn.primary{background:var(--navy);color:white;}
+.tour-btn.primary:hover{background:#1a2a3e;}
+.tour-btn.sec{background:white;color:var(--navy);border:1px solid var(--border);}
+.tour-btn.sec:hover{background:var(--bg);}
+.tour-btn.skip{background:none;color:var(--text3);font-size:11px;text-decoration:underline;padding:7px 8px;}
+.tour-btn.skip:hover{color:var(--danger);}
+.tour-target-highlight{position:fixed;z-index:9050;border:3px solid var(--gold);border-radius:6px;pointer-events:none;display:none;box-shadow:0 0 0 4px rgba(201,168,76,0.3);}
+.tour-target-highlight.on{display:block;animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 4px rgba(201,168,76,0.3);}50%{box-shadow:0 0 0 8px rgba(201,168,76,0.15);}}
+</style>
+
+<div class="tour-overlay" id="tour-overlay">
+  <svg xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <mask id="tour-mask">
+        <rect width="100%" height="100%" fill="white"/>
+        <rect id="tour-mask-hole" x="0" y="0" width="0" height="0" rx="6" fill="black"/>
+      </mask>
+    </defs>
+    <rect width="100%" height="100%" fill="rgba(0,0,0,0.65)" mask="url(#tour-mask)"/>
+  </svg>
+</div>
+<div class="tour-target-highlight" id="tour-highlight"></div>
+
+<div class="tour-tooltip" id="tour-tooltip" data-pos="center">
+  <div class="tt-h">
+    <div class="tt-step" id="tt-step">الخطوة 11 من 19</div>
+    <div class="tt-title" id="tt-title">عنوان</div>
+  </div>
+  <div class="tt-body" id="tt-body">المحتوى</div>
+  <div class="tt-foot">
+    <button class="tour-btn skip" onclick="endTour(true)">تخطي الجولة</button>
+    <div class="tt-btns">
+      <button class="tour-btn sec" id="tt-prev" onclick="tourPrev()">السابق</button>
+      <button class="tour-btn primary" id="tt-next" onclick="tourNext()">التالي ←</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Tour steps for tools.html (continues from step 11)
+const TOUR_STEPS_TOOLS = [
+  {
+    title: 'صفحة الأدوات والتطوير',
+    body: 'دي صفحة الأدوات. هنوريك أهم 5 أدوات هتستخدمها بشكل دوري — كل أداة بتخدم جانب مختلف من شغلك.',
+    target: null, position: 'center', stepNum: 11
+  },
+  {
+    title: 'حاسبة الأتعاب',
+    body: 'احسب أتعابك بشكل احترافي بناءً على نوع القضية، تعقيدها، ومرحلتك المهنية. مفيدة جداً عند التفاوض مع موكل جديد.',
+    target: '[data-tour="t-feecalc"]', position: 'left', stepNum: 12,
+    onShow: () => { const el = document.querySelector('[data-tour="t-feecalc"]'); if(el) el.click(); }
+  },
+  {
+    title: 'نماذج العقود',
+    body: 'مكتبة عقود قانونية جاهزة. اضغط نسخ، عدّل البيانات، وخلاص.',
+    target: '[data-tour="t-contracts"]', position: 'left', stepNum: 13
+  },
+  {
+    title: 'النسخ الاحتياطي ⚠️',
+    body: 'الأهم في كل السيستم! خد نسخة كاملة من بياناتك (PDF + Excel) كل أسبوع. السيستم بيذكّرك تلقائياً.',
+    target: '[data-tour="t-backup"]', position: 'left', stepNum: 14
+  },
+  {
+    title: 'مساري المهني',
+    body: 'القسم ده فيه: مرحلتك المهنية الحالية، أهدافك السنوية، تقييمك الذاتي، ودليل الـ 100 صفة. أدوات لتطوير شخصيتك المهنية.',
+    target: '[data-tour="t-career-section"]', position: 'left', stepNum: 15
+  },
+  {
+    title: 'دلوقتي ندخل المراجع',
+    body: 'هننتقل لصفحة المراجع القانونية لنوريك جدول المواعيد القانونية، قاموس المصطلحات، ومكتبة الدفوع.',
+    target: null, position: 'center', stepNum: 16,
+    nextLabel: 'كمل في المراجع →',
+    onNext: () => { localStorage.setItem('mm_tour_step', '16'); window.location.href = 'references.html'; return false; }
+  }
+];
+
+let currentStepIdx = 0;
+let activeStepObj = null;
+
+function showStep(idx){
+  if(idx < 0 || idx >= TOUR_STEPS_TOOLS.length){endTour(false);return;}
+  currentStepIdx = idx;
+  activeStepObj = TOUR_STEPS_TOOLS[idx];
+  
+  document.getElementById('tt-step').textContent = `الخطوة ${activeStepObj.stepNum} من 19`;
+  document.getElementById('tt-title').textContent = activeStepObj.title;
+  document.getElementById('tt-body').textContent = activeStepObj.body;
+  
+  document.getElementById('tt-prev').style.display = idx === 0 ? 'none' : '';
+  document.getElementById('tt-next').textContent = activeStepObj.nextLabel || (idx === TOUR_STEPS_TOOLS.length - 1 ? 'إنهاء →' : 'التالي ←');
+  
+  if(activeStepObj.onShow){
+    try { activeStepObj.onShow(); } catch(e){}
+  }
+  
+  document.getElementById('tour-overlay').classList.add('on');
+  setTimeout(() => positionTour(activeStepObj), 100);
+  localStorage.setItem('mm_tour_step', String(activeStepObj.stepNum));
+}
+
+function positionTour(step){
+  const tooltip = document.getElementById('tour-tooltip');
+  const highlight = document.getElementById('tour-highlight');
+  const maskHole = document.getElementById('tour-mask-hole');
+  
+  if(!step.target || step.position === 'center'){
+    tooltip.dataset.pos = 'center';
+    tooltip.style.left = '50%';
+    tooltip.style.top = '50%';
+    tooltip.style.transform = 'translate(-50%, -50%)';
+    tooltip.classList.add('on');
+    highlight.classList.remove('on');
+    maskHole.setAttribute('width', '0');
+    maskHole.setAttribute('height', '0');
+    return;
+  }
+  
+  const el = document.querySelector(step.target);
+  if(!el){
+    tooltip.dataset.pos = 'center';
+    tooltip.style.left = '50%';
+    tooltip.style.top = '50%';
+    tooltip.style.transform = 'translate(-50%, -50%)';
+    tooltip.classList.add('on');
+    return;
+  }
+  
+  el.scrollIntoView({behavior: 'smooth', block: 'center'});
+  
+  setTimeout(() => {
+    const rect = el.getBoundingClientRect();
+    const padding = 8;
+    
+    highlight.style.left = (rect.left - padding) + 'px';
+    highlight.style.top = (rect.top - padding) + 'px';
+    highlight.style.width = (rect.width + padding * 2) + 'px';
+    highlight.style.height = (rect.height + padding * 2) + 'px';
+    highlight.classList.add('on');
+    
+    maskHole.setAttribute('x', String(rect.left - padding));
+    maskHole.setAttribute('y', String(rect.top - padding));
+    maskHole.setAttribute('width', String(rect.width + padding * 2));
+    maskHole.setAttribute('height', String(rect.height + padding * 2));
+    
+    const tw = 380, th = tooltip.offsetHeight || 200;
+    let left, top, pos = step.position || 'bottom';
+    
+    if(pos === 'left'){
+      left = rect.left - tw - 16;
+      top = rect.top + (rect.height / 2) - (th / 2);
+      if(left < 10){pos = 'right'; left = rect.right + 16;}
+    } else if(pos === 'right'){
+      left = rect.right + 16;
+      top = rect.top + (rect.height / 2) - (th / 2);
+    } else if(pos === 'top'){
+      left = rect.left + (rect.width / 2) - (tw / 2);
+      top = rect.top - th - 16;
+      if(top < 10){pos = 'bottom'; top = rect.bottom + 16;}
+    } else {
+      left = rect.left + (rect.width / 2) - (tw / 2);
+      top = rect.bottom + 16;
+    }
+    
+    left = Math.max(10, Math.min(left, window.innerWidth - tw - 10));
+    top = Math.max(10, Math.min(top, window.innerHeight - th - 10));
+    
+    tooltip.dataset.pos = pos;
+    tooltip.style.left = left + 'px';
+    tooltip.style.top = top + 'px';
+    tooltip.style.transform = 'none';
+    tooltip.classList.add('on');
+  }, 350);
+}
+
+function tourNext(){
+  if(activeStepObj && activeStepObj.onNext){
+    if(activeStepObj.onNext() === false) return;
+  }
+  if(currentStepIdx < TOUR_STEPS_TOOLS.length - 1){
+    showStep(currentStepIdx + 1);
+  } else {
+    endTour(false);
+  }
+}
+
+function tourPrev(){
+  if(currentStepIdx > 0) showStep(currentStepIdx - 1);
+  else { window.location.href = 'index.html'; }
+}
+
+function endTour(skipped){
+  document.getElementById('tour-overlay').classList.remove('on');
+  document.getElementById('tour-tooltip').classList.remove('on');
+  document.getElementById('tour-highlight').classList.remove('on');
+  if(skipped && confirm('هل تريد فعلاً تخطي الجولة؟ تقدر تشغّلها تاني من الدليل الإرشادي.')){
+    localStorage.setItem('mm_tour_done', '1');
+    localStorage.removeItem('mm_tour_step');
+  } else if(skipped){
+    showStep(currentStepIdx);
+  }
+}
+
+window.addEventListener('resize', () => {
+  if(document.getElementById('tour-overlay').classList.contains('on') && activeStepObj){
+    positionTour(activeStepObj);
+  }
+});
+
+// Auto-resume tour if user came from index mid-tour
+setTimeout(() => {
+  const tourStep = parseInt(localStorage.getItem('mm_tour_step') || '0');
+  const tourDone = localStorage.getItem('mm_tour_done') === '1';
+  if(!tourDone && tourStep >= 11 && tourStep <= 16 && document.getElementById('auth-loading').style.display === 'none'){
+    // Find matching step in TOUR_STEPS_TOOLS
+    const idx = TOUR_STEPS_TOOLS.findIndex(s => s.stepNum === tourStep);
+    if(idx >= 0){
+      currentStepIdx = idx;
+      showStep(idx);
+    }
+  }
+}, 1500);
+</script>
+
 </body>
 </html>
