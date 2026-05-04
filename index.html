@@ -198,23 +198,23 @@ async function logout(){
     <span class="sb-logo-t">مشروع محامي</span>
     <span class="sb-logo-u">فريد الأخضر</span>
   </div>
-  <div class="nav-sec">
+  <div class="nav-sec" data-tour="sidebar">
     <div class="nav-lbl">الرئيسية</div>
-    <div class="ni on" onclick="go('dashboard',this)"><span class="ni-ic">◈</span>لوحة التحكم</div>
+    <div class="ni on" onclick="go('dashboard',this)" data-tour="nav-dashboard"><span class="ni-ic">◈</span>لوحة التحكم</div>
   </div>
   <div class="nav-sec">
     <div class="nav-lbl">إدارة المكتب</div>
-    <div class="ni" onclick="go('cases',this)"><span class="ni-ic">⚖</span>القضايا والملفات</div>
-    <div class="ni" onclick="go('clients',this)"><span class="ni-ic">👤</span>العملاء والموكلين</div>
-    <div class="ni" onclick="go('sessions',this)"><span class="ni-ic">📅</span>الجلسات والمواعيد</div>
-    <div class="ni" onclick="go('fees',this)"><span class="ni-ic">💰</span>الأتعاب والفواتير</div>
-    <div class="ni" onclick="go('reports',this)"><span class="ni-ic">📊</span>تقارير المكتب</div>
+    <div class="ni" onclick="go('cases',this)" data-tour="nav-cases"><span class="ni-ic">⚖</span>القضايا والملفات</div>
+    <div class="ni" onclick="go('clients',this)" data-tour="nav-clients"><span class="ni-ic">👤</span>العملاء والموكلين</div>
+    <div class="ni" onclick="go('sessions',this)" data-tour="nav-sessions"><span class="ni-ic">📅</span>الجلسات والمواعيد</div>
+    <div class="ni" onclick="go('fees',this)" data-tour="nav-fees"><span class="ni-ic">💰</span>الأتعاب والفواتير</div>
+    <div class="ni" onclick="go('reports',this)" data-tour="nav-reports"><span class="ni-ic">📊</span>تقارير المكتب</div>
   </div>
   <div class="nav-sec">
     <div class="nav-lbl">صفحات أخرى</div>
     <a class="ni" href="references.html"><span class="ni-ic">📖</span>المراجع القانونية</a>
     <a class="ni" href="tools.html"><span class="ni-ic">🛠</span>الأدوات والتطوير</a>
-    <div class="ni" onclick="openGuide()" style="cursor:pointer;"><span class="ni-ic">❓</span>الدليل الإرشادي</div>
+    <div class="ni" onclick="openGuide()" style="cursor:pointer;" data-tour="help-btn"><span class="ni-ic">❓</span>الدليل الإرشادي</div>
   </div>
   <div style="margin-top:auto;padding:12px;border-top:1px solid rgba(255,255,255,0.08);">
     <div id="current-user-name" style="font-size:11px;color:rgba(255,255,255,0.6);text-align:center;margin-bottom:8px;padding:4px;"></div>
@@ -1244,14 +1244,337 @@ document.getElementById('gd-modal').addEventListener('click', function(e){
 document.addEventListener('keydown', function(e){
   if(e.key === 'Escape' && document.getElementById('gd-modal').classList.contains('on')) closeGuide();
 });
-// Auto-show first time
+// Auto-start tour first time, OR resume if user came from another page mid-tour
 setTimeout(() => {
-  if(localStorage.getItem('mm_guide_seen') !== '1' && document.getElementById('auth-loading').style.display === 'none'){
-    openGuide();
-    localStorage.setItem('mm_guide_seen', '1');
-    document.getElementById('gd-noshow').checked = true;
+  const tourStep = parseInt(localStorage.getItem('mm_tour_step') || '0');
+  const tourDone = localStorage.getItem('mm_tour_done') === '1';
+  if(document.getElementById('auth-loading').style.display === 'none'){
+    if(!tourDone && tourStep === 0){
+      // First time — start tour
+      startTour();
+    } else if(tourStep >= 1 && tourStep <= TOUR_STEPS_INDEX.length){
+      // Resume tour mid-way (came back from tools/references)
+      currentStepIdx = tourStep - 1;
+      startTour(false);
+    }
   }
 }, 1500);
+</script>
+
+<!-- ============================================================ -->
+<!-- INTERACTIVE TOUR ENGINE                                       -->
+<!-- ============================================================ -->
+<style>
+.tour-overlay{position:fixed;inset:0;z-index:9000;pointer-events:none;display:none;}
+.tour-overlay.on{display:block;}
+.tour-overlay svg{width:100%;height:100%;}
+.tour-tooltip{position:fixed;z-index:9100;background:white;border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,0.4);padding:0;width:380px;max-width:calc(100vw - 40px);font-family:'Cairo',sans-serif;display:none;border-top:4px solid var(--gold);}
+.tour-tooltip.on{display:block;animation:fadeIn 0.3s ease-out;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.tour-tooltip .tt-h{padding:14px 18px 10px;background:var(--gold-bg);border-bottom:1px solid var(--border);}
+.tour-tooltip .tt-step{font-size:11px;color:var(--gold);font-weight:600;letter-spacing:1px;}
+.tour-tooltip .tt-title{font-family:'Amiri',serif;font-size:18px;color:var(--navy);font-weight:700;margin-top:4px;}
+.tour-tooltip .tt-body{padding:14px 18px;font-size:13px;color:var(--text);line-height:1.9;}
+.tour-tooltip .tt-foot{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-top:1px solid var(--border);background:#fafaf7;border-radius:0 0 8px 8px;}
+.tour-tooltip .tt-progress{font-size:11px;color:var(--text3);}
+.tour-tooltip .tt-btns{display:flex;gap:6px;}
+.tour-btn{padding:7px 14px;font-family:'Cairo',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border-radius:4px;border:none;}
+.tour-btn.primary{background:var(--navy);color:white;}
+.tour-btn.primary:hover{background:#1a2a3e;}
+.tour-btn.sec{background:white;color:var(--navy);border:1px solid var(--border);}
+.tour-btn.sec:hover{background:var(--bg);}
+.tour-btn.skip{background:none;color:var(--text3);font-size:11px;text-decoration:underline;padding:7px 8px;}
+.tour-btn.skip:hover{color:var(--danger);}
+.tour-tooltip .tt-arrow{position:absolute;width:0;height:0;}
+.tour-tooltip[data-pos="bottom"] .tt-arrow{top:-8px;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:8px solid var(--gold);}
+.tour-tooltip[data-pos="top"] .tt-arrow{bottom:-8px;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid white;}
+.tour-tooltip[data-pos="left"] .tt-arrow{right:-8px;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:8px solid var(--gold);}
+.tour-tooltip[data-pos="right"] .tt-arrow{left:-8px;border-top:8px solid transparent;border-bottom:8px solid transparent;border-right:8px solid var(--gold);}
+.tour-tooltip[data-pos="center"] .tt-arrow{display:none;}
+.tour-target-highlight{position:fixed;z-index:9050;border:3px solid var(--gold);border-radius:6px;pointer-events:none;display:none;box-shadow:0 0 0 4px rgba(201,168,76,0.3);transition:all 0.3s ease;}
+.tour-target-highlight.on{display:block;animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 4px rgba(201,168,76,0.3);}50%{box-shadow:0 0 0 8px rgba(201,168,76,0.15);}}
+</style>
+
+<div class="tour-overlay" id="tour-overlay">
+  <svg xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <mask id="tour-mask">
+        <rect width="100%" height="100%" fill="white"/>
+        <rect id="tour-mask-hole" x="0" y="0" width="0" height="0" rx="6" fill="black"/>
+      </mask>
+    </defs>
+    <rect width="100%" height="100%" fill="rgba(0,0,0,0.65)" mask="url(#tour-mask)"/>
+  </svg>
+</div>
+<div class="tour-target-highlight" id="tour-highlight"></div>
+
+<div class="tour-tooltip" id="tour-tooltip" data-pos="center">
+  <div class="tt-arrow"></div>
+  <div class="tt-h">
+    <div class="tt-step" id="tt-step">الخطوة 1 من 19</div>
+    <div class="tt-title" id="tt-title">عنوان</div>
+  </div>
+  <div class="tt-body" id="tt-body">المحتوى</div>
+  <div class="tt-foot">
+    <button class="tour-btn skip" onclick="endTour(true)">تخطي الجولة</button>
+    <div class="tt-btns">
+      <button class="tour-btn sec" id="tt-prev" onclick="tourPrev()">السابق</button>
+      <button class="tour-btn primary" id="tt-next" onclick="tourNext()">التالي ←</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// TOUR STEPS — index page (10 steps)
+// ============================================================
+const TOUR_STEPS_INDEX = [
+  {
+    title: 'أهلاً بيك في مشروع محامي',
+    body: 'هنخدك في جولة سريعة (3 دقايق) عشان نوريك كل اللي السيستم يقدر يعمله ليك. تقدر تتخطى الجولة في أي وقت من الزرار تحت.',
+    target: null, position: 'center'
+  },
+  {
+    title: 'القائمة الجانبية',
+    body: 'كل أقسام السيستم متجمعة هنا. اضغط على أي قسم تنتقل ليه فوراً.',
+    target: '[data-tour="sidebar"]', position: 'left'
+  },
+  {
+    title: 'لوحة التحكم',
+    body: 'دي الصفحة الرئيسية اللي بتظهرلك أول لما تدخل. فيها ملخص يومي بالإحصائيات وأقرب الجلسات والقضايا الجديدة.',
+    target: '[data-tour="nav-dashboard"]', position: 'left',
+    onShow: () => { const el = document.querySelector('[data-tour="nav-dashboard"]'); if(el) el.click(); }
+  },
+  {
+    title: 'القضايا والملفات',
+    body: 'هنا تدير كل قضاياك. تقدر تضيف قضية جديدة، تشوف تفاصيلها، تتابع سجلها، وتربطها بموكل وأتعاب.',
+    target: '[data-tour="nav-cases"]', position: 'left'
+  },
+  {
+    title: 'العملاء والموكلين',
+    body: 'قاعدة بيانات الموكلين. ابدأ دايماً بإضافة الموكل، وبعدها اربطه بقضاياه.',
+    target: '[data-tour="nav-clients"]', position: 'left'
+  },
+  {
+    title: 'الجلسات والمواعيد',
+    body: 'كل جلساتك في مكان واحد. السيستم بيذكّرك بأقرب الجلسات تلقائياً، وتقدر تفلتر اليوم/الأسبوع/القادمة.',
+    target: '[data-tour="nav-sessions"]', position: 'left'
+  },
+  {
+    title: 'الأتعاب والفواتير',
+    body: 'تابع المدفوعات والمستحقات. سجل أتعاب كل قضية والدفعات اللي بتجمعها، والسيستم بيحسب المتبقي تلقائياً.',
+    target: '[data-tour="nav-fees"]', position: 'left'
+  },
+  {
+    title: 'تقارير المكتب',
+    body: 'تقارير شاملة عن أداء مكتبك: عدد القضايا، الإيرادات، التحصيل، وأنواع القضايا. راجعها شهرياً.',
+    target: '[data-tour="nav-reports"]', position: 'left'
+  },
+  {
+    title: 'الدليل الإرشادي',
+    body: 'الزرار ده دايماً موجود. تقدر تفتح الدليل أي وقت لمراجعة الشرح أو إعادة الجولة دي.',
+    target: '[data-tour="help-btn"]', position: 'left'
+  },
+  {
+    title: 'دلوقتي ندخل الأدوات',
+    body: 'هننتقل لصفحة الأدوات والتطوير عشان نوريك حاسبة الأتعاب، نماذج العقود، النسخ الاحتياطي، وأكتر. اضغط "كمل في الأدوات".',
+    target: null, position: 'center',
+    nextLabel: 'كمل في الأدوات →',
+    onNext: () => { localStorage.setItem('mm_tour_step', '11'); window.location.href = 'tools.html'; return false; }
+  }
+];
+
+let currentStepIdx = 0;
+let activeStepObj = null;
+
+function startTour(reset = true){
+  if(reset){
+    currentStepIdx = 0;
+    localStorage.setItem('mm_tour_step', '1');
+  }
+  showStep(currentStepIdx);
+}
+
+function showStep(idx){
+  if(idx < 0 || idx >= TOUR_STEPS_INDEX.length){endTour(false);return;}
+  currentStepIdx = idx;
+  activeStepObj = TOUR_STEPS_INDEX[idx];
+  
+  // Update progress
+  const totalSteps = 19;
+  const currentNum = idx + 1;
+  document.getElementById('tt-step').textContent = `الخطوة ${currentNum} من ${totalSteps}`;
+  document.getElementById('tt-title').textContent = activeStepObj.title;
+  document.getElementById('tt-body').textContent = activeStepObj.body;
+  
+  // Update buttons
+  document.getElementById('tt-prev').style.display = idx === 0 ? 'none' : '';
+  document.getElementById('tt-next').textContent = activeStepObj.nextLabel || (idx === TOUR_STEPS_INDEX.length - 1 ? 'إنهاء →' : 'التالي ←');
+  
+  // Run onShow callback
+  if(activeStepObj.onShow){
+    try { activeStepObj.onShow(); } catch(e) { console.warn('onShow error:', e); }
+  }
+  
+  // Show overlay
+  document.getElementById('tour-overlay').classList.add('on');
+  
+  // Position the tooltip and highlight
+  setTimeout(() => positionTour(activeStepObj), 100);
+  
+  // Save current step
+  localStorage.setItem('mm_tour_step', String(currentNum));
+}
+
+function positionTour(step){
+  const tooltip = document.getElementById('tour-tooltip');
+  const highlight = document.getElementById('tour-highlight');
+  const maskHole = document.getElementById('tour-mask-hole');
+  
+  if(!step.target || step.position === 'center'){
+    // Center on screen, no highlight
+    tooltip.dataset.pos = 'center';
+    tooltip.style.left = '50%';
+    tooltip.style.top = '50%';
+    tooltip.style.transform = 'translate(-50%, -50%)';
+    tooltip.classList.add('on');
+    highlight.classList.remove('on');
+    maskHole.setAttribute('width', '0');
+    maskHole.setAttribute('height', '0');
+    return;
+  }
+  
+  const el = document.querySelector(step.target);
+  if(!el){
+    // Element not found, fallback to center
+    tooltip.dataset.pos = 'center';
+    tooltip.style.left = '50%';
+    tooltip.style.top = '50%';
+    tooltip.style.transform = 'translate(-50%, -50%)';
+    tooltip.classList.add('on');
+    return;
+  }
+  
+  // Scroll into view if needed
+  el.scrollIntoView({behavior: 'smooth', block: 'center'});
+  
+  setTimeout(() => {
+    const rect = el.getBoundingClientRect();
+    const padding = 8;
+    
+    // Highlight box
+    highlight.style.left = (rect.left - padding) + 'px';
+    highlight.style.top = (rect.top - padding) + 'px';
+    highlight.style.width = (rect.width + padding * 2) + 'px';
+    highlight.style.height = (rect.height + padding * 2) + 'px';
+    highlight.classList.add('on');
+    
+    // SVG mask hole
+    maskHole.setAttribute('x', String(rect.left - padding));
+    maskHole.setAttribute('y', String(rect.top - padding));
+    maskHole.setAttribute('width', String(rect.width + padding * 2));
+    maskHole.setAttribute('height', String(rect.height + padding * 2));
+    
+    // Position tooltip
+    const tw = 380, th = tooltip.offsetHeight || 200;
+    let left, top, pos = step.position || 'bottom';
+    
+    if(pos === 'left'){
+      left = rect.left - tw - 16;
+      top = rect.top + (rect.height / 2) - (th / 2);
+      if(left < 10){pos = 'right'; left = rect.right + 16;}
+    } else if(pos === 'right'){
+      left = rect.right + 16;
+      top = rect.top + (rect.height / 2) - (th / 2);
+      if(left + tw > window.innerWidth - 10){pos = 'left'; left = rect.left - tw - 16;}
+    } else if(pos === 'top'){
+      left = rect.left + (rect.width / 2) - (tw / 2);
+      top = rect.top - th - 16;
+      if(top < 10){pos = 'bottom'; top = rect.bottom + 16;}
+    } else { // bottom
+      left = rect.left + (rect.width / 2) - (tw / 2);
+      top = rect.bottom + 16;
+      if(top + th > window.innerHeight - 10){pos = 'top'; top = rect.top - th - 16;}
+    }
+    
+    // Keep within viewport
+    left = Math.max(10, Math.min(left, window.innerWidth - tw - 10));
+    top = Math.max(10, Math.min(top, window.innerHeight - th - 10));
+    
+    tooltip.dataset.pos = pos;
+    tooltip.style.left = left + 'px';
+    tooltip.style.top = top + 'px';
+    tooltip.style.transform = 'none';
+    tooltip.classList.add('on');
+  }, 350);
+}
+
+function tourNext(){
+  if(activeStepObj && activeStepObj.onNext){
+    const result = activeStepObj.onNext();
+    if(result === false) return; // onNext handled the navigation
+  }
+  if(currentStepIdx < TOUR_STEPS_INDEX.length - 1){
+    showStep(currentStepIdx + 1);
+  } else {
+    endTour(false);
+  }
+}
+
+function tourPrev(){
+  if(currentStepIdx > 0) showStep(currentStepIdx - 1);
+}
+
+function endTour(skipped){
+  document.getElementById('tour-overlay').classList.remove('on');
+  document.getElementById('tour-tooltip').classList.remove('on');
+  document.getElementById('tour-highlight').classList.remove('on');
+  if(skipped){
+    if(confirm('هل تريد فعلاً تخطي الجولة؟ تقدر تشغّلها تاني من زرار "الدليل الإرشادي".')){
+      localStorage.setItem('mm_tour_done', '1');
+      localStorage.removeItem('mm_tour_step');
+    } else {
+      // Resume
+      showStep(currentStepIdx);
+    }
+  } else {
+    // completed normally — no localStorage flag yet because tour continues in tools.html
+  }
+}
+
+// Resize handler — reposition tooltip
+window.addEventListener('resize', () => {
+  if(document.getElementById('tour-overlay').classList.contains('on') && activeStepObj){
+    positionTour(activeStepObj);
+  }
+});
+
+// Replace openGuide function to also offer to restart the tour
+const originalOpenGuide = window.openGuide;
+window.openGuide = function(){
+  // Original modal still works, but add a button to restart tour
+  if(originalOpenGuide) originalOpenGuide();
+};
+
+// Add "Start Tour" button to the guide modal footer
+setTimeout(() => {
+  const guideFt = document.querySelector('.gd-ft');
+  if(guideFt && !document.getElementById('gd-restart-tour')){
+    const btn = document.createElement('button');
+    btn.id = 'gd-restart-tour';
+    btn.className = 'gd-btn';
+    btn.innerHTML = '🚀 تشغيل الجولة التفاعلية';
+    btn.onclick = () => {
+      closeGuide();
+      localStorage.removeItem('mm_tour_done');
+      localStorage.setItem('mm_tour_step', '1');
+      setTimeout(() => startTour(true), 300);
+    };
+    const navDiv = guideFt.querySelector('.gd-nav');
+    if(navDiv) navDiv.insertBefore(btn, navDiv.firstChild);
+  }
+}, 500);
 </script>
 
 </body>
