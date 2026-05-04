@@ -263,15 +263,15 @@ async function doSignUp(){
   btn.innerHTML = '<span class="ldr"></span>جاري إنشاء الحساب...';
   
   try{
-    // Step 1: Verify the code is available (without consuming it yet)
-    const {data: codeRow, error: codeErr} = await sb.from('activation_codes').select('status').eq('code', code).maybeSingle();
+    // Step 1: Validate code FIRST (before creating any account)
+    const {data: checkResult, error: checkErr} = await sb.rpc('check_code', {code_to_check: code});
     
-    if(codeErr) throw new Error('خطأ في التحقق من الكود: ' + codeErr.message);
-    if(!codeRow){throw new Error('كود التفعيل غير صحيح');}
-    if(codeRow.status === 'used'){throw new Error('هذا الكود تم استخدامه من قبل');}
-    if(codeRow.status === 'revoked'){throw new Error('هذا الكود تم إلغاؤه');}
+    if(checkErr) throw new Error('خطأ في التحقق من الكود: ' + checkErr.message);
+    if(!checkResult || !checkResult.valid){
+      throw new Error(checkResult?.error || 'كود التفعيل غير صحيح');
+    }
     
-    // Step 2: Create the user account
+    // Step 2: Code is valid — create the user account
     const {data: signupData, error: signupErr} = await sb.auth.signUp({
       email,
       password: pwd,
@@ -293,10 +293,13 @@ async function doSignUp(){
     if(signupData.session){
       const {data: redeemResult, error: redeemErr} = await sb.rpc('redeem_code', {code_to_redeem: code});
       
-      if(redeemErr || !redeemResult || !redeemResult.success){
-        const errMsg = redeemErr?.message || redeemResult?.error || 'خطأ في تفعيل الكود';
-        // Account created but code not redeemed — still proceed but warn
-        showMsg('signup','err','تم إنشاء حسابك ولكن: ' + errMsg + '. ادخل من تاب تسجيل الدخول.');
+      if(redeemErr){
+        showMsg('signup','err','تم إنشاء حسابك ولكن فشل تفعيل الكود: ' + redeemErr.message);
+        return;
+      }
+      if(!redeemResult || !redeemResult.success){
+        const errMsg = redeemResult?.error || 'خطأ في تفعيل الكود';
+        showMsg('signup','err','تم إنشاء حسابك ولكن: ' + errMsg);
         return;
       }
       
