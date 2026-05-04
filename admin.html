@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مشروع محامي — لوحة الأدمن</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#f7f6f3;--bg2:#fff;--navy:#0c1a2e;--navy2:#1a2a3e;--gold:#b8860b;--gold-l:#c9a84c;--gold-bg:#fdf8ee;--text:#1a1a1a;--text2:#555;--text3:#888;--border:#e2ddd4;--border2:#d4c99a;--card:#fff;--danger:#c0392b;--success:#1a7a4a;--warning:#d4860b;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* LOGIN */
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#0c1a2e 0%,#1a2a3e 100%);}
+.login-box{background:white;padding:42px 36px;border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,0.3);width:380px;border-top:4px solid var(--gold);}
+.login-box .logo{text-align:center;margin-bottom:8px;}
+.login-box h1{font-family:'Amiri',serif;font-size:28px;color:var(--navy);text-align:center;font-weight:700;}
+.login-box .sub{font-size:12px;color:var(--text3);text-align:center;margin-bottom:28px;letter-spacing:2px;}
+.login-box label{display:block;font-size:13px;color:var(--text2);margin-bottom:6px;font-weight:600;}
+.login-box input{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:5px;font-family:'Cairo',sans-serif;font-size:14px;direction:ltr;text-align:center;letter-spacing:2px;}
+.login-box input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(184,134,11,0.1);}
+.login-box .err{background:#fef2f2;border:1px solid #fca5a5;color:var(--danger);padding:8px 12px;border-radius:4px;font-size:12px;margin-top:10px;display:none;}
+.login-btn{width:100%;padding:13px;background:var(--navy);color:white;border:none;font-family:'Cairo',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border-radius:5px;margin-top:18px;transition:all 0.2s;}
+.login-btn:hover:not(:disabled){background:var(--navy2);}
+.login-btn:disabled{opacity:0.6;cursor:not-allowed;}
+.login-foot{text-align:center;font-size:11px;color:var(--text3);margin-top:20px;}
+
+/* APP LAYOUT */
+.app{display:none;}
+.app.on{display:flex;min-height:100vh;}
+.sb{width:240px;background:var(--navy);color:white;padding:16px 0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
+.sb-h{padding:0 18px 16px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.sb-h .ttl{font-family:'Amiri',serif;font-size:22px;font-weight:700;color:var(--gold-l);}
+.sb-h .sub{font-size:10px;color:rgba(255,255,255,0.5);letter-spacing:2px;margin-top:2px;}
+.nav-sec{padding:10px;}
+.nav-lbl{font-size:9px;color:rgba(201,168,76,0.6);letter-spacing:2px;padding:8px 8px 4px;}
+.ni{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:4px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.7);transition:all 0.15s;}
+.ni:hover{background:rgba(255,255,255,0.05);color:white;}
+.ni.on{background:rgba(201,168,76,0.15);color:var(--gold-l);}
+.ni-ic{font-size:14px;}
+.sb-foot{margin-top:auto;padding:12px;border-top:1px solid rgba(255,255,255,0.08);}
+.sb-foot button{width:100%;padding:8px;background:none;border:1px solid rgba(200,50,50,0.35);color:rgba(220,100,100,0.8);font-family:'Cairo',sans-serif;font-size:11px;cursor:pointer;border-radius:4px;}
+.sb-foot button:hover{background:rgba(200,50,50,0.12);}
+
+.main{flex:1;padding:24px 32px;overflow-y:auto;}
+.pg{display:none;}
+.pg.on{display:block;}
+.pg-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px;flex-wrap:wrap;gap:12px;}
+.pg-t{font-family:'Amiri',serif;font-size:26px;color:var(--navy);font-weight:700;}
+.pg-s{font-size:13px;color:var(--text2);margin-top:4px;}
+
+/* CARDS */
+.dc{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:14px;}
+.dc-t{font-size:14px;color:var(--gold);font-weight:700;margin-bottom:12px;border-bottom:1px solid var(--border);padding-bottom:8px;}
+
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
+.stat-c{background:white;border:1px solid var(--border);border-right:3px solid var(--gold);border-radius:6px;padding:14px;}
+.stat-c .lbl{font-size:11px;color:var(--text3);margin-bottom:4px;}
+.stat-c .val{font-size:24px;font-weight:700;color:var(--navy);font-family:'Cairo',sans-serif;}
+.stat-c .meta{font-size:10px;color:var(--text3);margin-top:3px;}
+
+/* TABLES */
+.tbl-wrap{background:white;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;}
+.tbl th{background:var(--navy);color:white;padding:10px;text-align:right;font-weight:600;font-size:12px;}
+.tbl td{padding:9px 10px;border-bottom:1px solid var(--border);}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover{background:#fafaf7;}
+
+/* BADGES */
+.bx{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;}
+.ba{background:#e6f4ec;color:var(--success);}
+.bp{background:#e7f0fb;color:#2980b9;}
+.bc{background:#f0eee9;color:var(--text3);}
+.bu{background:#fdecea;color:var(--danger);}
+.bg{background:#fff4d9;color:var(--warning);}
+
+/* BUTTONS */
+.ab{padding:8px 16px;background:var(--navy);color:white;border:none;font-family:'Cairo',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border-radius:4px;transition:all 0.2s;}
+.ab:hover{background:var(--navy2);}
+.bc2{padding:8px 16px;background:white;color:var(--navy);border:1px solid var(--border);font-family:'Cairo',sans-serif;font-size:12px;cursor:pointer;border-radius:4px;}
+.bc2:hover{background:var(--bg);}
+.bd{padding:6px 12px;background:white;color:var(--danger);border:1px solid #fca5a5;font-family:'Cairo',sans-serif;font-size:11px;cursor:pointer;border-radius:3px;}
+.bd:hover{background:#fef2f2;}
+.bs{padding:6px 12px;background:var(--success);color:white;border:none;font-family:'Cairo',sans-serif;font-size:11px;cursor:pointer;border-radius:3px;}
+.bs:hover{background:#0f6638;}
+
+/* INPUTS */
+.fs,.si-inp{padding:7px 10px;border:1px solid var(--border);border-radius:4px;font-family:'Cairo',sans-serif;font-size:12px;background:white;}
+.fs:focus,.si-inp:focus{outline:none;border-color:var(--gold);}
+
+/* MODAL */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;padding:20px;}
+.mo.on{display:flex;}
+.md{background:white;border-radius:8px;padding:0;max-width:520px;width:100%;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.3);}
+.mh{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--gold-bg);}
+.mh-t{font-family:'Amiri',serif;font-size:18px;color:var(--navy);font-weight:700;}
+.mh-c{cursor:pointer;font-size:22px;color:var(--text3);background:none;border:none;}
+.mb{padding:20px;overflow-y:auto;flex:1;}
+.mf{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;background:var(--bg);}
+
+.fld{margin-bottom:14px;}
+.fld label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-weight:600;}
+.fld input,.fld textarea,.fld select{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:4px;font-family:'Cairo',sans-serif;font-size:13px;}
+.fld input:focus,.fld textarea:focus{outline:none;border-color:var(--gold);}
+
+/* CODES GRID */
+.codes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;max-height:300px;overflow-y:auto;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:4px;}
+.code-item{background:white;padding:8px 10px;border-radius:3px;font-family:monospace;font-size:13px;text-align:center;border:1px solid var(--border);direction:ltr;letter-spacing:1px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;padding:12px 20px;background:var(--navy);color:white;border-radius:5px;box-shadow:0 4px 12px rgba(0,0,0,0.2);font-size:13px;z-index:2000;display:none;animation:slideIn 0.3s;}
+.toast.show{display:block;}
+.toast.success{background:var(--success);}
+.toast.error{background:var(--danger);}
+@keyframes slideIn{from{transform:translateX(-20px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+
+/* LOADER */
+.ldr{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle;margin-left:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.empty{padding:30px;text-align:center;color:var(--text3);font-size:13px;}
+
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.spacer{flex:1;}
+
+/* FILTER BAR */
+.fbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;}
+.fbar .fbtn{padding:5px 12px;background:white;color:var(--text2);border:1px solid var(--border);font-family:'Cairo',sans-serif;font-size:11px;cursor:pointer;border-radius:18px;}
+.fbar .fbtn.on{background:var(--navy);color:white;border-color:var(--navy);}
+.fbar .count{font-size:11px;color:var(--text3);margin-right:auto;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div class="login-wrap" id="login-screen">
+  <div class="login-box">
+    <div class="logo">⚖️</div>
+    <h1>مشروع محامي</h1>
+    <div class="sub">لوحة الأدمن</div>
+    <div class="fld">
+      <label>كلمة المرور</label>
+      <input type="password" id="login-pwd" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <div class="err" id="login-err"></div>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">دخول</button>
+    <div class="login-foot">الوصول مقتصر على المسؤول</div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app" id="app">
+  <div class="sb">
+    <div class="sb-h">
+      <div class="ttl">مشروع محامي</div>
+      <div class="sub">ADMIN PANEL</div>
+    </div>
+    <div class="nav-sec">
+      <div class="nav-lbl">الرئيسية</div>
+      <div class="ni on" onclick="go('dashboard',this)"><span class="ni-ic">📊</span>لوحة التحكم</div>
+    </div>
+    <div class="nav-sec">
+      <div class="nav-lbl">الإدارة</div>
+      <div class="ni" onclick="go('codes',this)"><span class="ni-ic">🎟️</span>أكواد التفعيل</div>
+      <div class="ni" onclick="go('lawyers',this)"><span class="ni-ic">👥</span>المحامين</div>
+      <div class="ni" onclick="go('audit',this)"><span class="ni-ic">📜</span>سجل العمليات</div>
+    </div>
+    <div class="nav-sec">
+      <div class="nav-lbl">النظام</div>
+      <div class="ni" onclick="go('settings',this)"><span class="ni-ic">⚙️</span>الإعدادات</div>
+    </div>
+    <div class="sb-foot"><button onclick="doLogout()">⏻ تسجيل الخروج</button></div>
+  </div>
+  
+  <div class="main">
+    
+    <!-- DASHBOARD -->
+    <div id="pg-dashboard" class="pg on">
+      <div class="pg-hdr">
+        <div><div class="pg-t">لوحة التحكم</div><div class="pg-s">نظرة عامة على السيستم</div></div>
+        <button class="bc2" onclick="loadDashboard()">🔄 تحديث</button>
+      </div>
+      <div class="stats-grid" id="dash-stats"></div>
+      <div class="dc">
+        <div class="dc-t">📈 آخر النشاطات</div>
+        <div id="dash-recent"><div class="empty">جاري التحميل...</div></div>
+      </div>
+    </div>
+    
+    <!-- CODES -->
+    <div id="pg-codes" class="pg">
+      <div class="pg-hdr">
+        <div><div class="pg-t">أكواد التفعيل</div><div class="pg-s">إنشاء وإدارة أكواد تفعيل المحامين</div></div>
+        <div class="row">
+          <button class="bc2" onclick="exportCodesCSV()">⬇ تصدير CSV</button>
+          <button class="ab" onclick="openGenerateModal()">+ توليد دفعة جديدة</button>
+        </div>
+      </div>
+      <div class="fbar" id="codes-filter">
+        <button class="fbtn on" onclick="filterCodes('',this)">الكل</button>
+        <button class="fbtn" onclick="filterCodes('available',this)">متاح</button>
+        <button class="fbtn" onclick="filterCodes('used',this)">مستخدم</button>
+        <button class="fbtn" onclick="filterCodes('revoked',this)">ملغي</button>
+        <input class="si-inp" placeholder="بحث في الأكواد..." id="codes-q" oninput="renderCodes()" style="width:200px;">
+        <span class="count" id="codes-count"></span>
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th>الكود</th><th>الحالة</th><th>الدفعة</th><th>تاريخ الإنشاء</th><th>تاريخ الاستخدام</th><th>المستخدم</th><th>إجراءات</th></tr></thead>
+          <tbody id="codes-tb"><tr><td colspan="7" class="empty">جاري التحميل...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    
+    <!-- LAWYERS -->
+    <div id="pg-lawyers" class="pg">
+      <div class="pg-hdr">
+        <div><div class="pg-t">المحامين</div><div class="pg-s">إدارة المستخدمين المسجلين في السيستم</div></div>
+      </div>
+      <div class="fbar" id="lawyers-filter">
+        <button class="fbtn on" onclick="filterLawyers('',this)">الكل</button>
+        <button class="fbtn" onclick="filterLawyers('active',this)">نشط</button>
+        <button class="fbtn" onclick="filterLawyers('suspended',this)">معلق</button>
+        <button class="fbtn" onclick="filterLawyers('banned',this)">محظور</button>
+        <input class="si-inp" placeholder="بحث بالاسم أو الإيميل..." id="lawyers-q" oninput="renderLawyers()" style="width:240px;">
+        <span class="count" id="lawyers-count"></span>
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th>الاسم</th><th>الإيميل</th><th>الهاتف</th><th>الكود</th><th>الحالة</th><th>تاريخ التسجيل</th><th>آخر دخول</th><th>إجراءات</th></tr></thead>
+          <tbody id="lawyers-tb"><tr><td colspan="8" class="empty">جاري التحميل...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    
+    <!-- AUDIT LOG -->
+    <div id="pg-audit" class="pg">
+      <div class="pg-hdr">
+        <div><div class="pg-t">سجل العمليات</div><div class="pg-s">كل العمليات المهمة في السيستم</div></div>
+        <button class="bc2" onclick="loadAudit()">🔄 تحديث</button>
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th>التاريخ</th><th>المستخدم</th><th>العملية</th><th>التفاصيل</th></tr></thead>
+          <tbody id="audit-tb"><tr><td colspan="4" class="empty">جاري التحميل...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    
+    <!-- SETTINGS -->
+    <div id="pg-settings" class="pg">
+      <div class="pg-hdr">
+        <div><div class="pg-t">الإعدادات</div><div class="pg-s">إعدادات السيستم العامة</div></div>
+      </div>
+      <div class="dc">
+        <div class="dc-t">🔐 كلمة المرور</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;">
+          لتغيير كلمة المرور، روح على لوحة Supabase:<br>
+          <strong>Authentication → Users → اختار حساب الأدمن → Reset Password</strong>
+        </div>
+      </div>
+      <div class="dc">
+        <div class="dc-t">📡 معلومات الاتصال</div>
+        <table class="tbl" style="font-size:12px;">
+          <tr><td style="width:30%;background:var(--gold-bg);font-weight:600;">Project URL</td><td style="direction:ltr;text-align:left;font-family:monospace;font-size:11px;" id="set-url"></td></tr>
+          <tr><td style="background:var(--gold-bg);font-weight:600;">Status</td><td><span class="bx ba">متصل</span></td></tr>
+          <tr><td style="background:var(--gold-bg);font-weight:600;">حساب الأدمن</td><td style="direction:ltr;text-align:left;" id="set-email"></td></tr>
+        </table>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<!-- GENERATE CODES MODAL -->
+<div class="mo" id="mo-generate">
+  <div class="md">
+    <div class="mh">
+      <div class="mh-t">توليد دفعة أكواد جديدة</div>
+      <button class="mh-c" onclick="closeM('mo-generate')">×</button>
+    </div>
+    <div class="mb">
+      <div class="fld">
+        <label>عدد الأكواد المراد توليدها</label>
+        <input type="number" id="gen-count" value="100" min="1" max="1000">
+      </div>
+      <div class="fld">
+        <label>اسم الدفعة (اختياري)</label>
+        <input type="text" id="gen-batch" placeholder="مثلاً: الكتاب الأول 2026">
+      </div>
+      <div style="background:#f0f8ff;border-right:3px solid #2980b9;padding:10px 14px;border-radius:0 4px 4px 0;font-size:12px;color:var(--text2);line-height:1.8;">
+        💡 الأكواد ستكون بصيغة <code style="background:white;padding:2px 6px;border-radius:3px;direction:ltr;">MM-XXXX-XXXX</code>. كل كود فريد ويمكن استخدامه مرة واحدة فقط لتفعيل حساب محامي.
+      </div>
+    </div>
+    <div class="mf">
+      <button class="bc2" onclick="closeM('mo-generate')">إلغاء</button>
+      <button class="ab" id="gen-btn" onclick="doGenerateCodes()">توليد الأكواد</button>
+    </div>
+  </div>
+</div>
+
+<!-- LAWYER DETAILS MODAL -->
+<div class="mo" id="mo-lawyer">
+  <div class="md" style="max-width:640px;">
+    <div class="mh">
+      <div class="mh-t">تفاصيل المحامي</div>
+      <button class="mh-c" onclick="closeM('mo-lawyer')">×</button>
+    </div>
+    <div class="mb" id="lawyer-detail"></div>
+    <div class="mf" id="lawyer-actions"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// SUPABASE CONFIG
+// ============================================================
+const SUPABASE_URL = 'https://gjskifonnyyrrwhvlewg.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdqc2tpZm9ubnl5cnJ3aHZsZXdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4OTM1MjIsImV4cCI6MjA5MzQ2OTUyMn0.Xn1UFCzaPGp6ZVv5lAiRUPvJ6KQvSdMyDssqiIgvAdM';
+const ADMIN_EMAIL = 'admin@mohamy.com';
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ============================================================
+// STATE
+// ============================================================
+let allCodes = [], allLawyers = [], codesFilter = '', lawyersFilter = '';
+
+// ============================================================
+// AUTH
+// ============================================================
+async function doLogin(){
+  const pwd = document.getElementById('login-pwd').value.trim();
+  const err = document.getElementById('login-err');
+  const btn = document.getElementById('login-btn');
+  err.style.display = 'none';
+  if(!pwd){err.textContent='برجاء إدخال كلمة المرور';err.style.display='block';return;}
+  btn.disabled = true;
+  btn.innerHTML = 'جاري التحقق...<span class="ldr"></span>';
+  try{
+    const {data, error} = await sb.auth.signInWithPassword({email: ADMIN_EMAIL, password: pwd});
+    if(error) throw error;
+    // Verify admin status
+    const {data: profile, error: pe} = await sb.from('profiles').select('is_admin, full_name').eq('id', data.user.id).single();
+    if(pe || !profile || !profile.is_admin){
+      await sb.auth.signOut();
+      throw new Error('الحساب غير مفعّل كأدمن');
+    }
+    // Update last login
+    await sb.from('profiles').update({last_login_at: new Date().toISOString()}).eq('id', data.user.id);
+    showApp();
+  }catch(e){
+    err.textContent = e.message === 'Invalid login credentials' ? 'كلمة المرور غير صحيحة' : (e.message || 'خطأ في الدخول');
+    err.style.display = 'block';
+  }finally{
+    btn.disabled = false;
+    btn.textContent = 'دخول';
+  }
+}
+
+async function doLogout(){
+  await sb.auth.signOut();
+  document.getElementById('app').classList.remove('on');
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-pwd').value = '';
+}
+
+function showApp(){
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').classList.add('on');
+  loadDashboard();
+  document.getElementById('set-url').textContent = SUPABASE_URL;
+  document.getElementById('set-email').textContent = ADMIN_EMAIL;
+}
+
+// Check existing session on load
+async function checkAuth(){
+  const {data: {session}} = await sb.auth.getSession();
+  if(session && session.user.email === ADMIN_EMAIL){
+    const {data: profile} = await sb.from('profiles').select('is_admin').eq('id', session.user.id).single();
+    if(profile && profile.is_admin){showApp();return;}
+  }
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function go(id, el){
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
+  document.getElementById('pg-' + id).classList.add('on');
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('on'));
+  if(el) el.classList.add('on');
+  ({dashboard:loadDashboard, codes:loadCodes, lawyers:loadLawyers, audit:loadAudit}[id] || function(){})();
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+async function loadDashboard(){
+  try{
+    const [{count: codesTotal}, {count: codesAvail}, {count: codesUsed}, {count: lawyersCount}, {count: lawyersActive}, {data: recent}] = await Promise.all([
+      sb.from('activation_codes').select('*', {count:'exact', head:true}),
+      sb.from('activation_codes').select('*', {count:'exact', head:true}).eq('status', 'available'),
+      sb.from('activation_codes').select('*', {count:'exact', head:true}).eq('status', 'used'),
+      sb.from('profiles').select('*', {count:'exact', head:true}).eq('is_admin', false),
+      sb.from('profiles').select('*', {count:'exact', head:true}).eq('is_admin', false).eq('status', 'active'),
+      sb.from('audit_log').select('*').order('created_at', {ascending:false}).limit(10)
+    ]);
+    
+    const stats = [
+      {lbl:'المحامين', val: lawyersCount || 0, meta: `${lawyersActive || 0} نشط`},
+      {lbl:'إجمالي الأكواد', val: codesTotal || 0, meta: 'جميع الأكواد'},
+      {lbl:'أكواد متاحة', val: codesAvail || 0, meta: 'لم تُستخدم بعد'},
+      {lbl:'أكواد مستخدمة', val: codesUsed || 0, meta: 'تم تفعيلها'},
+    ];
+    document.getElementById('dash-stats').innerHTML = stats.map(s => `
+      <div class="stat-c">
+        <div class="lbl">${s.lbl}</div>
+        <div class="val">${s.val}</div>
+        <div class="meta">${s.meta}</div>
+      </div>
+    `).join('');
+    
+    if(recent && recent.length){
+      document.getElementById('dash-recent').innerHTML = `
+        <table class="tbl" style="font-size:12px;">
+          <thead><tr><th>التاريخ</th><th>العملية</th><th>التفاصيل</th></tr></thead>
+          <tbody>${recent.map(r => `<tr>
+            <td>${fmtDate(r.created_at)}</td>
+            <td><span class="bx ${actionBadge(r.action)}">${actionLabel(r.action)}</span></td>
+            <td style="color:var(--text2);font-size:11px;">${formatDetails(r.details)}</td>
+          </tr>`).join('')}</tbody>
+        </table>
+      `;
+    }else{
+      document.getElementById('dash-recent').innerHTML = '<div class="empty">لا توجد نشاطات بعد</div>';
+    }
+  }catch(e){
+    toast('خطأ في تحميل البيانات: ' + e.message, 'error');
+  }
+}
+
+// ============================================================
+// CODES
+// ============================================================
+async function loadCodes(){
+  try{
+    const {data, error} = await sb.from('activation_codes').select('*').order('created_at', {ascending:false});
+    if(error) throw error;
+    allCodes = data || [];
+    
+    // Get profiles for codes that have used_by
+    const userIds = allCodes.filter(c => c.used_by).map(c => c.used_by);
+    if(userIds.length){
+      const {data: profiles} = await sb.from('profiles').select('id, email, full_name').in('id', userIds);
+      const profileMap = {};
+      (profiles || []).forEach(p => profileMap[p.id] = p);
+      allCodes.forEach(c => {
+        if(c.used_by && profileMap[c.used_by]) c.used_by_profile = profileMap[c.used_by];
+      });
+    }
+    renderCodes();
+  }catch(e){
+    document.getElementById('codes-tb').innerHTML = `<tr><td colspan="7" class="empty">خطأ: ${e.message}</td></tr>`;
+  }
+}
+
+function filterCodes(status, btn){
+  codesFilter = status;
+  document.querySelectorAll('#codes-filter .fbtn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  renderCodes();
+}
+
+function renderCodes(){
+  const q = (document.getElementById('codes-q').value || '').toLowerCase().trim();
+  let filtered = allCodes;
+  if(codesFilter) filtered = filtered.filter(c => c.status === codesFilter);
+  if(q) filtered = filtered.filter(c => c.code.toLowerCase().includes(q) || (c.batch_name||'').toLowerCase().includes(q) || (c.used_by_profile?.email||'').toLowerCase().includes(q));
+  
+  document.getElementById('codes-count').textContent = `${filtered.length} كود`;
+  
+  if(!filtered.length){
+    document.getElementById('codes-tb').innerHTML = '<tr><td colspan="7" class="empty">لا توجد نتائج</td></tr>';
+    return;
+  }
+  
+  document.getElementById('codes-tb').innerHTML = filtered.map(c => `
+    <tr>
+      <td style="font-family:monospace;direction:ltr;letter-spacing:1px;">${c.code}</td>
+      <td>${codeBadge(c.status)}</td>
+      <td>${c.batch_name || '—'}</td>
+      <td>${fmtDate(c.created_at)}</td>
+      <td>${c.used_at ? fmtDate(c.used_at) : '—'}</td>
+      <td style="font-size:11px;">${c.used_by_profile ? (c.used_by_profile.full_name || c.used_by_profile.email) : '—'}</td>
+      <td>${c.status === 'available' ? `<button class="bd" onclick="revokeCode('${c.id}')">إلغاء</button>` : ''}</td>
+    </tr>
+  `).join('');
+}
+
+function codeBadge(s){
+  const m = {available:['ba','متاح'], used:['bp','مستخدم'], revoked:['bu','ملغي']};
+  const [cls, lbl] = m[s] || ['bc', s];
+  return `<span class="bx ${cls}">${lbl}</span>`;
+}
+
+function openGenerateModal(){
+  document.getElementById('gen-count').value = 100;
+  document.getElementById('gen-batch').value = '';
+  document.getElementById('mo-generate').classList.add('on');
+}
+
+async function doGenerateCodes(){
+  const count = parseInt(document.getElementById('gen-count').value);
+  const batch = document.getElementById('gen-batch').value.trim();
+  if(!count || count < 1 || count > 1000){toast('العدد يجب أن يكون بين 1 و 1000', 'error');return;}
+  
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  btn.innerHTML = 'جاري التوليد...<span class="ldr"></span>';
+  try{
+    const {data, error} = await sb.rpc('generate_codes', {
+      count_to_generate: count,
+      batch_label: batch || null
+    });
+    if(error) throw error;
+    closeM('mo-generate');
+    toast(`تم توليد ${data.length} كود بنجاح`, 'success');
+    await loadCodes();
+  }catch(e){
+    toast('خطأ في توليد الأكواد: ' + e.message, 'error');
+  }finally{
+    btn.disabled = false;
+    btn.textContent = 'توليد الأكواد';
+  }
+}
+
+async function revokeCode(id){
+  if(!confirm('هل أنت متأكد من إلغاء هذا الكود؟ لن يمكن استخدامه بعد ذلك.')) return;
+  try{
+    const {error} = await sb.from('activation_codes').update({status:'revoked'}).eq('id', id);
+    if(error) throw error;
+    toast('تم إلغاء الكود', 'success');
+    await loadCodes();
+  }catch(e){
+    toast('خطأ: ' + e.message, 'error');
+  }
+}
+
+function exportCodesCSV(){
+  if(!allCodes.length){toast('لا توجد أكواد للتصدير', 'error');return;}
+  const rows = [['الكود','الحالة','الدفعة','تاريخ الإنشاء','تاريخ الاستخدام','المستخدم']];
+  allCodes.forEach(c => rows.push([
+    c.code,
+    {available:'متاح',used:'مستخدم',revoked:'ملغي'}[c.status]||c.status,
+    c.batch_name || '',
+    fmtDate(c.created_at),
+    c.used_at ? fmtDate(c.used_at) : '',
+    c.used_by_profile ? (c.used_by_profile.full_name || c.used_by_profile.email) : ''
+  ]));
+  const csv = '\uFEFF' + rows.map(r => r.map(c => `"${(c+'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `أكواد-${new Date().toLocaleDateString('en-CA')}.csv`;
+  a.click();
+  toast('تم تصدير الملف', 'success');
+}
+
+// ============================================================
+// LAWYERS
+// ============================================================
+async function loadLawyers(){
+  try{
+    const {data, error} = await sb.from('profiles').select('*').eq('is_admin', false).order('created_at', {ascending:false});
+    if(error) throw error;
+    allLawyers = data || [];
+    
+    // Get case counts
+    if(allLawyers.length){
+      const {data: caseCounts} = await sb.from('cases').select('user_id');
+      const counts = {};
+      (caseCounts || []).forEach(c => counts[c.user_id] = (counts[c.user_id]||0) + 1);
+      allLawyers.forEach(l => l._cases = counts[l.id] || 0);
+    }
+    renderLawyers();
+  }catch(e){
+    document.getElementById('lawyers-tb').innerHTML = `<tr><td colspan="8" class="empty">خطأ: ${e.message}</td></tr>`;
+  }
+}
+
+function filterLawyers(status, btn){
+  lawyersFilter = status;
+  document.querySelectorAll('#lawyers-filter .fbtn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  renderLawyers();
+}
+
+function renderLawyers(){
+  const q = (document.getElementById('lawyers-q').value || '').toLowerCase().trim();
+  let filtered = allLawyers;
+  if(lawyersFilter) filtered = filtered.filter(l => l.status === lawyersFilter);
+  if(q) filtered = filtered.filter(l => 
+    (l.full_name||'').toLowerCase().includes(q) || 
+    (l.email||'').toLowerCase().includes(q) ||
+    (l.phone||'').includes(q)
+  );
+  
+  document.getElementById('lawyers-count').textContent = `${filtered.length} محامي`;
+  
+  if(!filtered.length){
+    document.getElementById('lawyers-tb').innerHTML = '<tr><td colspan="8" class="empty">لا يوجد محامين مسجلين بعد</td></tr>';
+    return;
+  }
+  
+  document.getElementById('lawyers-tb').innerHTML = filtered.map(l => `
+    <tr>
+      <td>${l.full_name || '—'}</td>
+      <td style="font-size:11px;direction:ltr;text-align:right;">${l.email || '—'}</td>
+      <td style="direction:ltr;text-align:right;">${l.phone || '—'}</td>
+      <td style="font-family:monospace;font-size:11px;direction:ltr;">${l.activation_code || '—'}</td>
+      <td>${statusBadge(l.status)}</td>
+      <td style="font-size:11px;">${fmtDate(l.created_at)}</td>
+      <td style="font-size:11px;">${l.last_login_at ? fmtDate(l.last_login_at) : 'لم يدخل'}</td>
+      <td><button class="bc2" onclick="viewLawyer('${l.id}')">عرض</button></td>
+    </tr>
+  `).join('');
+}
+
+function statusBadge(s){
+  const m = {active:['ba','نشط'], suspended:['bg','معلق'], banned:['bu','محظور']};
+  const [cls, lbl] = m[s] || ['bc', s];
+  return `<span class="bx ${cls}">${lbl}</span>`;
+}
+
+function viewLawyer(id){
+  const l = allLawyers.find(x => x.id === id);
+  if(!l) return;
+  document.getElementById('lawyer-detail').innerHTML = `
+    <table class="tbl" style="font-size:12px;">
+      <tr><td style="background:var(--gold-bg);font-weight:600;width:35%;">الاسم</td><td>${l.full_name || '—'}</td></tr>
+      <tr><td style="background:var(--gold-bg);font-weight:600;">الإيميل</td><td style="direction:ltr;text-align:right;">${l.email || '—'}</td></tr>
+      <tr><td style="background:var(--gold-bg);font-weight:600;">الهاتف</td><td>${l.phone || '—'}</td></tr>
+      <tr><td style="background:var(--gold-bg);font-weight:600;">اسم المكتب</td><td>${l.office_name || '—'}</td></tr>
+      <tr><td style="background:var(--gold-bg);font-weight:600;">رقم القيد</td><td>${l.bar_number || '—'}</td></tr>
+      <tr><td style="background:var(--gold-bg);font-weight:600;">الكود المستخدم</td><td style="font-family:monospace;direction:ltr;text-align:right;">${l.activation_code || '—'}</td></tr>
+      <tr><td style="background:var(--gold-bg);font-weight:600;">الحالة</td><td>${statusBadge(l.status)}</td></tr>
+      <tr><td style="background:var(--gold-bg);font-weight:600;">تاريخ التسجيل</td><td>${fmtDate(l.created_at)}</td></tr>
+      <tr><td style="background:var(--gold-bg);font-weight:600;">آخر دخول</td><td>${l.last_login_at ? fmtDate(l.last_login_at) : 'لم يدخل بعد'}</td></tr>
+      <tr><td style="background:var(--gold-bg);font-weight:600;">عدد القضايا</td><td>${l._cases || 0}</td></tr>
+      ${l.notes ? `<tr><td style="background:var(--gold-bg);font-weight:600;">ملاحظات</td><td>${l.notes}</td></tr>` : ''}
+    </table>
+  `;
+  
+  const actions = [`<button class="bc2" onclick="closeM('mo-lawyer')">إغلاق</button>`];
+  if(l.status === 'active'){
+    actions.push(`<button class="bd" onclick="changeLawyerStatus('${l.id}','suspended')">تعليق</button>`);
+    actions.push(`<button class="bd" onclick="changeLawyerStatus('${l.id}','banned')">حظر</button>`);
+  } else {
+    actions.push(`<button class="bs" onclick="changeLawyerStatus('${l.id}','active')">تفعيل</button>`);
+  }
+  document.getElementById('lawyer-actions').innerHTML = actions.join('');
+  document.getElementById('mo-lawyer').classList.add('on');
+}
+
+async function changeLawyerStatus(id, status){
+  const labels = {active:'تفعيل',suspended:'تعليق',banned:'حظر'};
+  if(!confirm(`هل أنت متأكد من ${labels[status]} هذا الحساب؟`)) return;
+  try{
+    const {error} = await sb.from('profiles').update({status}).eq('id', id);
+    if(error) throw error;
+    toast(`تم ${labels[status]} الحساب`, 'success');
+    closeM('mo-lawyer');
+    await loadLawyers();
+  }catch(e){
+    toast('خطأ: ' + e.message, 'error');
+  }
+}
+
+// ============================================================
+// AUDIT LOG
+// ============================================================
+async function loadAudit(){
+  try{
+    const {data, error} = await sb.from('audit_log').select('*').order('created_at', {ascending:false}).limit(200);
+    if(error) throw error;
+    if(!data || !data.length){
+      document.getElementById('audit-tb').innerHTML = '<tr><td colspan="4" class="empty">لا توجد عمليات مسجلة بعد</td></tr>';
+      return;
+    }
+    
+    // Get profiles for audit entries
+    const userIds = [...new Set(data.filter(r => r.user_id).map(r => r.user_id))];
+    let profileMap = {};
+    if(userIds.length){
+      const {data: profiles} = await sb.from('profiles').select('id, email, full_name').in('id', userIds);
+      (profiles || []).forEach(p => profileMap[p.id] = p);
+    }
+    
+    document.getElementById('audit-tb').innerHTML = data.map(r => {
+      const user = r.user_id ? profileMap[r.user_id] : null;
+      return `<tr>
+        <td style="font-size:11px;">${fmtDate(r.created_at)}</td>
+        <td style="font-size:11px;">${user ? (user.full_name || user.email) : '—'}</td>
+        <td><span class="bx ${actionBadge(r.action)}">${actionLabel(r.action)}</span></td>
+        <td style="font-size:11px;color:var(--text2);">${formatDetails(r.details)}</td>
+      </tr>`;
+    }).join('');
+  }catch(e){
+    document.getElementById('audit-tb').innerHTML = `<tr><td colspan="4" class="empty">خطأ: ${e.message}</td></tr>`;
+  }
+}
+
+function actionBadge(a){
+  if(a.includes('redeem') || a.includes('signup')) return 'ba';
+  if(a.includes('admin') || a.includes('suspend') || a.includes('ban')) return 'bu';
+  if(a.includes('generate')) return 'bp';
+  return 'bc';
+}
+
+function actionLabel(a){
+  const m = {
+    'code.redeemed':'تفعيل كود',
+    'code.generate':'توليد أكواد',
+    'admin.suspend':'تعليق حساب',
+    'admin.ban':'حظر حساب',
+    'admin.activate':'تفعيل حساب',
+    'user.signup':'تسجيل جديد',
+  };
+  return m[a] || a;
+}
+
+function formatDetails(d){
+  if(!d) return '—';
+  if(typeof d === 'string') return d;
+  return Object.entries(d).map(([k,v]) => `${k}: ${v}`).join(' | ');
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function fmtDate(s){
+  if(!s) return '—';
+  try{
+    const d = new Date(s);
+    return d.toLocaleDateString('ar-EG', {year:'numeric', month:'short', day:'numeric'}) + ' — ' + d.toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
+  }catch(e){return s;}
+}
+
+function closeM(id){document.getElementById(id).classList.remove('on');}
+
+function toast(msg, type){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (type||'');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.getElementById('login-pwd').addEventListener('keypress', e => {if(e.key==='Enter') doLogin();});
+document.querySelectorAll('.mo').forEach(m => m.addEventListener('click', e => {if(e.target===m) m.classList.remove('on');}));
+document.addEventListener('keydown', e => {if(e.key==='Escape') document.querySelectorAll('.mo.on').forEach(m => m.classList.remove('on'));});
+
+checkAuth();
+</script>
+</body>
+</html>

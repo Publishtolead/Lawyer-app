@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مشروع محامي — تسجيل الدخول</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#f7f6f3;--bg2:#fff;--navy:#0c1a2e;--navy2:#1a2a3e;--gold:#b8860b;--gold-l:#c9a84c;--gold-bg:#fdf8ee;--text:#1a1a1a;--text2:#555;--text3:#888;--border:#e2ddd4;--card:#fff;--danger:#c0392b;--success:#1a7a4a;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Cairo',sans-serif;background:linear-gradient(135deg,#0c1a2e 0%,#1a2a3e 100%);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+
+.box{background:white;border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,0.3);width:100%;max-width:440px;border-top:4px solid var(--gold);overflow:hidden;}
+.hd{padding:30px 32px 14px;text-align:center;background:var(--gold-bg);}
+.logo{font-size:36px;}
+.ttl{font-family:'Amiri',serif;font-size:28px;color:var(--navy);font-weight:700;margin-top:6px;}
+.sub{font-size:11px;color:var(--text3);letter-spacing:2px;}
+
+.tabs{display:flex;border-bottom:1px solid var(--border);}
+.tab{flex:1;padding:12px;text-align:center;cursor:pointer;font-size:13px;font-weight:600;color:var(--text2);border-bottom:2px solid transparent;transition:all 0.2s;background:none;border:none;font-family:'Cairo',sans-serif;}
+.tab.on{color:var(--navy);border-bottom-color:var(--gold);background:var(--gold-bg);}
+.tab:hover:not(.on){background:var(--bg);}
+
+.body{padding:24px 32px 28px;}
+.pn{display:none;}
+.pn.on{display:block;}
+
+.fld{margin-bottom:14px;}
+.fld label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-weight:600;}
+.fld input{width:100%;padding:11px 13px;border:1px solid var(--border);border-radius:5px;font-family:'Cairo',sans-serif;font-size:13px;background:white;}
+.fld input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(184,134,11,0.1);}
+.fld input.code-in{font-family:monospace;letter-spacing:2px;text-transform:uppercase;direction:ltr;text-align:center;font-size:14px;}
+.fld input.email-in{direction:ltr;text-align:left;}
+.fld .hint{font-size:10px;color:var(--text3);margin-top:4px;}
+
+.btn{width:100%;padding:13px;background:var(--navy);color:white;border:none;font-family:'Cairo',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border-radius:5px;margin-top:8px;transition:all 0.2s;}
+.btn:hover:not(:disabled){background:var(--navy2);}
+.btn:disabled{opacity:0.6;cursor:not-allowed;}
+.btn.success{background:var(--success);}
+.btn.success:hover:not(:disabled){background:#0f6638;}
+
+.msg{padding:10px 13px;border-radius:5px;font-size:12px;margin-bottom:12px;display:none;line-height:1.7;}
+.msg.err{background:#fef2f2;border:1px solid #fca5a5;color:var(--danger);}
+.msg.ok{background:#f0fdf4;border:1px solid #86efac;color:var(--success);}
+.msg.info{background:#eff6ff;border:1px solid #93c5fd;color:#1e40af;}
+.msg.show{display:block;}
+
+.foot{padding:14px 32px;text-align:center;font-size:11px;color:var(--text3);background:var(--bg);border-top:1px solid var(--border);}
+
+.ldr{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.divider{text-align:center;font-size:11px;color:var(--text3);margin:14px 0;position:relative;}
+.divider::before,.divider::after{content:'';position:absolute;top:50%;width:42%;height:1px;background:var(--border);}
+.divider::before{right:0;}
+.divider::after{left:0;}
+
+.success-screen{text-align:center;padding:14px 0;}
+.success-screen .ic{font-size:48px;color:var(--success);margin-bottom:10px;}
+.success-screen h3{font-family:'Amiri',serif;font-size:22px;color:var(--navy);margin-bottom:8px;}
+.success-screen p{font-size:13px;color:var(--text2);line-height:1.8;}
+</style>
+</head>
+<body>
+
+<div class="box">
+  <div class="hd">
+    <div class="logo">⚖️</div>
+    <div class="ttl">مشروع محامي</div>
+    <div class="sub">LAWYER MANAGEMENT SYSTEM</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" onclick="showTab('signin',this)">تسجيل الدخول</button>
+    <button class="tab" onclick="showTab('signup',this)">حساب جديد</button>
+    <button class="tab" onclick="showTab('forgot',this)">نسيت الباسوورد</button>
+  </div>
+
+  <div class="body">
+
+    <!-- SIGN IN -->
+    <div class="pn on" id="pn-signin">
+      <div class="msg" id="msg-signin"></div>
+      <div class="fld">
+        <label>الإيميل</label>
+        <input type="email" class="email-in" id="si-email" placeholder="example@email.com" autocomplete="email">
+      </div>
+      <div class="fld">
+        <label>الباسوورد</label>
+        <input type="password" id="si-pwd" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="btn" id="si-btn" onclick="doSignIn()">دخول</button>
+    </div>
+
+    <!-- SIGN UP -->
+    <div class="pn" id="pn-signup">
+      <div class="msg" id="msg-signup"></div>
+      <div id="signup-form">
+        <div class="fld">
+          <label>الاسم بالكامل</label>
+          <input type="text" id="su-name" placeholder="مثلاً: محمد أحمد علي">
+        </div>
+        <div class="fld">
+          <label>الإيميل</label>
+          <input type="email" class="email-in" id="su-email" placeholder="example@email.com" autocomplete="email">
+        </div>
+        <div class="fld">
+          <label>الباسوورد</label>
+          <input type="password" id="su-pwd" placeholder="6 أحرف على الأقل" autocomplete="new-password">
+          <div class="hint">حرفين على الأقل، يفضل تحتوي أرقام ورموز</div>
+        </div>
+        <div class="fld">
+          <label>كود التفعيل</label>
+          <input type="text" class="code-in" id="su-code" placeholder="MM-XXXX-XXXX" maxlength="11">
+          <div class="hint">الكود الموجود مع الكتاب أو المرسل لك</div>
+        </div>
+        <button class="btn success" id="su-btn" onclick="doSignUp()">إنشاء حساب وتفعيل</button>
+      </div>
+      
+      <div id="signup-success" style="display:none;">
+        <div class="success-screen">
+          <div class="ic">✓</div>
+          <h3>تم إنشاء حسابك بنجاح</h3>
+          <p>تم تفعيل الكود وحفظ بياناتك.<br>جاري تحويلك إلى السيستم...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORGOT PASSWORD -->
+    <div class="pn" id="pn-forgot">
+      <div class="msg info show" style="margin-bottom:14px;">
+        💡 ادخل إيميلك وهنبعتلك رابط لإعادة تعيين الباسوورد
+      </div>
+      <div class="msg" id="msg-forgot"></div>
+      <div class="fld">
+        <label>الإيميل</label>
+        <input type="email" class="email-in" id="fp-email" placeholder="example@email.com" autocomplete="email">
+      </div>
+      <button class="btn" id="fp-btn" onclick="doForgot()">إرسال رابط إعادة التعيين</button>
+    </div>
+
+  </div>
+
+  <div class="foot">© 2026 مشروع محامي · جميع الحقوق محفوظة</div>
+</div>
+
+<script>
+// ============================================================
+// SUPABASE CONFIG
+// ============================================================
+const SUPABASE_URL = 'https://gjskifonnyyrrwhvlewg.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdqc2tpZm9ubnl5cnJ3aHZsZXdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4OTM1MjIsImV4cCI6MjA5MzQ2OTUyMn0.Xn1UFCzaPGp6ZVv5lAiRUPvJ6KQvSdMyDssqiIgvAdM';
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ============================================================
+// AUTH CHECK ON LOAD — لو مسجل بالفعل، redirect
+// ============================================================
+(async () => {
+  const {data: {session}} = await sb.auth.getSession();
+  if(session && session.user){
+    window.location.href = 'index.html';
+  }
+})();
+
+// ============================================================
+// TAB NAVIGATION
+// ============================================================
+function showTab(tab, btn){
+  document.querySelectorAll('.pn').forEach(p => p.classList.remove('on'));
+  document.getElementById('pn-' + tab).classList.add('on');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  btn.classList.add('on');
+  // Clear messages
+  document.querySelectorAll('.msg').forEach(m => {if(!m.classList.contains('info')) m.classList.remove('show');});
+}
+
+// ============================================================
+// MESSAGE HELPER
+// ============================================================
+function showMsg(panel, type, text){
+  const m = document.getElementById('msg-' + panel);
+  m.className = 'msg show ' + type;
+  m.textContent = text;
+}
+function clearMsg(panel){
+  const m = document.getElementById('msg-' + panel);
+  m.classList.remove('show');
+}
+
+// ============================================================
+// SIGN IN
+// ============================================================
+async function doSignIn(){
+  const email = document.getElementById('si-email').value.trim();
+  const pwd = document.getElementById('si-pwd').value;
+  const btn = document.getElementById('si-btn');
+  
+  clearMsg('signin');
+  if(!email || !pwd){showMsg('signin','err','برجاء إدخال الإيميل والباسوورد');return;}
+  
+  btn.disabled = true;
+  btn.innerHTML = '<span class="ldr"></span>جاري الدخول...';
+  
+  try{
+    const {data, error} = await sb.auth.signInWithPassword({email, password: pwd});
+    if(error) throw error;
+    
+    // Check account status
+    const {data: profile, error: pe} = await sb.from('profiles').select('status, is_admin').eq('id', data.user.id).single();
+    if(pe) throw new Error('خطأ في قراءة بيانات الحساب');
+    
+    if(profile.status === 'suspended'){
+      await sb.auth.signOut();
+      throw new Error('حسابك معلّق. تواصل مع الدعم');
+    }
+    if(profile.status === 'banned'){
+      await sb.auth.signOut();
+      throw new Error('حسابك محظور. تواصل مع الدعم');
+    }
+    
+    // Update last login
+    await sb.from('profiles').update({last_login_at: new Date().toISOString()}).eq('id', data.user.id);
+    
+    // Redirect — admin to admin.html, regular user to index.html
+    if(profile.is_admin){
+      window.location.href = 'admin.html';
+    } else {
+      window.location.href = 'index.html';
+    }
+  }catch(e){
+    let msg = e.message;
+    if(msg === 'Invalid login credentials') msg = 'الإيميل أو الباسوورد غير صحيح';
+    if(msg === 'Email not confirmed') msg = 'برجاء تأكيد الإيميل أولاً (تفقد البريد الوارد)';
+    showMsg('signin','err', msg);
+  }finally{
+    btn.disabled = false;
+    btn.textContent = 'دخول';
+  }
+}
+
+// ============================================================
+// SIGN UP — مع تفعيل الكود في خطوة واحدة
+// ============================================================
+async function doSignUp(){
+  const name = document.getElementById('su-name').value.trim();
+  const email = document.getElementById('su-email').value.trim();
+  const pwd = document.getElementById('su-pwd').value;
+  const code = document.getElementById('su-code').value.trim().toUpperCase();
+  const btn = document.getElementById('su-btn');
+  
+  clearMsg('signup');
+  
+  // Validation
+  if(!name || name.length < 3){showMsg('signup','err','برجاء إدخال الاسم بالكامل');return;}
+  if(!email || !email.includes('@')){showMsg('signup','err','برجاء إدخال إيميل صحيح');return;}
+  if(!pwd || pwd.length < 6){showMsg('signup','err','الباسوورد يجب أن يكون 6 أحرف على الأقل');return;}
+  if(!code){showMsg('signup','err','برجاء إدخال كود التفعيل');return;}
+  if(!/^MM-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code)){showMsg('signup','err','صيغة الكود غير صحيحة. يجب أن يكون MM-XXXX-XXXX');return;}
+  
+  btn.disabled = true;
+  btn.innerHTML = '<span class="ldr"></span>جاري إنشاء الحساب...';
+  
+  try{
+    // Step 1: Verify the code is available (without consuming it yet)
+    const {data: codeRow, error: codeErr} = await sb.from('activation_codes').select('status').eq('code', code).maybeSingle();
+    
+    if(codeErr) throw new Error('خطأ في التحقق من الكود: ' + codeErr.message);
+    if(!codeRow){throw new Error('كود التفعيل غير صحيح');}
+    if(codeRow.status === 'used'){throw new Error('هذا الكود تم استخدامه من قبل');}
+    if(codeRow.status === 'revoked'){throw new Error('هذا الكود تم إلغاؤه');}
+    
+    // Step 2: Create the user account
+    const {data: signupData, error: signupErr} = await sb.auth.signUp({
+      email,
+      password: pwd,
+      options: {
+        data: {full_name: name}
+      }
+    });
+    
+    if(signupErr) throw signupErr;
+    if(!signupData.user) throw new Error('فشل إنشاء الحساب');
+    
+    // Step 3: Update profile with name
+    await sb.from('profiles').update({
+      full_name: name,
+      email: email
+    }).eq('id', signupData.user.id);
+    
+    // Step 4: If session created (no email confirmation required), redeem the code
+    if(signupData.session){
+      const {data: redeemResult, error: redeemErr} = await sb.rpc('redeem_code', {code_to_redeem: code});
+      
+      if(redeemErr || !redeemResult || !redeemResult.success){
+        const errMsg = redeemErr?.message || redeemResult?.error || 'خطأ في تفعيل الكود';
+        // Account created but code not redeemed — still proceed but warn
+        showMsg('signup','err','تم إنشاء حسابك ولكن: ' + errMsg + '. ادخل من تاب تسجيل الدخول.');
+        return;
+      }
+      
+      // Show success and redirect
+      document.getElementById('signup-form').style.display = 'none';
+      document.getElementById('signup-success').style.display = 'block';
+      setTimeout(() => {window.location.href = 'index.html';}, 2000);
+    } else {
+      // Email confirmation required
+      showMsg('signup','info','تم إنشاء حسابك. برجاء تأكيد الإيميل من الرسالة المرسلة، ثم سجّل الدخول وادخل الكود.');
+    }
+    
+  }catch(e){
+    let msg = e.message;
+    if(msg.includes('User already registered') || msg.includes('already exists')) msg = 'هذا الإيميل مسجل بالفعل. حاول تسجيل الدخول.';
+    if(msg.includes('weak password') || msg.includes('Password should be')) msg = 'الباسوورد ضعيف. اختر باسوورد أقوى';
+    showMsg('signup','err', msg);
+  }finally{
+    btn.disabled = false;
+    btn.textContent = 'إنشاء حساب وتفعيل';
+  }
+}
+
+// ============================================================
+// FORGOT PASSWORD
+// ============================================================
+async function doForgot(){
+  const email = document.getElementById('fp-email').value.trim();
+  const btn = document.getElementById('fp-btn');
+  
+  clearMsg('forgot');
+  if(!email){showMsg('forgot','err','برجاء إدخال الإيميل');return;}
+  
+  btn.disabled = true;
+  btn.innerHTML = '<span class="ldr"></span>جاري الإرسال...';
+  
+  try{
+    const {error} = await sb.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/login.html'
+    });
+    if(error) throw error;
+    showMsg('forgot','ok','تم إرسال الرابط لإيميلك. تفقد البريد الوارد (وspam لو ما جاش).');
+    document.getElementById('fp-email').value = '';
+  }catch(e){
+    showMsg('forgot','err', e.message || 'خطأ في الإرسال');
+  }finally{
+    btn.disabled = false;
+    btn.textContent = 'إرسال رابط إعادة التعيين';
+  }
+}
+
+// ============================================================
+// CODE INPUT FORMATTER — convert MMxxxxxxxx to MM-XXXX-XXXX
+// ============================================================
+document.getElementById('su-code').addEventListener('input', function(e){
+  // Strip everything except letters, digits, dashes
+  let raw = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  // Limit to 10 chars (MM + 4 + 4)
+  if(raw.length > 10) raw = raw.substring(0, 10);
+  // Format: MM-XXXX-XXXX
+  let formatted = '';
+  if(raw.length > 0){
+    formatted = raw.substring(0, 2);
+    if(raw.length > 2) formatted += '-' + raw.substring(2, 6);
+    if(raw.length > 6) formatted += '-' + raw.substring(6, 10);
+  }
+  e.target.value = formatted;
+});
+
+// ============================================================
+// ENTER KEY HANDLERS
+// ============================================================
+document.getElementById('si-pwd').addEventListener('keypress', e => {if(e.key==='Enter') doSignIn();});
+document.getElementById('su-code').addEventListener('keypress', e => {if(e.key==='Enter') doSignUp();});
+document.getElementById('fp-email').addEventListener('keypress', e => {if(e.key==='Enter') doForgot();});
+</script>
+</body>
+</html>

@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مشروع محامي — الأدوات والتطوير</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#f7f6f3;--bg2:#fff;--navy:#0c1a2e;--gold:#b8860b;--gold-l:#c9a84c;--gold-bg:#fdf8ee;--text:#1a1a1a;--text2:#555;--text3:#888;--border:#e2ddd4;--border2:#d4c99a;--card:#fff;--danger:#c0392b;--success:#1a7a4a;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.app{display:flex;min-height:100vh;}
+.sb{width:240px;min-height:100vh;background:var(--navy);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.sb-logo{padding:20px;border-bottom:1px solid rgba(255,255,255,0.1);}
+.sb-logo-t{font-family:'Amiri',serif;font-size:22px;color:#c9a84c;display:block;}
+.sb-logo-u{font-size:11px;color:rgba(255,255,255,0.4);margin-top:3px;display:block;}
+.nav-sec{padding:10px 10px 4px;}
+.nav-lbl{font-size:9px;color:rgba(201,168,76,0.6);letter-spacing:2px;padding:0 8px;margin-bottom:3px;}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 10px;cursor:pointer;color:rgba(255,255,255,0.45);font-size:13px;transition:all 0.15s;border:1px solid transparent;border-radius:3px;text-decoration:none;}
+.ni:hover{color:rgba(255,255,255,0.85);background:rgba(255,255,255,0.06);}
+.ni.on{color:#c9a84c;background:rgba(201,168,76,0.12);border-color:rgba(201,168,76,0.25);}
+.ni-ic{font-size:13px;width:16px;text-align:center;}
+.sb-foot{margin-top:auto;padding:12px;border-top:1px solid rgba(255,255,255,0.1);}
+.sb-foot a{display:block;padding:7px;background:none;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.4);font-family:'Cairo',sans-serif;font-size:11px;cursor:pointer;border-radius:3px;text-decoration:none;text-align:center;}
+.sb-foot a:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.7);}
+.main{flex:1;overflow-y:auto;}
+.pg{display:none;padding:26px 30px;}.pg.on{display:block;}
+.pg-hdr{margin-bottom:20px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.pg-t{font-family:'Amiri',serif;font-size:26px;color:var(--navy);}
+.pg-s{font-size:12px;color:var(--text3);margin-top:2px;}
+.dc{background:var(--card);border:1px solid var(--border);padding:16px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+.dc-t{font-size:11px;color:var(--gold);letter-spacing:1px;font-weight:600;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.sc{background:var(--card);border:1px solid var(--border);padding:16px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+.sc-l{font-size:10px;color:var(--text3);letter-spacing:2px;margin-bottom:6px;}
+.sc-v{font-size:28px;font-weight:700;color:var(--gold);}
+.sc-c{font-size:11px;color:var(--text3);margin-top:2px;}
+.si-inp{padding:9px 12px;background:var(--card);border:1px solid var(--border);color:var(--text);font-family:'Cairo',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;border-radius:4px;}
+.si-inp:focus{border-color:var(--gold-l);}
+.si-inp::placeholder{color:var(--text3);}
+.ab{padding:9px 16px;background:var(--navy);border:none;color:#c9a84c;font-family:'Cairo',sans-serif;font-size:13px;cursor:pointer;border-radius:4px;}
+.ab:hover{background:#0d2240;}
+.bc2{padding:9px 16px;background:none;border:1px solid var(--border);color:var(--text2);font-family:'Cairo',sans-serif;cursor:pointer;font-size:13px;border-radius:4px;}
+.bc2:hover{background:var(--bg);}
+.fi,.fs,.fta{width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'Cairo',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;border-radius:4px;}
+.fi:focus,.fs:focus,.fta:focus{border-color:var(--gold-l);background:var(--bg2);}
+.fi::placeholder,.fta::placeholder{color:var(--text3);}
+.fta{resize:vertical;min-height:72px;}
+.fl{display:block;font-size:11px;color:var(--text2);margin-bottom:4px;font-weight:600;}
+.fg{margin-bottom:13px;}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.bx{display:inline-block;padding:3px 9px;font-size:11px;border-radius:20px;font-weight:600;}
+.ba{background:#e8f5ee;color:#1a7a4a;}.bp{background:#fdf3d0;color:#8a6200;}.bc{background:#f0f0f0;color:#777;}.bu{background:#fdecea;color:#c0392b;}
+.dt{width:100%;border-collapse:collapse;background:var(--card);border-radius:6px;overflow:hidden;}
+.dt th{text-align:right;padding:10px 12px;font-size:10px;color:var(--gold);letter-spacing:2px;border-bottom:2px solid var(--border);font-weight:600;background:var(--gold-bg);}
+.dt td{padding:11px 12px;font-size:13px;border-bottom:1px solid var(--border);color:var(--text);}
+.dt tr:last-child td{border-bottom:none;}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:100;padding:16px;}
+.mo.on{display:flex;}
+.md{background:var(--bg2);border:1px solid var(--border);padding:24px 28px;width:680px;max-width:100%;max-height:92vh;overflow-y:auto;animation:fu 0.22s ease;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.12);}
+@keyframes fu{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.md-t{font-family:'Amiri',serif;font-size:22px;color:var(--navy);margin-bottom:18px;padding-bottom:10px;border-bottom:2px solid var(--border2);}
+.mf{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;padding-top:12px;border-top:1px solid var(--border);}
+.si{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+.si:last-child{border-bottom:none;}
+.si-d{background:var(--gold-bg);color:var(--gold);padding:3px 7px;font-size:11px;font-weight:600;min-width:62px;text-align:center;border:1px solid var(--border2);border-radius:3px;}
+.si-i{flex:1;}.si-n{font-size:13px;color:var(--text);}.si-c{font-size:11px;color:var(--text3);margin-top:1px;}
+.es{text-align:center;padding:40px 20px;color:var(--text3);}
+.ei{font-size:34px;margin-bottom:8px;opacity:0.3;}.et{font-size:13px;}
+.cl{list-style:none;}.cl li{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;cursor:pointer;color:var(--text);}
+.cl li:last-child{border-bottom:none;}
+.cb{width:17px;height:17px;border:2px solid var(--border2);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:10px;border-radius:3px;}
+.cl li.dn .cb{background:var(--gold);border-color:var(--gold);color:white;}
+.cl li.dn span{text-decoration:line-through;color:var(--text3);}
+.sr{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.sn{font-size:12px;color:var(--text2);width:130px;}
+.sbar{flex:1;height:6px;background:var(--border);border-radius:3px;}
+.sf{height:100%;background:var(--gold);border-radius:3px;}
+.sp{font-size:12px;color:var(--gold);width:34px;text-align:left;font-weight:700;}
+.stl{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+.sb2{background:var(--card);border:1px solid var(--border);padding:13px 10px;text-align:center;border-radius:6px;}
+.sb2.on{border-color:var(--gold-l);background:var(--gold-bg);}
+.sb2-n{font-size:9px;color:var(--text3);letter-spacing:2px;margin-bottom:4px;}
+.sb2-nm{font-size:13px;color:var(--text);margin-bottom:2px;font-weight:600;}
+.sb2.on .sb2-nm{color:var(--navy);}
+.sb2-y{font-size:10px;color:var(--text3);}
+/* TRAITS GUIDE */
+.tg-hero{background:linear-gradient(135deg,var(--navy) 0%,#142948 100%);color:#fff;padding:20px 24px;border-radius:8px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.tg-hero-t{font-family:'Amiri',serif;font-size:24px;color:var(--gold);margin-bottom:4px;}
+.tg-hero-s{font-size:13px;color:rgba(255,255,255,0.7);}
+.tg-hero-stats{display:flex;gap:18px;}
+.tg-hero-st{text-align:center;}
+.tg-hero-st-v{font-size:24px;font-weight:700;color:var(--gold);font-family:'Amiri',serif;}
+.tg-hero-st-l{font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:1px;}
+.tg-toolbar{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap;}
+.tg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:14px;}
+.tg-card{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.04);transition:all 0.2s;}
+.tg-card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.08);}
+.tg-card-h{padding:14px 16px;background:linear-gradient(to left,#f5f3ee,var(--card));border-bottom:1px solid var(--border);cursor:pointer;display:flex;align-items:center;gap:12px;transition:background 0.15s;}
+.tg-card-h:hover{background:linear-gradient(to left,#efeae0,#fafaf5);}
+.tg-card.tg-on .tg-card-h{background:var(--gold-bg);border-bottom-color:var(--border2);}
+.tg-card-num{width:36px;height:36px;background:var(--navy);color:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;font-family:'Amiri',serif;}
+.tg-card-t{flex:1;}
+.tg-card-tt{font-family:'Amiri',serif;font-size:17px;color:var(--navy);font-weight:700;line-height:1.3;}
+.tg-card-ts{font-size:11px;color:var(--text3);margin-top:2px;}
+.tg-card-toggle{font-size:14px;color:var(--gold);transition:transform 0.2s;}
+.tg-card.tg-on .tg-card-toggle{transform:rotate(90deg);}
+.tg-card-body{display:none;padding:10px 12px 14px;}
+.tg-card.tg-on .tg-card-body{display:block;}
+.tg-trait-list{display:flex;flex-direction:column;gap:5px;}
+.tg-trait{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--bg);border:1px solid var(--border);border-radius:5px;cursor:pointer;transition:all 0.15s;}
+.tg-trait:hover{background:#fff8eb;border-color:var(--border2);transform:translateX(-2px);}
+.tg-trait-num{width:24px;height:24px;background:var(--gold-bg);color:var(--gold);border:1px solid var(--border2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.tg-trait-name{flex:1;font-size:13px;color:var(--text);font-weight:600;line-height:1.5;}
+.tg-trait-arrow{font-size:12px;color:var(--text3);}
+.tg-trait:hover .tg-trait-arrow{color:var(--gold);}
+.tg-search-result{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:14px 16px;margin-bottom:8px;cursor:pointer;display:flex;align-items:flex-start;gap:12px;transition:all 0.15s;}
+.tg-search-result:hover{border-color:var(--gold-l);background:#fff8eb;}
+.tg-search-result-num{font-family:'Amiri',serif;font-size:18px;font-weight:700;color:var(--gold);min-width:30px;}
+.tg-search-result-i{flex:1;}
+.tg-search-result-t{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:3px;}
+.tg-search-result-c{font-size:11px;color:var(--text3);}
+/* TRAIT MODAL */
+.tg-modal-content{padding:0;}
+.tg-modal-num{display:inline-block;background:var(--gold-bg);color:var(--gold);border:1px solid var(--border2);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;margin-bottom:10px;font-family:'Amiri',serif;}
+.tg-modal-cat{display:inline-block;background:var(--navy);color:var(--gold);padding:4px 12px;border-radius:20px;font-size:11px;margin-bottom:10px;margin-right:8px;}
+.tg-modal-title{font-family:'Amiri',serif;font-size:24px;color:var(--navy);margin-bottom:14px;line-height:1.3;}
+.tg-modal-body{font-size:14px;color:var(--text);line-height:2;background:var(--bg);padding:16px 18px;border-right:4px solid var(--gold-l);border-radius:0 6px 6px 0;}
+.tg-modal-nav{display:flex;justify-content:space-between;gap:10px;margin-top:18px;padding-top:14px;border-top:1px solid var(--border);}
+.tg-nav-btn{padding:8px 14px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);font-family:'Cairo',sans-serif;font-size:12px;cursor:pointer;border-radius:4px;transition:all 0.15s;font-weight:600;display:flex;align-items:center;gap:6px;}
+.tg-nav-btn:hover:not(:disabled){background:var(--gold-bg);color:var(--gold);border-color:var(--border2);}
+.tg-nav-btn:disabled{opacity:0.4;cursor:not-allowed;}
+/* assessment "اعرف أكثر" link */
+.tg-info-link{margin-right:auto;padding:2px 8px;background:none;border:1px solid transparent;color:var(--gold);font-family:'Cairo',sans-serif;font-size:10px;cursor:pointer;border-radius:3px;transition:all 0.15s;font-weight:600;}
+.tg-info-link:hover{background:var(--gold-bg);border-color:var(--border2);}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+<!-- Auth Loading Screen -->
+<div id="auth-loading" style="position:fixed;inset:0;background:#0c1a2e;color:#c9a84c;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;font-family:'Cairo',sans-serif;z-index:9999;">
+  <div style="width:32px;height:32px;border:3px solid rgba(201,168,76,0.3);border-top-color:#c9a84c;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+  <div style="font-size:13px;letter-spacing:2px;">جاري التحقق...</div>
+</div>
+<script>
+const SUPABASE_URL = 'https://gjskifonnyyrrwhvlewg.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdqc2tpZm9ubnl5cnJ3aHZsZXdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4OTM1MjIsImV4cCI6MjA5MzQ2OTUyMn0.Xn1UFCzaPGp6ZVv5lAiRUPvJ6KQvSdMyDssqiIgvAdM';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let currentUser = null, currentProfile = null;
+
+(async () => {
+  const {data: {session}} = await sb.auth.getSession();
+  if(!session || !session.user){window.location.href = 'login.html';return;}
+  currentUser = session.user;
+  const {data: profile, error} = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+  if(error || !profile){await sb.auth.signOut();window.location.href = 'login.html';return;}
+  currentProfile = profile;
+  if(profile.status === 'suspended' || profile.status === 'banned'){
+    alert(profile.status === 'suspended' ? 'حسابك معلّق' : 'حسابك محظور');
+    await sb.auth.signOut();window.location.href = 'login.html';return;
+  }
+  if(profile.is_admin){window.location.href = 'admin.html';return;}
+  document.getElementById('auth-loading').style.display = 'none';
+})();
+</script>
+<div class="app">
+<div class="sb">
+  <div class="sb-logo">
+    <span class="sb-logo-t">مشروع محامي</span>
+    <span class="sb-logo-u">الأدوات والتطوير</span>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-lbl">أدوات المكتب</div>
+    <div class="ni on" onclick="go('feecalc',this)"><span class="ni-ic">🧮</span>حاسبة الأتعاب</div>
+    <div class="ni" onclick="go('contracts',this)"><span class="ni-ic">📝</span>نماذج العقود</div>
+    <div class="ni" onclick="go('backup',this)"><span class="ni-ic">💾</span>النسخ الاحتياطي</div>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-lbl">مساري المهني</div>
+    <div class="ni" onclick="go('career',this)"><span class="ni-ic">🎯</span>مرحلتي المهنية</div>
+    <div class="ni" onclick="go('goals',this)"><span class="ni-ic">📋</span>أهدافي السنوية</div>
+    <div class="ni" onclick="go('spec',this)"><span class="ni-ic">◎</span>مقياس التخصص</div>
+    <div class="ni" onclick="go('assessment',this)"><span class="ni-ic">⭐</span>تقييمي الذاتي</div>
+    <div class="ni" onclick="go('traits',this)"><span class="ni-ic">📑</span>دليل صفات المحامي</div>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-lbl">صفحات أخرى</div>
+    <a class="ni" href="index.html"><span class="ni-ic">◈</span>إدارة المكتب</a>
+    <a class="ni" href="references.html"><span class="ni-ic">📖</span>المراجع القانونية</a>
+  </div>
+  <div class="sb-foot">
+    <button onclick="logout()" style="width:100%;padding:7px;background:none;border:1px solid rgba(200,50,50,0.35);color:rgba(220,100,100,0.7);font-family:'Cairo',sans-serif;font-size:11px;cursor:pointer;border-radius:3px;transition:all 0.2s;" onmouseover="this.style.background='rgba(200,50,50,0.12)';this.style.color='#e87070';" onmouseout="this.style.background='none';this.style.color='rgba(220,100,100,0.7)';">
+      ⏻ تسجيل الخروج
+    </button>
+  </div>
+</div>
+<div class="main">
+
+<!-- FEE CALC -->
+<div id="pg-feecalc" class="pg on">
+  <div class="pg-hdr"><div><div class="pg-t">حاسبة الأتعاب</div><div class="pg-s">احسب أتعابك بشكل احترافي بناءً على مرحلتك وتخصصك</div></div></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="dc">
+        <div class="dc-t">① حاسبة قيمة الساعة</div>
+        <div class="fg"><label class="fl">هدفك الشهري (جنيه)</label><input class="fi" id="fc-target" type="number" placeholder="مثال: 30000" oninput="calcHourly()"></div>
+        <div class="fg"><label class="fl">ساعات العمل الفعلية شهرياً</label><input class="fi" id="fc-hours" type="number" placeholder="مثال: 80" oninput="calcHourly()"></div>
+        <div id="hourly-result" style="display:none;background:var(--gold-bg);border:1px solid var(--border2);padding:14px;border-radius:4px;text-align:center;">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:4px;">قيمة ساعة عملك</div>
+          <div style="font-size:32px;font-weight:700;color:var(--gold);" id="hourly-val">0</div>
+          <div style="font-size:12px;color:var(--text3);">جنيه / ساعة</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);" id="hourly-note"></div>
+        </div>
+      </div>
+      <div class="dc">
+        <div class="dc-t">② حاسبة أتعاب القضية</div>
+        <div class="fg"><label class="fl">نوع القضية</label>
+          <select class="fs" id="fc-type" onchange="calcCase()">
+            <option value="">اختر نوع القضية</option>
+            <option value="a" data-min="3000" data-max="8000">جنائي — جنحة بسيطة</option>
+            <option value="b" data-min="10000" data-max="50000">جنائي — جناية / قضية كبيرة</option>
+            <option value="c" data-min="2000" data-max="6000">مدني — بسيط</option>
+            <option value="d" data-min="8000" data-max="30000">مدني — معقد</option>
+            <option value="e" data-min="15000" data-max="80000">تجاري — شركات واستثمار</option>
+            <option value="f" data-min="5000" data-max="25000">عقاري</option>
+            <option value="g" data-min="2000" data-max="10000">أحوال شخصية</option>
+            <option value="h" data-min="3000" data-max="15000">عمالي</option>
+            <option value="i" data-min="4000" data-max="20000">إداري</option>
+            <option value="j" data-min="20000" data-max="150000">تحكيم تجاري</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">درجة التعقيد</label>
+          <select class="fs" id="fc-complex" onchange="calcCase()">
+            <option value="1">بسيطة — إجراءات روتينية</option>
+            <option value="1.5" selected>متوسطة — تحتاج بحث وتحضير</option>
+            <option value="2">معقدة — ملفات كثيرة وخبرة عالية</option>
+            <option value="2.5">بالغة التعقيد — متعددة الجوانب</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">مرحلتك المهنية</label>
+          <select class="fs" id="fc-stage" onchange="calcCase()">
+            <option value="0.7">تأسيس — سنة 1-2</option>
+            <option value="1" selected>تحديد — سنة 3-5</option>
+            <option value="1.4">تمركز — سنة 6-10</option>
+            <option value="1.8">سمعة ونفوذ — أكثر من 10 سنوات</option>
+          </select>
+        </div>
+        <div id="case-result" style="display:none;background:var(--gold-bg);border:1px solid var(--border2);padding:14px;border-radius:4px;">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:8px;text-align:center;">النطاق المقترح للأتعاب</div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:10px;">
+            <div style="text-align:center;"><div style="font-size:11px;color:var(--text3);">الحد الأدنى</div><div style="font-size:22px;font-weight:700;color:var(--success);" id="case-min">0</div></div>
+            <div style="font-size:20px;color:var(--text3);">—</div>
+            <div style="text-align:center;"><div style="font-size:11px;color:var(--text3);">الحد الأعلى</div><div style="font-size:22px;font-weight:700;color:var(--gold);" id="case-max">0</div></div>
+            <div style="font-size:13px;color:var(--text3);">جنيه</div>
+          </div>
+          <div style="font-size:11px;color:var(--text2);margin-top:10px;text-align:center;padding-top:8px;border-top:1px solid var(--border);">هذا نطاق استرشادي — يختلف بحسب المنطقة وملاءة الموكل</div>
+        </div>
+      </div>
+    </div>
+    <div class="dc">
+      <div class="dc-t">📋 مبادئ التسعير من مشروع محامي</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+        <div style="background:var(--bg);border-right:3px solid var(--gold-l);padding:10px 12px;border-radius:0 4px 4px 0;"><div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:3px;">قاعدة ١ — سعّر بالقيمة لا بالوقت فقط</div><div style="font-size:12px;color:var(--text2);">لو هتوفر على موكلك خسارة كبيرة، الأتعاب تعكس هذه القيمة مش بس عدد الساعات.</div></div>
+        <div style="background:var(--bg);border-right:3px solid var(--gold-l);padding:10px 12px;border-radius:0 4px 4px 0;"><div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:3px;">قاعدة ٢ — لا تبدأ العمل بدون دفعة مقدمة</div><div style="font-size:12px;color:var(--text2);">الدفعة المقدمة تضمن جدية الموكل وتغطي مصروفاتك الأولية.</div></div>
+        <div style="background:var(--bg);border-right:3px solid var(--gold-l);padding:10px 12px;border-radius:0 4px 4px 0;"><div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:3px;">قاعدة ٣ — لا تقدم سعراً قبل أن تفهم</div><div style="font-size:12px;color:var(--text2);">"أحتاج أفهم تفاصيل القضية أولاً ثم أقدم عرض سعر واضح."</div></div>
+        <div style="background:var(--bg);border-right:3px solid var(--gold-l);padding:10px 12px;border-radius:0 4px 4px 0;"><div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:3px;">قاعدة ٤ — وثّق الأتعاب في عقد مكتوب</div><div style="font-size:12px;color:var(--text2);">كل اتفاق غير مكتوب هو نزاع مؤجل. العقد يحمي الطرفين.</div></div>
+        <div style="background:var(--bg);border-right:3px solid var(--gold-l);padding:10px 12px;border-radius:0 4px 4px 0;"><div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:3px;">قاعدة ٥ — ارفع أتعابك كل سنة</div><div style="font-size:12px;color:var(--text2);">مع كل سنة خبرة زد أتعابك 20-30%. من لا يرفع سعره لا يبني قيمة.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTRACTS -->
+<div id="pg-contracts" class="pg">
+  <div class="pg-hdr">
+    <div><div class="pg-t">نماذج العقود</div><div class="pg-s">15+ نموذج جاهز — اضغط نسخ وعدّل البيانات</div></div>
+    <input class="si-inp" id="contract-search" placeholder="بحث في النماذج..." oninput="renderContracts()" style="width:220px;">
+  </div>
+  <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;" id="contract-cats">
+    <button class="ab" onclick="setCat('',this)" style="font-size:11px;padding:5px 12px;">الكل</button>
+    <button class="bc2" onclick="setCat('أتعاب',this)" style="font-size:11px;padding:5px 12px;border-radius:20px;">أتعاب ووكالة</button>
+    <button class="bc2" onclick="setCat('تجاري',this)" style="font-size:11px;padding:5px 12px;border-radius:20px;">تجاري وشركات</button>
+    <button class="bc2" onclick="setCat('عقاري',this)" style="font-size:11px;padding:5px 12px;border-radius:20px;">عقاري</button>
+    <button class="bc2" onclick="setCat('عمالي',this)" style="font-size:11px;padding:5px 12px;border-radius:20px;">عمالي</button>
+    <button class="bc2" onclick="setCat('إنذارات',this)" style="font-size:11px;padding:5px 12px;border-radius:20px;">إنذارات</button>
+  </div>
+  <div id="contracts-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;"></div>
+  <div class="mo" id="mo-contract"><div class="md">
+    <div class="md-t" id="contract-title">النموذج</div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
+      <button class="ab" style="font-size:12px;padding:6px 16px;" onclick="copyActive()">نسخ النموذج كاملاً</button>
+    </div>
+    <div style="background:var(--bg);border:1px solid var(--border);padding:20px;border-radius:4px;font-size:13px;line-height:2;color:var(--text);direction:rtl;max-height:60vh;overflow-y:auto;white-space:pre-wrap;" id="contract-body"></div>
+    <div class="mf"><button class="bc2" onclick="closeModal()">إغلاق</button></div>
+  </div></div>
+</div>
+
+<!-- BACKUP -->
+<div id="pg-backup" class="pg">
+  <div class="pg-hdr"><div><div class="pg-t">النسخ الاحتياطي</div><div class="pg-s">نسخة شاملة من كل بياناتك — احفظها أسبوعياً عشان لو حصل أي ظرف للموقع، تكون في أمان</div></div></div>
+  
+  <div id="bk-reminder" style="display:none;background:linear-gradient(135deg,#fff8e1 0%,#fff3cd 100%);border:1px solid var(--gold-l);border-right:4px solid var(--gold);padding:12px 16px;border-radius:6px;margin-bottom:18px;display:flex;align-items:center;gap:12px;">
+    <span style="font-size:24px;">⏰</span>
+    <div style="flex:1;font-size:13px;color:var(--text);"><strong>تذكير أسبوعي:</strong> <span id="bk-reminder-text"></span></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;">
+    <div class="dc">
+      <div class="dc-t">📄 نسخة شاملة (PDF)</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-bottom:14px;">
+        أرشيف كامل لكل بياناتك مرتب حسب الموكل:
+        <ul style="margin:8px 18px 0;padding:0;list-style:disc;">
+          <li>إحصائيات شاملة للمكتب</li>
+          <li>كل موكل مع كل قضاياه</li>
+          <li>كل قضية: تفاصيل + جلسات + سجل + أتعاب</li>
+          <li>جداول مرجعية للجلسات والأتعاب والسجل</li>
+          <li>تنفع نسخة ورقية أو احتياطية إن الموقع وقع</li>
+        </ul>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:10px;" id="bk-pdf-last">آخر تصدير: لم يتم بعد</div>
+      <button class="ab" onclick="exportPDF()" style="width:100%;padding:11px;font-size:13px;">⬇ تحميل نسخة شاملة PDF</button>
+    </div>
+    
+    <div class="dc">
+      <div class="dc-t">📊 ملف Excel</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.9;margin-bottom:14px;">
+        ملف بشيتات منفصلة لكل نوع بيانات:
+        <ul style="margin:8px 18px 0;padding:0;list-style:disc;">
+          <li>الموكلين — كل البيانات</li>
+          <li>القضايا — مع المحكمة والحالة</li>
+          <li>الجلسات — بالتاريخ</li>
+          <li>الأتعاب — مع المدفوعات</li>
+          <li>سجل القضايا — كل الإدخالات</li>
+        </ul>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:10px;" id="bk-excel-last">آخر تصدير: لم يتم بعد</div>
+      <button class="ab" onclick="exportExcel()" style="width:100%;padding:11px;font-size:13px;background:#1a7a4a;border-color:#1a7a4a;">⬇ تحميل ملف Excel</button>
+    </div>
+  </div>
+
+  <div class="dc">
+    <div class="dc-t">📋 ملخص بياناتك الحالية</div>
+    <div id="bk-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:6px;"></div>
+  </div>
+  
+  <div style="background:#f0f8ff;border-right:3px solid #2980b9;padding:10px 14px;border-radius:0 4px 4px 0;font-size:12px;color:var(--text2);margin-top:14px;line-height:1.8;">
+    <strong>💡 لماذا أسبوعياً؟</strong> البيانات محفوظة في متصفحك المحلي. لو حذف المتصفح أو الجهاز، البيانات بتروح. النسخ الأسبوعي بيضمن إن عندك نسخة كاملة آمنة دايماً. الـ PDF نسخة قابلة للقراءة والطباعة، والـ Excel للاستيراد لأي سيستم تاني.
+  </div>
+</div>
+
+<!-- CAREER -->
+<div id="pg-career" class="pg">
+  <div class="pg-hdr"><div><div class="pg-t">مرحلتي المهنية</div><div class="pg-s">البوصلة الزمنية من كتاب مشروع محامي — اختر مرحلتك الحالية</div></div></div>
+  <div class="stl" id="career-stages"></div>
+  <div class="dc"><div class="dc-t" id="career-goals-t">أهداف المرحلة</div><ul class="cl" id="career-goals"></ul></div>
+</div>
+
+<!-- GOALS -->
+<div id="pg-goals" class="pg">
+  <div class="pg-hdr"><div><div class="pg-t">أهدافي السنوية</div><div class="pg-s">حدد أهدافك المالية والمهنية لهذا العام</div></div></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+    <div class="dc">
+      <div class="dc-t" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>الأهداف المالية</span>
+        <button class="bc2" onclick="openIncomeModal()" style="font-size:11px;padding:4px 10px;border-radius:4px;">✎ تعديل الهدف</button>
+      </div>
+      <div style="margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:4px;">
+          <span>هدف الدخل السنوي — <span id="g-target">500,000</span> ج</span>
+          <span id="gp">0%</span>
+        </div>
+        <div style="height:6px;background:var(--border);border-radius:3px;"><div id="gb" style="height:100%;background:var(--gold);border-radius:3px;width:0%;transition:width 1s;"></div></div>
+        <div style="font-size:11px;color:var(--text3);margin-top:3px;" id="gd">أضف أتعابك لتتبع التقدم</div>
+      </div>
+    </div>
+    <div class="dc">
+      <div class="dc-t" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>الأهداف المهنية</span>
+        <button class="ab" onclick="openGoalModal()" style="font-size:11px;padding:4px 10px;">+ إضافة هدف</button>
+      </div>
+      <ul class="cl" id="pro-goals-list"></ul>
+      <div id="pro-goals-empty" style="display:none;padding:18px;text-align:center;font-size:12px;color:var(--text3);">لا توجد أهداف بعد — اضغط "إضافة هدف" لتبدأ</div>
+    </div>
+  </div>
+</div>
+
+<!-- INCOME TARGET MODAL -->
+<div class="mo" id="mo-income" onclick="if(event.target===this)closeIncomeModal()">
+  <div class="md" style="width:440px;">
+    <div class="md-t">تعديل هدف الدخل السنوي</div>
+    <div style="margin-bottom:16px;">
+      <label style="font-size:12px;color:var(--text3);display:block;margin-bottom:6px;">الهدف بالجنيه المصري</label>
+      <input type="number" id="income-input" class="fs" style="width:100%;font-size:18px;font-family:'Amiri',serif;text-align:center;letter-spacing:1px;" placeholder="500000" min="1">
+      <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">
+        <button class="bc2" onclick="setIncomeQuick(300000)" style="font-size:11px;padding:5px 10px;border-radius:20px;">300 ألف</button>
+        <button class="bc2" onclick="setIncomeQuick(500000)" style="font-size:11px;padding:5px 10px;border-radius:20px;">500 ألف</button>
+        <button class="bc2" onclick="setIncomeQuick(750000)" style="font-size:11px;padding:5px 10px;border-radius:20px;">750 ألف</button>
+        <button class="bc2" onclick="setIncomeQuick(1000000)" style="font-size:11px;padding:5px 10px;border-radius:20px;">مليون</button>
+        <button class="bc2" onclick="setIncomeQuick(1500000)" style="font-size:11px;padding:5px 10px;border-radius:20px;">1.5 مليون</button>
+        <button class="bc2" onclick="setIncomeQuick(2000000)" style="font-size:11px;padding:5px 10px;border-radius:20px;">2 مليون</button>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="bc2" onclick="closeIncomeModal()">إلغاء</button>
+      <button class="ab" onclick="saveIncome()">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD GOAL MODAL -->
+<div class="mo" id="mo-goal" onclick="if(event.target===this)closeGoalModal()">
+  <div class="md" style="width:640px;">
+    <div class="md-t">إضافة هدف مهني</div>
+    <div style="margin-bottom:14px;">
+      <label style="font-size:12px;color:var(--text3);display:block;margin-bottom:6px;">اكتب الهدف بكلامك</label>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="goal-input" class="fs" style="flex:1;" placeholder="مثلاً: حضور 5 مؤتمرات قانونية" onkeydown="if(event.key==='Enter')saveCustomGoal()">
+        <button class="ab" onclick="saveCustomGoal()" style="font-size:12px;padding:8px 18px;">إضافة</button>
+      </div>
+    </div>
+    <div style="border-top:1px solid var(--border);padding-top:14px;">
+      <div id="goal-stage-section" style="margin-bottom:14px;">
+        <div style="font-size:12px;font-weight:700;color:var(--gold);margin-bottom:8px;display:flex;align-items:center;gap:6px;"><span>★</span><span id="goal-stage-label">أهداف مرحلتك الحالية</span></div>
+        <div id="goal-stage-list" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:8px;">أهداف عامة لكل المراحل</div>
+        <div id="goal-general-list" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:12px;background:var(--bg);padding:8px 12px;border-right:3px solid var(--gold-l);border-radius:4px;">اضغط على أي اقتراح لإضافته فوراً لقائمتك</div>
+    </div>
+    <div class="mf"><button class="bc2" onclick="closeGoalModal()">إغلاق</button></div>
+  </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="mo" id="mo-confirm" onclick="if(event.target===this)closeConfirm()">
+  <div class="md" style="width:380px;">
+    <div class="md-t" id="confirm-title">تأكيد</div>
+    <div style="font-size:13px;color:var(--text);line-height:1.7;" id="confirm-body">هل تريد المتابعة؟</div>
+    <div class="mf">
+      <button class="bc2" onclick="closeConfirm()">إلغاء</button>
+      <button class="ab" id="confirm-ok" style="background:#c0392b;border-color:#c0392b;">تأكيد</button>
+    </div>
+  </div>
+</div>
+
+<!-- SPEC -->
+<div id="pg-spec" class="pg">
+  <div class="pg-hdr"><div><div class="pg-t">مقياس التخصص</div><div class="pg-s">محسوب من قضاياك في نظام إدارة المكتب</div></div></div>
+  <div class="dc"><div class="dc-t">التوزيع الحالي</div><div id="spec-c"></div></div>
+</div>
+
+<!-- ASSESSMENT -->
+<div id="pg-assessment" class="pg">
+  <div class="pg-hdr">
+    <div><div class="pg-t">تقييمي الذاتي</div><div class="pg-s">100 صفة + 10 مهارات — من كتاب مشروع محامي</div></div>
+    <button class="ab" onclick="resetAssessment()" style="font-size:12px;padding:7px 14px;">إعادة التقييم</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 2fr;gap:16px;">
+    <div>
+      <div class="dc" style="margin-bottom:14px;">
+        <div class="dc-t">نتيجتك الإجمالية</div>
+        <div style="text-align:center;padding:16px 0;">
+          <div style="font-size:48px;font-weight:700;color:var(--gold);" id="assess-score">0</div>
+          <div style="font-size:12px;color:var(--text3);">من 150 نقطة</div>
+          <div style="margin-top:12px;height:8px;background:var(--border);border-radius:4px;"><div id="assess-bar" style="height:100%;background:var(--gold);border-radius:4px;width:0%;transition:width 0.8s;"></div></div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy);margin-top:10px;" id="assess-level">ابدأ التقييم</div>
+        </div>
+      </div>
+      <div class="dc"><div class="dc-t">التوزيع بالمحور</div><div id="assess-breakdown"></div></div>
+    </div>
+    <div>
+      <div class="dc" style="margin-bottom:14px;">
+        <div class="dc-t">⭐ أهم 100 صفة للمحامي</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;max-height:420px;overflow-y:auto;" id="assess-traits"></div>
+      </div>
+      <div class="dc">
+        <div class="dc-t">🎯 أهم 10 مهارات أساسية</div>
+        <div id="assess-skills"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TRAITS GUIDE -->
+<div id="pg-traits" class="pg">
+  <div class="tg-hero">
+    <div>
+      <div class="tg-hero-t">دليل صفات المحامي</div>
+      <div class="tg-hero-s">مرجع شامل في 100 صفة موزعة على 10 محاور — من المهنية إلى الإنسانية</div>
+    </div>
+    <div class="tg-hero-stats">
+      <div class="tg-hero-st"><div class="tg-hero-st-v">10</div><div class="tg-hero-st-l">محاور</div></div>
+      <div class="tg-hero-st"><div class="tg-hero-st-v">100</div><div class="tg-hero-st-l">صفة</div></div>
+    </div>
+  </div>
+  <div class="tg-toolbar">
+    <input class="si-inp" id="tg-q" placeholder="ابحث في الصفات بالاسم أو المضمون..." oninput="searchTraits()" style="width:340px;">
+    <button class="bc2" onclick="toggleAllTraits(true)" style="padding:9px 14px;font-size:12px;">فتح الكل</button>
+    <button class="bc2" onclick="toggleAllTraits(false)" style="padding:9px 14px;font-size:12px;">طي الكل</button>
+    <span style="font-size:11px;color:var(--text3);" id="tg-count"></span>
+  </div>
+  <div id="tg-results" style="display:none;"></div>
+  <div id="tg-grid" class="tg-grid"></div>
+</div>
+
+<!-- TRAIT MODAL -->
+<div class="mo" id="tg-modal" onclick="if(event.target===this)closeTraitModal()">
+  <div class="md" style="width:600px;">
+    <div class="tg-modal-content">
+      <div><span class="tg-modal-num" id="tgm-num"></span><span class="tg-modal-cat" id="tgm-cat"></span></div>
+      <div class="tg-modal-title" id="tgm-title"></div>
+      <div class="tg-modal-body" id="tgm-body"></div>
+      <div class="tg-modal-nav">
+        <button class="tg-nav-btn" id="tgm-prev" onclick="navTrait(-1)">← السابقة</button>
+        <button class="bc2" onclick="closeTraitModal()" style="font-size:12px;">إغلاق</button>
+        <button class="tg-nav-btn" id="tgm-next" onclick="navTrait(1)">التالية →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+const DB={g(k){return JSON.parse(localStorage.getItem('mm_'+k)||'[]');},s(k,v){localStorage.setItem('mm_'+k,JSON.stringify(v));}};
+function go(id,el){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  if(el)el.classList.add('on');
+  ({contracts:renderContracts,spec:rSpec,assessment:initAssessment,traits:initTraitsGuide,career:renderCareer,goals:updateGoals,backup:initBackup}[id]||function(){})();
+}
+function tc(li){li.classList.toggle('dn');li.querySelector('.cb').textContent=li.classList.contains('dn')?'✓':'';}
+
+// CAREER STAGES
+const STAGES=[
+  {id:'foundation',n:'الأولى',name:'التأسيس',years:'سنة 1-2',
+    goals:['اختيار مكتب تدريب مناسب لميولك','إتقان الإجراءات الأساسية أمام المحاكم','تعلم أساسيات الكتابة القانونية','بناء شبكة علاقات أولية مع الزملاء','اكتشاف ميول التخصص بالتجربة','حضور أكبر عدد من الجلسات للملاحظة']},
+  {id:'definition',n:'الثانية',name:'التحديد',years:'سنة 3-5',
+    goals:['تحديد مجال التمركز بدقة','تطبيق نسبة 70% تخصص / 30% عام','قراءة 10 كتب متخصصة في المجال','حضور دورة متخصصة معتمدة','تحديد حد أدنى للأتعاب','بدء الكتابة والنشر باسمك']},
+  {id:'positioning',n:'الثالثة',name:'التمركز',years:'سنة 6-10',
+    goals:['بناء سمعة قوية في التخصص','تكوين قاعدة عملاء ثابتة','رفع متوسط الأتعاب 30-50%','بناء فريق صغير من المعاونين','النشر المنتظم في مجلات متخصصة','التحضير لافتتاح مكتب مستقل']},
+  {id:'reputation',n:'الرابعة',name:'السمعة والنفوذ',years:'+10 سنوات',
+    goals:['التحول لاسم مرجعي في المجال','تأليف كتاب أو مرجع قانوني','بناء فريق متكامل','القبول للمرافعة أمام النقض','تأسيس مكتب احترافي بـ branding كامل','إلهام جيل جديد من المحامين']},
+];
+function getCurrentStage(){return localStorage.getItem('mm_stage')||'definition';}
+function setStage(id){localStorage.setItem('mm_stage',id);renderCareer();}
+function renderCareer(){
+  const cur=getCurrentStage(),sg=document.getElementById('career-stages'),gt=document.getElementById('career-goals-t'),gl=document.getElementById('career-goals');
+  if(!sg)return;
+  sg.innerHTML=STAGES.map(s=>`<div class="sb2${s.id===cur?' on':''}" onclick="setStage('${s.id}')" style="cursor:pointer;">
+    <div class="sb2-n">${s.id===cur?'← أنت هنا':s.n}</div>
+    <div class="sb2-nm">${s.name}</div>
+    <div class="sb2-y">${s.years}</div>
+  </div>`).join('');
+  const stage=STAGES.find(s=>s.id===cur)||STAGES[1];
+  gt.textContent='أهداف مرحلة '+stage.name;
+  // load saved checks from localStorage per goal-key
+  const checks=JSON.parse(localStorage.getItem('mm_career_goals_'+cur)||'{}');
+  gl.innerHTML=stage.goals.map((g,i)=>{
+    const k='g'+i,done=checks[k];
+    return`<li onclick="toggleCareerGoal('${cur}','${k}',this)" class="${done?'dn':''}"><div class="cb">${done?'✓':''}</div><span>${g}</span></li>`;
+  }).join('');
+}
+function toggleCareerGoal(stageId,key,li){
+  const k='mm_career_goals_'+stageId,checks=JSON.parse(localStorage.getItem(k)||'{}');
+  checks[key]=!checks[key];localStorage.setItem(k,JSON.stringify(checks));
+  li.classList.toggle('dn');li.querySelector('.cb').textContent=checks[key]?'✓':'';
+}
+function bdg(s){const m={'جارية':'ba','منتظرة':'bp','منتهية':'bc','موقوفة':'bc','مسدد':'ba','جزئي':'bp','غير مسدد':'bu'};return`<span class="bx ${m[s]||'bp'}">${s}</span>`;}
+function fd(d){if(!d)return'—';try{return new Date(d+'T00:00:00').toLocaleDateString('ar-EG',{year:'numeric',month:'short',day:'numeric'});}catch(e){return d;}}
+
+// FEE CALC
+function calcHourly(){
+  const target=parseFloat(document.getElementById('fc-target').value)||0,hours=parseFloat(document.getElementById('fc-hours').value)||0;
+  const res=document.getElementById('hourly-result');
+  if(!target||!hours){res.style.display='none';return;}
+  document.getElementById('hourly-val').textContent=Math.round(target/hours).toLocaleString('ar-EG');
+  document.getElementById('hourly-note').textContent=`لتحقيق ${target.toLocaleString('ar-EG')} جنيه شهرياً بـ ${hours} ساعة فعلية`;
+  res.style.display='block';
+}
+function calcCase(){
+  const sel=document.getElementById('fc-type');const opt=sel.options[sel.selectedIndex];
+  const res=document.getElementById('case-result');if(!opt.dataset.min){res.style.display='none';return;}
+  const complex=parseFloat(document.getElementById('fc-complex').value)||1,stage=parseFloat(document.getElementById('fc-stage').value)||1;
+  document.getElementById('case-min').textContent=Math.round(parseFloat(opt.dataset.min)*complex*stage/100)*100;
+  document.getElementById('case-max').textContent=Math.round(parseFloat(opt.dataset.max)*complex*stage/100)*100;
+  res.style.display='block';
+}
+
+// CONTRACTS
+const CONTRACTS=[
+  {cat:'أتعاب',title:'عقد تقديم خدمات قانونية',desc:'النموذج الأساسي لكل قضية',body:`عقد تقديم خدمات قانونية\n\nأنه في يوم ________ الموافق ________\n\nتم الاتفاق بين كل من:\nأولاً: مكتب: [اسم المكتب] — الأستاذ/ [اسم المحامي]\n(الطرف الأول / المكتب)\n\nثانياً: السيد/ [اسم العميل] — رقم قومي/ سجل تجاري: [الرقم]\n(الطرف الثاني / العميل)\n\nالمادة (1): نطاق العمل\n[يُدرج نطاق العمل بدقة]\n\nالمادة (2): الأتعاب والسداد\nإجمالي الأتعاب: ________ جنيه\n• ________ جنيه عند التوقيع (دفعة مقدمة غير قابلة للاسترداد)\n• ________ جنيه عند [تحديد الحدث]\n\nالمادة (3): المدة\n________ من تاريخ استلام المستندات.\n\nالمادة (4): التزامات العميل\n• تقديم المستندات خلال 7 أيام\n• الرد على الاستفسارات خلال 48 ساعة\n\nالمادة (5): الإنهاء\nلا تُسترد الدفعات المقدمة بعد بدء التنفيذ.\n\nالطرف الأول: ________________     الطرف الثاني: ________________\nالتاريخ: ________________`},
+  {cat:'أتعاب',title:'توكيل رسمي عام',desc:'تفويض المحامي بالتقاضي والإجراءات',body:`توكيل رسمي عام\n\nأنا: [الاسم الكامل للموكّل]\nالرقم القومي: ________________\nالمقيم بـ: ________________\n\nوكّلت وأنبت عني الأستاذ/ [اسم المحامي]\nالمحامي المقيد بنقابة المحامين المصرية\nالمقبول للمرافعة أمام [المحاكم الجزئية / الابتدائية / الاستئناف / النقض]\n\nفي: المطالبة والدفاع عني في [الموضوع] أمام جميع المحاكم والهيئات.\n\nوله: رفع الدعاوى — الطعن في الأحكام — قبض المبالغ — جميع الإجراءات اللازمة.\n\nهذا التوكيل نافذ حتى إتمام المهمة أو إلغائه كتابياً.\n\nمحرر في: ________________ بتاريخ: ________________\nالموكّل: ________________    التوقيع: ________________`},
+  {cat:'أتعاب',title:'اتفاقية سرية وعدم إفشاء',desc:'NDA لحماية معلومات الموكل',body:`اتفاقية سرية وعدم إفشاء\n\nأُبرمت بتاريخ ________ بين:\nالطرف الأول (المفصح): [الاسم / الشركة]\nالطرف الثاني (المتلقي): [الاسم / الشركة]\n\nالبند الأول: تشمل السرية جميع المعلومات القانونية والتجارية والمالية المُفصح عنها.\n\nالبند الثاني: الالتزامات\n• عدم الإفصاح لأي طرف ثالث\n• الاستخدام للغرض المحدد فقط\n\nالبند الثالث: الاستثناءات\nلا تسري على معلومات متاحة للعموم أو صدر أمر قضائي بإفصاحها.\n\nالبند الرابع: المدة\n[____] سنوات من تاريخ التوقيع.\n\nالبند الخامس: الجزاء\nالإخلال يُجيز المطالبة بالتعويض الكامل.\n\nالطرف الأول: ________________     الطرف الثاني: ________________`},
+  {cat:'أتعاب',title:'اتفاقية استشارة شهرية',desc:'أتعاب ثابتة للموكلين المستمرين',body:`اتفاقية خدمات استشارية قانونية شهرية\n\nأُبرمت بتاريخ ________ بين:\nالطرف الأول: مكتب [اسم المكتب]\nالطرف الثاني: [اسم الشركة / العميل]\n\nالمادة (1): نطاق الاستشارة الشهرية\n• الرد على الاستفسارات خلال 24 ساعة\n• مراجعة العقود والمستندات (حتى __ وثيقة شهرياً)\n• تقديم رأي قانوني مكتوب في المسائل الطارئة\n\nالمادة (2): الأتعاب الشهرية\nالمبلغ الشهري: ________ جنيه — يُسدد في أول كل شهر.\nلا يشمل أتعاب التقاضي أو التمثيل أمام المحاكم.\n\nالمادة (3): مدة الاتفاقية\nسنة ميلادية كاملة — تتجدد تلقائياً ما لم يُخطَر بعدم التجديد قبل 30 يوماً.\n\nالطرف الأول: ________________     الطرف الثاني: ________________`},
+  {cat:'تجاري',title:'عقد تأسيس شركة م.م.م',desc:'نموذج لتأسيس شركة ذات مسؤولية محدودة',body:`عقد تأسيس شركة ذات مسؤولية محدودة\n\nأُبرم بتاريخ ________ بين المؤسسين:\nالشريك الأول: [الاسم] — رقم قومي: ________ — الحصة: ________ ج (____%)  \nالشريك الثاني: [الاسم] — رقم قومي: ________ — الحصة: ________ ج (____%)  \n\nالمادة (1): اسم الشركة\n[اسم الشركة] شركة ذات مسؤولية محدودة\n\nالمادة (2): الغرض\n[وصف النشاط التجاري]\n\nالمادة (3): رأس المال\n________ جنيه موزع على ________ حصة بقيمة ________ جنيه للحصة.\n\nالمادة (4): الإدارة\nيتولى الإدارة: [اسم المدير] لمدة ________.\n\nالمادة (5): توزيع الأرباح والخسائر\nبنسبة الحصص في رأس المال.\n\nالشريك الأول: ________________     الشريك الثاني: ________________`},
+  {cat:'تجاري',title:'عقد وكالة تجارية',desc:'تمثيل تجاري وتسويق المنتجات',body:`عقد وكالة تجارية\n\nأُبرم بتاريخ ________ بين:\nالموكّل: [الاسم / الشركة] — [العنوان]\nالوكيل التجاري: [الاسم / الشركة]\n\nالمادة (1): موضوع الوكالة\nتمثيل وتسويق: [وصف المنتجات / الخدمات]\n\nالمادة (2): النطاق الجغرافي\n[تحديد المنطقة] — هذه الوكالة [حصرية / غير حصرية]\n\nالمادة (3): العمولة\n____% من قيمة كل صفقة — تُصرف خلال ________ من إتمامها.\n\nالمادة (4): التزامات الوكيل\n• الترويج بأساليب مهنية مشروعة\n• تقديم تقارير دورية\n• عدم تمثيل منافسين\n\nالمادة (5): مدة العقد: ________ قابلة للتجديد.\n\nالموكّل: ________________     الوكيل: ________________`},
+  {cat:'تجاري',title:'عقد توريد وشراء',desc:'اتفاقية لتوريد بضائع أو خدمات',body:`عقد توريد وشراء\n\nأُبرم بتاريخ ________ بين:\nالمورّد: [الاسم / الشركة] — سجل تجاري: ________\nالمشتري: [الاسم / الشركة]\n\nالمادة (1): موضوع العقد\n[وصف البضاعة — الكمية — المواصفات]\n\nالمادة (2): الثمن والسداد\nالإجمالي: ________ جنيه\n• ________ عند التعاقد — ________ عند التسليم\n\nالمادة (3): التسليم\nفي: [المكان] بتاريخ: ________\n\nالمادة (4): الضمان\nالبضاعة مطابقة للمواصفات وإلا استُبدلت على نفقة المورّد.\n\nالمورّد: ________________     المشتري: ________________`},
+  {cat:'تجاري',title:'اتفاقية تسوية ودية',desc:'إنهاء النزاع بالصلح خارج المحكمة',body:`اتفاقية تسوية ودية ونهائية\n\nأُبرمت بتاريخ ________ بين:\nالطرف الأول: [الاسم] — رقم قومي: ________\nالطرف الثاني: [الاسم] — رقم قومي: ________\n\nإشارة إلى النزاع بشأن: [وصف موضوع النزاع]\n\nالمادة (1): التسوية المالية\nيلتزم [الطرف الأول/الثاني] بسداد ________ جنيه:\n• ________ فوراً عند التوقيع\n• ________ بتاريخ ________\n\nالمادة (2): الإسقاط النهائي\nهذه التسوية نهائية وشاملة لكافة المطالبات.\nيلتزم كل طرف بسحب أي دعوى مرفوعة.\n\nالطرف الأول: ________________     الطرف الثاني: ________________\nالشاهد: ________________`},
+  {cat:'عقاري',title:'عقد بيع عقار (ابتدائي)',desc:'عقد البيع الابتدائي قبل التوثيق',body:`عقد بيع عقار ابتدائي\n\nأُبرم بتاريخ ________ بين:\nالبائع: [الاسم] — رقم قومي: ________\nالمشتري: [الاسم] — رقم قومي: ________\n\nالمادة (1): موضوع البيع\n[وصف دقيق: الموقع — المساحة — رقم القطعة]\nالحدود: شمالاً ________ — جنوباً ________ — شرقاً ________ — غرباً ________\n\nالمادة (2): الثمن\nالإجمالي: ________ جنيه\nمقدماً: ________ جنيه — الباقي: ________ عند التوثيق\n\nالمادة (3): التوثيق الرسمي\nفي الشهر العقاري خلال ________ من هذا العقد.\n\nالمادة (4): الضمانات\nالعقار خالٍ من أي حقوق للغير أو رهون.\n\nالبائع: ________________     المشتري: ________________\nالشاهد: ________________`},
+  {cat:'عقاري',title:'عقد إيجار سكني (جديد)',desc:'وفق قانون 4 لسنة 1996',body:`عقد إيجار سكني\n\nأُبرم بتاريخ ________ بين:\nالمالك: [الاسم] — رقم قومي: ________\nالمستأجر: [الاسم] — رقم قومي: ________\n\nالمادة (1): العين المؤجرة\n[العنوان الكامل — الطابق — رقم الشقة]\nالمساحة التقريبية: ________ م²\n\nالمادة (2): مدة الإيجار\nمن: ________ حتى: ________\nتتجدد برضا الطرفين الصريح.\n\nالمادة (3): الأجرة\nالأجرة الشهرية: ________ جنيه — في أول كل شهر.\nمبلغ التأمين: ________ جنيه يُرد عند الإخلاء سليماً.\n\nالمادة (4): الالتزامات\n• للسكن فقط — عدم التأجير من الباطن\n• سداد الفواتير\n\nالمالك: ________________     المستأجر: ________________`},
+  {cat:'عقاري',title:'عقد إيجار تجاري',desc:'تأجير محل أو مكتب تجاري',body:`عقد إيجار تجاري\n\nأُبرم بتاريخ ________ بين:\nالمالك: [الاسم / الشركة]\nالمستأجر: [الاسم / الشركة]\n\nالمادة (1): العين المؤجرة\n[وصف العقار — الموقع — المساحة]\nالغرض: [محل تجاري / مكتب]\n\nالمادة (2): مدة الإيجار\n________ سنة/سنوات من ________ حتى ________\n\nالمادة (3): الأجرة\nالأجرة الشهرية: ________ جنيه\nتُزاد بنسبة ____% سنوياً.\n\nالمادة (4): الاستخدام\nلا يجوز تغيير النشاط أو إجراء تعديلات جوهرية بدون إذن كتابي.\n\nالمالك: ________________     المستأجر: ________________`},
+  {cat:'عقاري',title:'عقد مقاولة بناء',desc:'لأعمال البناء والتشييد',body:`عقد مقاولة بناء وتشييد\n\nأُبرم بتاريخ ________ بين:\nصاحب العمل: [الاسم] — [العنوان]\nالمقاول: [الاسم / الشركة] — سجل تجاري: ________\n\nالمادة (1): موضوع العقد\nتنفيذ [وصف المشروع] وفق المخططات الهندسية المعتمدة.\n\nالمادة (2): قيمة العقد والسداد\nإجمالي القيمة: ________ جنيه\n• ____% عند التعاقد — ____% عند الهيكل — ____% عند التسليم\n\nالمادة (3): مدة التنفيذ\n________ من تاريخ استلام الموقع.\nغرامة التأخير: ________ جنيه يومياً.\n\nالمادة (4): ضمان الأعمال\n________ من تاريخ التسليم النهائي.\n\nصاحب العمل: ________________     المقاول: ________________`},
+  {cat:'عمالي',title:'عقد عمل محدد المدة',desc:'لعقود العمالة المؤقتة والمشاريع',body:`عقد عمل محدد المدة\n\nأُبرم بتاريخ ________ بين:\nصاحب العمل: [اسم الشركة]\nالعامل: [الاسم] — رقم قومي: ________\n\nالمادة (1): الوظيفة\n[المسمى الوظيفي] — القسم: ________ — مكان العمل: ________\n\nالمادة (2): مدة العقد\nمن ________ حتى ________\n\nالمادة (3): الأجر\nالراتب الأساسي: ________ جنيه شهرياً.\nالبدلات: ________ جنيه.\n\nالمادة (4): الإجازات\nوفق قانون العمل رقم 12 لسنة 2003.\n\nالمادة (5): الإنهاء\nإخطار كتابي مدته ________ مع مكافأة نهاية الخدمة وفق القانون.\n\nصاحب العمل: ________________     العامل: ________________`},
+  {cat:'عمالي',title:'اتفاقية عدم منافسة',desc:'منع الموظف من العمل لدى منافس',body:`اتفاقية عدم منافسة\n\nأُبرمت بتاريخ ________ بين:\nصاحب العمل: [اسم الشركة]\nالموظف: [الاسم] — الوظيفة: ________\n\nالمادة (1): نطاق الالتزام\nلمدة ________ شهراً بعد انتهاء الخدمة:\n• عدم العمل لدى شركة منافسة في [مجال النشاط]\n• عدم تأسيس مشروع منافس\n• عدم إفشاء الأسرار التجارية والتقنية\n\nالمادة (2): النطاق الجغرافي\n[المحافظة / جمهورية مصر]\n\nالمادة (3): الجزاء\nتعويض لا يقل عن ________ جنيه عند الإخلال.\n\nصاحب العمل: ________________     الموظف: ________________`},
+  {cat:'إنذارات',title:'إنذار رسمي بالسداد',desc:'إنذار قانوني قبل رفع دعوى',body:`إنذار رسمي\n\nالصادر بتاريخ: ________\n\nمن: الأستاذ/ [اسم المحامي] — بتوكيل السيد/ شركة [اسم الموكل]\nإلى: السيد/ شركة [اسم المُنذَر] — [العنوان]\n\nأُنذركم بضرورة سداد مبلغ ________ جنيه المستحق بموجب:\n[عقد / حكم / سند إذني / فاتورة] رقم ________ المؤرخ ________\n\nالمهلة: ________ أياماً من استلام هذا الإنذار.\nوإلا اتُخذت كافة الإجراءات القانونية ضدكم مع المصروفات والأتعاب.\n\nالمحامي: ________________     التوقيع والختم: ________________`},
+  {cat:'إنذارات',title:'إنذار بالإخلاء',desc:'للمستأجر المتأخر عن سداد الإيجار',body:`إنذار رسمي بإخلاء العين المؤجرة\n\nالصادر بتاريخ: ________\n\nمن: الأستاذ/ [اسم المحامي] — وكيلاً عن السيد/ [اسم المالك]\nإلى: السيد/ [اسم المستأجر] — [عنوان العقار]\n\nأُنذركم بما يلي:\n\nأولاً: سداد الأجرة المتأخرة للفترة من ________ حتى ________ والبالغة ________ جنيه.\n\nثانياً: إخلاء العين المؤجرة وتسليمها خالية في حالة جيدة خلال ________ يوماً.\n\nوإلا اضطر موكلي لاتخاذ كافة الإجراءات القانونية.\n\nالمحامي: ________________     التوقيع والختم: ________________`},
+  {cat:'إنذارات',title:'إنذار بالفسخ التجاري',desc:'إخطار بفسخ عقد تجاري لإخلال',body:`إنذار بالفسخ\n\nالصادر بتاريخ: ________\n\nمن: الأستاذ/ [اسم المحامي] — وكيلاً عن [الموكل]\nإلى: [اسم الطرف الآخر] — [العنوان]\n\nبخصوص العقد المبرم بتاريخ ________\n\nطبيعة الإخلال: [وصف دقيق لسبب الإخلال]\n\nيُنذركم موكلي بضرورة إزالة أسباب الإخلال خلال ________ أياماً.\n\nفإن انقضت المهلة دون استجابة، حق لموكلي فسخ العقد والمطالبة بالتعويض الكامل.\n\nالمحامي: ________________     التوقيع: ________________`},
+  {cat:'إنذارات',title:'رد رسمي على إنذار',desc:'الرد القانوني على إنذار وارد',body:`خطاب رد رسمي على إنذار\n\nالصادر بتاريخ: ________\n\nمن: الأستاذ/ [اسم المحامي] — وكيلاً عن [الموكل]\nإلى: الأستاذ/ [محامي الطرف الآخر]\n\nرداً على إنذاركم المؤرخ ________ نُحيطكم بالآتي:\n\nأولاً: ادعاءاتكم بشأن [الموضوع] لا أساس لها لغياب الأسباب الواقعية والقانونية:\n[الحجج القانونية]\n\nثانياً: موكلنا وفى بجميع التزاماته على النحو الآتي:\n[ما تم الوفاء به]\n\nثالثاً: أي إجراء قانوني سيُقابَل بجميع الدفوع المتاحة.\n\nالمحامي: ________________     التوقيع: ________________`},
+];
+let activeCat='';
+function setCat(cat,btn){activeCat=cat;document.querySelectorAll('#contract-cats button').forEach(b=>{b.className='bc2';b.style.borderRadius='20px';});btn.className='ab';renderContracts();}
+function renderContracts(){
+  const q=(document.getElementById('contract-search').value||'').trim();
+  const filtered=CONTRACTS.filter(c=>(!activeCat||c.cat===activeCat)&&(!q||c.title.includes(q)||c.cat.includes(q)));
+  const cc={'أتعاب':'ba','تجاري':'bp','عقاري':'ba','عمالي':'bc','إنذارات':'bu'};
+  document.getElementById('contracts-grid').innerHTML=filtered.map((c,i)=>`<div class="dc" style="cursor:pointer;" onclick="openContract(${CONTRACTS.indexOf(c)})">
+    <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span class="bx ${cc[c.cat]||'bp'}" style="font-size:10px;">${c.cat}</span></div>
+    <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:5px;">${c.title}</div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">${c.desc}</div>
+    <div style="display:flex;gap:8px;">
+      <button class="ab" style="font-size:11px;padding:5px 12px;" onclick="event.stopPropagation();openContract(${CONTRACTS.indexOf(c)})">عرض</button>
+      <button class="bc2" style="font-size:11px;padding:5px 12px;border-radius:4px;" onclick="event.stopPropagation();cpyText(CONTRACTS[${CONTRACTS.indexOf(c)}].body,this)">نسخ</button>
+    </div></div>`).join('');
+}
+function openContract(idx){
+  document.getElementById('contract-title').textContent=CONTRACTS[idx].title;
+  document.getElementById('contract-body').textContent=CONTRACTS[idx].body;
+  document.getElementById('contract-body').dataset.idx=idx;
+  document.getElementById('mo-contract').classList.add('on');
+}
+function closeModal(){document.getElementById('mo-contract').classList.remove('on');}
+function copyActive(){const idx=document.getElementById('contract-body').dataset.idx;cpyText(CONTRACTS[idx].body,event.target);}
+function cpyText(text,btn){
+  navigator.clipboard.writeText(text).then(()=>{const o=btn.textContent;btn.textContent='✓ تم';setTimeout(()=>btn.textContent=o,2000);}).catch(()=>{const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);});
+}
+window.addEventListener('click',e=>{if(e.target.id==='mo-contract')closeModal();});
+
+// SPEC
+function rSpec(){
+  const cases=DB.g('cases');
+  if(!cases.length){document.getElementById('spec-c').innerHTML='<div class="es"><div class="ei">◎</div><div class="et">أضف قضايا في إدارة المكتب لرؤية المقياس</div></div>';return;}
+  const map={};cases.forEach(c=>{if(c.type)map[c.type]=(map[c.type]||0)+1;});
+  document.getElementById('spec-c').innerHTML=Object.entries(map).sort((a,b)=>b[1]-a[1]).map(([name,count])=>{const pct=Math.round(count/cases.length*100);return`<div class="sr"><div class="sn">${name}</div><div class="sbar"><div class="sf" style="width:${pct}%"></div></div><div class="sp">${pct}%</div></div>`;}).join('');
+}
+
+// GOALS PROGRESS
+function getIncomeTarget(){return parseFloat(localStorage.getItem('mm_income_target'))||500000;}
+function updateGoals(){
+  const fees=DB.g('fees');const tp=fees.reduce((s,f)=>s+(f.paid||0),0);
+  const goal=getIncomeTarget(),pct=Math.min(100,Math.round(tp/goal*100));
+  const gb=document.getElementById('gb');if(!gb)return;
+  gb.style.width=pct+'%';
+  document.getElementById('gp').textContent=pct+'%';
+  document.getElementById('g-target').textContent=goal.toLocaleString('ar-EG');
+  document.getElementById('gd').textContent=`تحقق ${tp.toLocaleString('ar-EG')} جنيه من أصل ${goal.toLocaleString('ar-EG')}`;
+  renderProGoals();
+}
+
+// Income target modal
+function openIncomeModal(){
+  document.getElementById('income-input').value=getIncomeTarget();
+  document.getElementById('mo-income').classList.add('on');
+  setTimeout(()=>document.getElementById('income-input').focus(),100);
+}
+function closeIncomeModal(){document.getElementById('mo-income').classList.remove('on');}
+function setIncomeQuick(n){document.getElementById('income-input').value=n;}
+function saveIncome(){
+  const n=parseFloat(document.getElementById('income-input').value);
+  if(!n||n<=0){alert('من فضلك أدخل رقماً صحيحاً');return;}
+  localStorage.setItem('mm_income_target',n);closeIncomeModal();updateGoals();
+}
+
+// Suggested goals data
+const GOAL_SUGGESTIONS={
+  general:[
+    'قراءة 12 كتاب قانوني هذا العام',
+    'حضور 4 مؤتمرات قانونية',
+    'نشر 6 مقالات قانونية',
+    'بناء علاقة مع 30 محامي جديد',
+    'متابعة 50 حكم نقض حديث',
+    'رفع متوسط الأتعاب 20%',
+    'إتقان مهارة جديدة (تحكيم/تفاوض)',
+    'الاشتراك في دورة تدريبية متخصصة',
+    'بناء حضور احترافي على LinkedIn',
+    'تطوير نظام إدارة المكتب',
+    'تحديث صياغة العقود الأساسية',
+    'الادخار 20% من الدخل السنوي',
+  ],
+  foundation:[
+    'حضور 30 جلسة للملاحظة والتدريب',
+    'حفظ المرافعات الأساسية في 3 مجالات',
+    'تعلم الصياغة من 5 محامين كبار',
+    'أول جلسة منفرد أمام المحكمة',
+    'بناء أرشيف شخصي بـ 100 حكم نقض',
+    'تجربة 3 مجالات مختلفة للتخصص',
+  ],
+  definition:[
+    'تحديد مجال التمركز نهائياً',
+    'قراءة 10 كتب في التخصص المختار',
+    'أول قضية كبيرة في التخصص',
+    'بدء النشر باسمك في مجلة قانونية',
+    'تحديد حد أدنى للأتعاب والالتزام به',
+    'بناء قاعدة 20 عميل في التخصص',
+  ],
+  positioning:[
+    'بناء قاعدة 50 عميل ثابت',
+    'تكوين فريق من 3 محامين معاونين',
+    'نشر 10 مقالات في مجلات متخصصة',
+    'رفع متوسط الأتعاب 30-50%',
+    'التحضير لافتتاح مكتب مستقل',
+    'إلقاء محاضرة في مؤتمر متخصص',
+  ],
+  reputation:[
+    'تأليف كتاب قانوني في التخصص',
+    'الحصول على القبول للمرافعة أمام النقض',
+    'تدريب 5 محامين شباب',
+    'الحضور كمتحدث في مؤتمر دولي',
+    'تأسيس branding احترافي للمكتب',
+    'بناء فريق متكامل (10+ محامي)',
+  ],
+};
+
+// Goal modal
+function openGoalModal(){
+  document.getElementById('goal-input').value='';
+  // Stage suggestions
+  const cur=getCurrentStage(),stage=STAGES.find(s=>s.id===cur);
+  document.getElementById('goal-stage-label').textContent=`مقترحات لمرحلة ${stage?stage.name:'الحالية'}`;
+  const stageList=document.getElementById('goal-stage-list');
+  const stageSugs=GOAL_SUGGESTIONS[cur]||[];
+  stageList.innerHTML=stageSugs.map(g=>`<button class="bc2 sg-chip" onclick="addSuggestion('${g.replace(/'/g,"\\'")}')" style="font-size:11px;padding:6px 12px;border-radius:20px;background:var(--gold-bg);border-color:var(--border2);color:var(--navy);">${g}</button>`).join('');
+  // General
+  const genList=document.getElementById('goal-general-list');
+  genList.innerHTML=GOAL_SUGGESTIONS.general.map(g=>`<button class="bc2 sg-chip" onclick="addSuggestion('${g.replace(/'/g,"\\'")}')" style="font-size:11px;padding:6px 12px;border-radius:20px;">${g}</button>`).join('');
+  document.getElementById('mo-goal').classList.add('on');
+  setTimeout(()=>document.getElementById('goal-input').focus(),100);
+}
+function closeGoalModal(){document.getElementById('mo-goal').classList.remove('on');}
+function addSuggestion(text){
+  const goals=getProGoals();
+  if(goals.some(g=>g.text===text)){
+    // Already added — visual feedback
+    const btns=document.querySelectorAll('.sg-chip');
+    btns.forEach(b=>{if(b.textContent===text){const o=b.style.background;b.style.background='#e8d5b8';setTimeout(()=>b.style.background=o,500);}});
+    return;
+  }
+  goals.push({text:text,done:false});saveProGoals(goals);renderProGoals();
+  // Mark added with checkmark
+  const btns=document.querySelectorAll('.sg-chip');
+  btns.forEach(b=>{if(b.textContent===text){b.style.background='var(--gold)';b.style.color='white';b.textContent='✓ '+text;b.disabled=true;}});
+}
+function saveCustomGoal(){
+  const inp=document.getElementById('goal-input'),v=inp.value.trim();
+  if(!v)return;
+  const goals=getProGoals();goals.push({text:v,done:false});saveProGoals(goals);renderProGoals();
+  inp.value='';closeGoalModal();
+}
+
+function getProGoals(){return JSON.parse(localStorage.getItem('mm_pro_goals')||'[]');}
+function saveProGoals(arr){localStorage.setItem('mm_pro_goals',JSON.stringify(arr));}
+function renderProGoals(){
+  const list=document.getElementById('pro-goals-list'),empty=document.getElementById('pro-goals-empty');
+  if(!list)return;
+  const goals=getProGoals();
+  if(!goals.length){list.style.display='none';empty.style.display='block';return;}
+  list.style.display='';empty.style.display='none';
+  list.innerHTML=goals.map((g,i)=>`<li class="${g.done?'dn':''}" style="display:flex;align-items:center;gap:8px;">
+    <div class="cb" onclick="toggleProGoal(${i})" style="cursor:pointer;">${g.done?'✓':''}</div>
+    <span style="flex:1;cursor:pointer;" onclick="toggleProGoal(${i})">${g.text}</span>
+    <button onclick="event.stopPropagation();confirmDeleteProGoal(${i})" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:2px 6px;" title="حذف">×</button>
+  </li>`).join('');
+}
+function toggleProGoal(i){
+  const goals=getProGoals();if(!goals[i])return;
+  goals[i].done=!goals[i].done;saveProGoals(goals);renderProGoals();
+}
+function confirmDeleteProGoal(i){
+  const goals=getProGoals();if(!goals[i])return;
+  showConfirm('حذف الهدف','هل تريد حذف هذا الهدف؟<br><br><strong style="color:var(--navy);">'+goals[i].text+'</strong>',()=>{
+    const g=getProGoals();g.splice(i,1);saveProGoals(g);renderProGoals();
+  });
+}
+
+// Generic confirm modal
+let _confirmCb=null;
+function showConfirm(title,body,onOk){
+  document.getElementById('confirm-title').textContent=title;
+  document.getElementById('confirm-body').innerHTML=body;
+  _confirmCb=onOk;
+  document.getElementById('confirm-ok').onclick=()=>{closeConfirm();if(_confirmCb)_confirmCb();};
+  document.getElementById('mo-confirm').classList.add('on');
+}
+function closeConfirm(){document.getElementById('mo-confirm').classList.remove('on');_confirmCb=null;}
+
+// ESC handler for goals modals
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape')return;
+  ['mo-goal','mo-income','mo-confirm'].forEach(id=>{const m=document.getElementById(id);if(m&&m.classList.contains('on'))m.classList.remove('on');});
+});
+
+// ASSESSMENT
+const TRAITS_BOOK=[
+{g:'الصفات القانونية والمهنية',short:'قانونية',desc:'الأساس القانوني والممارسة المهنية',items:[
+{n:1,t:'دقة في فهم النصوص وتطبيق القانون',d:'النص القانوني ليس كلمات جامدة، بل معنى يتفاعل مع الوقائع ويخضع لسياق التشريع. المحامي الدقيق يقرأ النص بعين المشرّع: يميز بين الآمر والمكمّل، ويوازن بين النصوص للوصول إلى تطبيق متسق. الدقة هنا ليست جموداً على اللفظ، بل قدرة على المواءمة بين النص والواقع دون إخلال بروح القانون — وهذا ما يفرّق بين رجل القانون وناقل المعلومات.'},
+{n:2,t:'عمق التحليل القانوني',d:'التحليل العميق هو روح التفكير المهني. المحامي المحلل لا يكتفي بعرض الوقائع، بل يفككها ويعيد بناءها في صورة منطقية تُبرز وجه الحق وتُضعف حجة الخصم. ويقوم على ثلاث ركائز: فهم دقيق للنصوص والوقائع، ثم تحليل عناصرها، ثم ربطها في إطار متماسك. هذا ما يرفع المرافعة من مجرد كلام إلى منطق قانوني متكامل.'},
+{n:3,t:'مهارة في التفسير القانوني',d:'النصوص لا تنطق بذاتها، بل تحتاج عقلاً يفسرها في ضوء مقاصدها. المحامي الماهر لا يقف عند ظاهر اللفظ، بل يستخرج المعنى الذي قصده المشرّع. ويعتمد في ذلك على مناهج متعددة: التفسير اللغوي للوصول إلى المعنى اللفظي، والمنطقي لربط النصوص ببعضها، والتاريخي لاستحضار نية المشرّع، والغائي لإدراك الهدف من القانون.'},
+{n:4,t:'القدرة على إعداد المذكرات والدفوع',d:'المذكرة هي صوت المحامي أمام المحكمة. تبدأ بمقدمة موجزة تحدد موضوع النزاع، تليها وقائع دقيقة بلا مبالغة، ثم تحليل قانوني مدعّم بالنصوص والاجتهادات، وتُختتم بطلبات واضحة محددة. البراعة هنا تجمع الحس اللغوي الراقي بالأسلوب المقنع البعيد عن الانفعال أو الإطناب — ليست كتابة روتينية، بل فن من فنون المحاماة.'},
+{n:5,t:'براعة في صياغة العقود والاتفاقيات',d:'صياغة العقد ليست كتابة بنود، بل فن الوقاية من النزاع قبل وقوعه. المحامي البارع يفهم الإرادة الحقيقية للأطراف ويترجمها إلى عبارات لا تحتمل اللبس. كلمة واحدة قد تغير المركز القانوني وتفتح باب نزاع طويل، فالدقة هنا ضرورة لا ترف. والمعيار النهائي: عقد يمنع النزاع، لا عقد يولّده.'},
+{n:6,t:'استيعاب السوابق القضائية',d:'السوابق القضائية ذاكرة العدالة وبوصلة تطبيق النص. المحامي المتمكن لا يكتفي بمعرفة القانون، بل يغوص في أحكام النقض والإدارية والدستورية ليرى كيف تُطبَّق القواعد عملياً. المهارة هنا في التمييز بين السوابق الملائمة وغير الملائمة، فإسقاط حكم على واقعة مختلفة يُفقد الحجة مصداقيتها أمام القاضي.'},
+{n:7,t:'فطنة في ربط الوقائع بالنصوص',d:'كثيرون يحفظون النصوص، والقليل يحسنون تطبيقها على الواقع. الفطن يحلل كل واقعة ويصنفها قانونياً: مدني أم جنائي، عقد صحيح أم باطل، خطأ شخصي أم مهني. ليست العبقرية في حفظ ألف مادة، بل في معرفة متى وكيف تُطبَّق المادة الصحيحة في الموقف الصحيح — وهذه هي المهارة التي تصنع المرافعة الناجحة.'},
+{n:8,t:'التزام صارم بأخلاقيات المهنة',d:'الأخلاقيات ليست شعارات، بل قواعد سلوك تنعكس في كل تصرف. تبدأ من الصدق مع الموكل — لا تَعِده بما لا تستطيع، ولا تُخفِ عنه حقيقة موقفه — ثم أمانة السر، أحد أقدس واجبات المهنة. المواقف تتغير والقضايا تنتهي، لكن السمعة تبقى. الأخلاق هي ما يمنح المهنة شرفها وهيبتها وخلودها.'},
+{n:9,t:'حياد ونزاهة في أداء الواجب',d:'الحياد لا يعني فتور الحماس، بل القدرة على الفصل بين العاطفة والمهنة، وبين الولاء للموكل والالتزام بالحق. النزيه يلتزم بالقانون حتى حين يبدو ضد مصلحته الآنية، ولا يبدّل موقفه بحسب المكسب أو النفوذ. الحياد والنزاهة معاً هما ميزان العدل في ضمير المحامي.'},
+{n:10,t:'احترام الخصوم والمحاكم',d:'المرافعة ليست معركة، بل حوار قانوني تحكمه الكلمة الرصينة والحجة الواضحة. المحامي المهذب لا يرفع صوته، ولا يهين خصمه، ولا يجادل القاضي بغير أدب. احترام الخصم لا يعني التهاون في الدفاع، بل أن تكون الحجة في مواجهة الحجة. واحترام المحكمة من صميم الواجب، لأنها رمز العدالة وهيبتها.'},
+]},
+{g:'الصفات الإدارية والتنظيمية',short:'إدارية',desc:'إدارة المكتب والوقت والمهام',items:[
+{n:11,t:'الانضباط والدقة في المواعيد',d:'المحامي المنضبط لا ينتظر الأحداث لتذكّره بمسؤولياته، بل يخطط مسبقاً ويراجع أجندته يومياً. الالتزام بالمواعيد ليس عادة محمودة فحسب، بل ركيزة من ركائز الاحتراف، ويعكس احترامه لعمله وموكليه والمحاكم. تأخير بسيط قد يخسره قضية أو يضعف موقف موكله، ويمتد الأمر إلى تسليم الأعمال ومراسلاتها في وقتها بالضبط.'},
+{n:12,t:'التخطيط المسبق للمهام',d:'المحاماة ليست مهنة ردود الأفعال، بل مهنة الاستعداد. المحامي المخطّط يحدد أهدافه قبل التنفيذ: ما الذي يريد تحقيقه في القضية؟ ما النقاط المحورية؟ ما الأدلة المطلوبة؟ ما المواعيد النهائية؟ التخطيط يحوّل الجهد العشوائي إلى عمل منظم، ويوفر الوقت، ويقلل الأخطاء، ويعزز الثقة في الأداء.'},
+{n:13,t:'إدارة الوقت بكفاءة',d:'المحامي يتعامل مع عشرات الملفات والمذكرات والمواعيد في وقت واحد. الكفاءة تبدأ بالتمييز بين العاجل والمهم، وتمر باستخدام الأدوات الرقمية لتنظيم الجدول. الإدارة الجيدة للوقت لا تعني فقط إنجاز المهام بسرعة، بل تحقيق التوازن بين الجهد والراحة لاستدامة العطاء — فالزمن أداة انضباط، لا مصدر فوضى.'},
+{n:14,t:'تنظيم الملفات القانونية بإحكام',d:'المكتب المنظّم لا يخشى نسيان موعد أو فقدان مستند. المحامي المحترف ينشئ ملفاً مستقلاً لكل قضية برقم وسجل خاص، ويقسمه إلى أقسام واضحة: مستندات رسمية، مراسلات، مذكرات، أحكام، ملاحظات داخلية. التنظيم اليوم يمتد للملفات الرقمية أيضاً، ويضمن الوصول السريع لأي ورقة في ثوانٍ — أساس أي مكتب ناجح.'},
+{n:15,t:'متابعة القضايا بمراحلها كافة',d:'القضية لا تنتهي بتقديم مذكرة أو حضور جلسة، بل تمر بمراحل متتابعة من دراسة الوقائع إلى المرافعة إلى التنفيذ. المتابعة الواعية تشمل كل مرحلة، خصوصاً مرحلة التنفيذ التي تتطلب صبراً ودقة. المحامي المسؤول لا يغلق ملف القضية إلا بعد ضمان حصول موكله فعلياً على حقه — لا بمجرد صدور الحكم.'},
+{n:16,t:'المرونة في التعامل مع ضغط العمل',d:'المرونة ليست مجرد تحمّل الأعباء، بل قدرة على التكيّف الذهني والعاطفي مع المواقف المفاجئة دون فقدان الدقة أو الموضوعية. المحامي المرن يدير قضايا متعددة بأطراف مختلفة ومواعيد ضيقة، ويعيد ترتيب أولوياته حسب المستجدات بهدوء. هذه القدرة هي ما يفرق بين من ينهار تحت الضغط ومن يزدهر تحته.'},
+{n:17,t:'قيادة فعّالة لفريق المكتب',d:'المكتب القانوني لا ينجح بمهارة فردية، بل بنظام عمل متكامل يقوده محامٍ يوجّه فريقه نحو أهداف مشتركة. القيادة لا تعني فرض الأوامر، بل إدارة الفريق بروح التعاون والثقة. القائد الفعّال يوزّع المهام حسب القدرات، ويوضح التوقعات، ويراقب الأداء، ويصحّح الأخطاء بإيجابية تبني بدل أن تهدم.'},
+{n:18,t:'القدرة على التفويض والمتابعة',d:'المحامي الذي يحاول أداء كل شيء بنفسه يحدّ من نمو مكتبه. التفويض الذكي يبدأ بفهم قدرات كل عضو في الفريق، وتكليفه بما يناسبه مع توضيح المعيار المطلوب. لكن التفويض بلا متابعة فوضى، فالمحامي القائد يضع نظاماً للمراجعة الدورية يضمن جودة المخرجات دون التدخل في التفاصيل اللحظية.'},
+{n:19,t:'الاهتمام بالتفاصيل الدقيقة',d:'نجاح أي عمل قانوني لا يعتمد على الفهم العام فقط، بل على ملاحظة الجزئيات الصغيرة التي قد تغيّر مسار الحكم. تاريخ خاطئ في إعلان، توقيع ناقص، رقم مادة ملتبس — كلها تفاصيل قد تقلب القضية. الاهتمام بالتفاصيل ليس وسواساً، بل أسلوب تفكير يميز المحترف عن غيره ويحمي حقوق الموكل.'},
+{n:20,t:'سرعة الإنجاز دون الإخلال بالجودة',d:'كثير من القضايا تُحسم بسرعة الاستجابة، لكن السرعة بلا جودة لا قيمة لها. المحامي الكفء يوازن بين الفاعلية والإتقان: ينجز في الموعد دون اختصار في عمق التحليل أو دقة المراجعة. هذا التوازن نتاج تنظيم وخبرة، وهو ما يجعل عملاءه يثقون بأنه لن يضحي بالجودة من أجل التسليم السريع.'},
+]},
+{g:'الصفات الذهنية والعقلية',short:'ذهنية',desc:'الذكاء والتحليل والتفكير المنهجي',items:[
+{n:21,t:'ذكاء حاد وسرعة بديهة',d:'الذكاء الحاد يتيح للمحامي قراءة المواقف بسرعة وتحليلها بعمق، واتخاذ القرار المناسب في اللحظة الحرجة. سرعة البديهة تظهر في الرد المتزن على سؤال مفاجئ من القاضي، أو في التقاط ثغرة في حجة الخصم وقت المرافعة. المحامي الذكي لا يكتفي بفهم الوقائع، بل يدرك ما وراءها ويوظف المعطيات القانونية والنفسية لصالح موكله.'},
+{n:22,t:'تفكير منطقي ومنهجي',d:'التفكير المنهجي هو الأساس الذي تُبنى عليه كل المهارات القانونية. المحامي المنطقي يبني مرافعته بتسلسل: عرض الوقائع، ثم النصوص ذات الصلة، ثم التطبيقات القضائية والفقهية، وصولاً إلى نتيجة مقنعة. هذا التسلسل ليس قالباً جامداً، بل وسيلة لإيصال الفكرة بأقل قدر من اللبس وأكبر قدر من الإقناع.'},
+{n:23,t:'رؤية قانونية استراتيجية',d:'الرؤية الاستراتيجية تميز المحامي القائد عن المحامي التنفيذي. هي القدرة على النظر للقضية بمنظار يتجاوز الموقف الحالي إلى استشراف آثاره المستقبلية. عند دراسة أي عقد أو قضية، يسأل: ما الغاية من هذا النص؟ كيف يتطور تطبيقه؟ ما الانعكاسات على موكله بعد سنوات؟ هذه الرؤية ترفع المحامي من حل المشكلات إلى منعها.'},
+{n:24,t:'تحليل شامل للوقائع',d:'القضية في جوهرها وقائع متشابكة تحتاج عقلاً يفككها ويفهمها ويربطها بالقانون. التحليل الشامل يبدأ بجمع المعلومات، ثم تفسيرها وربطها، ثم بناء الاستراتيجية المناسبة. هذه اللبنة الأولى في بناء العدالة، فبدون تحليل دقيق للوقائع، تبقى أمتن النصوص القانونية بلا أثر حقيقي على الأرض.'},
+{n:25,t:'ذاكرة قوية ودقيقة',d:'الذاكرة عند المحامي ليست مجرد قدرة على الحفظ، بل أداة عقلية للربط والتحليل والاستنتاج. يحتاجها لاستحضار النصوص والسوابق وتفاصيل الملفات في اللحظة المناسبة. الذاكرة الدقيقة لا تعني الحفظ الحرفي، بل القدرة على الوصول السريع للمعلومة الصحيحة وقت الحاجة — سواء كانت تاريخ جلسة، أو رقم مادة، أو مبدأ في حكم نقض.'},
+{n:26,t:'حُسن الاستنباط والاستنتاج',d:'الاستنباط من أرقى الملكات القانونية. المحامي الذي يمتلكها لا يرى الوقائع كما يراها الجميع، بل ينظر إليها بعين الباحث، يستخرج الدلالات من بين سطورها، ويحوّل التفاصيل البسيطة إلى أدلة دامغة. هذه الموهبة تجعله يكتشف ما غاب عن غيره، ويبني حججاً تستند إلى ما لم يلتفت إليه الخصم.'},
+{n:27,t:'عقلية بحثية متجددة',d:'المحامي الذي يكتفي بما تعلّمه في الدراسة أو الخبرة المبكرة يتجمد في مكانه. العقلية البحثية تجعله يبحث دائماً عن الجديد: تشريعات حديثة، أحكام نقض مستحدثة، دراسات فقهية معاصرة. التعلم المستمر ليس ترفاً، بل ضرورة في مهنة تتغير معطياتها كل يوم — وهو ما يميز المحامي العصري عن من يعيش بأدوات الماضي.'},
+{n:28,t:'استيعاب متغيرات القانون والمجتمع',d:'القانون نظام ديناميكي يتطور مع التغيرات الاجتماعية والاقتصادية والسياسية. المحامي الواعي يتابع التعديلات التشريعية والأحكام الجديدة، ويفهم السياق المجتمعي الذي تصدر فيه. هذا الفهم يمكنه من قراءة اتجاه القانون لا نصه فقط، ومن تقديم استشارات أكثر عمقاً تأخذ في الاعتبار البيئة الكاملة للنزاع، لا الواقعة المعزولة.'},
+{n:29,t:'التفكير النقدي البناء',d:'التفكير النقدي يحوّل المحامي من منفّذ للقانون إلى مفكر قانوني قادر على الابتكار. لا يتلقى المعلومات كما هي، بل يقيّم مصداقيتها، ويقارن الوقائع بالنصوص والاجتهادات، ويفحص الحجج بحثاً عن نقاط ضعفها. هذا التفكير لا يهدم لمجرد الهدم، بل يبني حلولاً جديدة على أنقاض ما لم يصمد للفحص الدقيق.'},
+{n:30,t:'تطوير مستمر للمعرفة الذاتية',d:'التطوير المستمر ليس اختياراً، بل ضرورة للمتفوق. المحامي الذي يسعى لتجديد معرفته يتابع الكتب الحديثة والدورات المتخصصة والمؤتمرات المهنية، ويبني عادة قراءة شخصية لا ترتبط بقضية بعينها. كل ما يضيفه لرصيده المعرفي اليوم، يستثمره في قضية الغد — والمعرفة الراكدة تتآكل بمرور الوقت.'},
+]},
+{g:'الصفات التواصلية والشخصية',short:'تواصلية',desc:'الإقناع والتواصل والحضور',items:[
+{n:31,t:'لباقة في الحديث',d:'اللباقة ليست مجرد حسن الكلام، بل القدرة على اختيار الكلمة المناسبة في الموقف المناسب. تظهر في التعامل مع موكل غاضب، أو خصم متشنج، أو قاضٍ يطلب الإيجاز. المحامي اللبق يمرر رسائله الصعبة دون أن يجرح، ويرفض ما لا يقبله بأسلوب يحفظ العلاقة. اللباقة أداة استراتيجية تبني العلاقات وتنقذ المواقف.'},
+{n:32,t:'وضوح في التعبير',d:'الوضوح أكبر من اختيار كلمات بسيطة — هو تنظيم الأفكار منطقياً وتقديمها بتسلسل يسهل متابعته. المحامي الواضح ينقل فكرته من ذهنه إلى ذهن المستمع بأقل خسارة في المعنى. القاضي المشغول والموكل غير المتخصص كلاهما يحتاج وضوحاً بلا تبسيط مخل، وهذا توازن لا يتقنه إلا من يمتلك السيطرة على فكره ولغته.'},
+{n:33,t:'قوة في الإقناع والحجة',d:'الإقناع لا يأتي من الصوت العالي، بل من قوة المنطق. المحامي المقنع يجمع الأدلة، ويرتب الوقائع، ويستنبط النتائج بطريقة لا تترك للمستمع طريقاً سوى الاقتناع. الحجة القوية تستند إلى نص قانوني، وسابقة قضائية، وواقعة ثابتة — وحين تجتمع هذه العناصر بأسلوب راقٍ، تصبح الحجة لا تُقاوم.'},
+{n:34,t:'ثقة بالنفس دون غرور',d:'الواثق يقدّم حججه بجرأة ويرافع باقتناع ويتفاوض بثبات. لكن الثقة الحقيقية تعرف حدودها، فلا تنزلق إلى غرور يُبعد الناس ويُفقد الاحترام. المحامي المتزن يدرك أن الثقة تأتي من التحضير والعلم، لا من رفع الصوت أو ادعاء المعرفة. هذا التوازن بين القوة والتواضع هو ما يجعله محل تقدير الجميع.'},
+{n:35,t:'حسن الاستماع للعميل والقاضي',d:'الاستماع الفعّال ليس انتظار الدور للكلام، بل انتباه كامل لكل تفصيلة في الحديث، وقراءة لغة الجسد، وفهم السياق. المحامي الذي يستمع جيداً يلتقط من الموكل ما لا يقوله بصراحة، ومن القاضي ما يكشف اتجاه تفكيره. وهذا أساس بناء استراتيجية الدفاع وفهم متطلبات الجلسة.'},
+{n:36,t:'ضبط النفس أثناء المرافعة',d:'المرافعة تختبر الأعصاب — استفزاز من الخصم، تساؤل صعب من القاضي، اعتراض مفاجئ. المحامي الذي يضبط نفسه يحوّل هذه المواقف لصالحه بدلاً من أن تُفقده توازنه. الهدوء يمنحه فرصة لتقييم الوضع وصياغة رد قانوني محكم. الانفعال يهدر الوقت ويضعف الموقف، أما الاتزان فيُكسب الاحترام ويوحي بقوة الحجة.'},
+{n:37,t:'تواصل فعّال مع الموكلين',d:'التواصل الجيد ليس مجرد تبادل معلومات، بل بناء علاقة تقوم على الفهم والثقة. يبدأ بالاستماع لأهداف الموكل ومخاوفه، ويستمر بإطلاعه دورياً على مستجدات القضية بلغة مفهومة. الموكل الذي يشعر أنه على اطلاع بقضيته يثق في محاميه حتى عند ورود قرارات غير متوقعة، ويمنحه الصبر اللازم لإكمال الإجراءات.'},
+{n:38,t:'قدرة على تبسيط المفاهيم القانونية',d:'القانون يحتوي مصطلحات يصعب على غير المتخصص فهمها، وهنا يبرز فن المحامي في تحويل المعقد إلى واضح. التبسيط لا يعني التسطيح، بل إيصال الفكرة بدقة وفي صورة قابلة للاستيعاب. هذه المهارة تخدم الموكل في فهم وضعه، وتخدم المحامي في إقناع غير المتخصصين — من جلسات تحكيم إلى مفاوضات تجارية.'},
+{n:39,t:'حضور قوي أمام القضاء',d:'الحضور القوي أكبر من هيئة أو لغة جسد، هو نتاج تحضير دقيق ومعرفة كاملة بالملف وضبط نفس واستخدام واعٍ للغة القانونية. المحامي الذي يدخل القاعة وهو مستوعب لكل تفصيلة يبث رسالة ضمنية بأنه يستحق الإصغاء. هذا الحضور لا يُكتسب بالادعاء، بل ينعكس طبيعياً على من يحضر مستعداً.'},
+{n:40,t:'مهارة إدارة النقاشات القانونية',d:'النقاش القانوني فن استراتيجي يجمع التحليل بالذكاء الاجتماعي. مهارة إدارته تشمل تحليل حجج الخصم، الرد على اعتراضاته دون انجرار، والحفاظ على التركيز على النقاط الجوهرية. المحامي البارع يدير النقاش لا يُدار به، يعرف متى يدفع ومتى يتراجع، ومتى يطرح سؤالاً جوهرياً يقلب اتجاه الحوار.'},
+]},
+{g:'الصفات الاجتماعية والقيادية',short:'قيادية',desc:'القيادة والعمل الجماعي',items:[
+{n:41,t:'روح التعاون مع الزملاء',d:'المهنة تكبر بالتعاون لا بالعزلة. المحامي المتعاون يشارك خبراته ومعلوماته مع الزملاء، ويسهم في حل المشكلات القانونية بشكل جماعي. هذا التعاون لا يُضعف مكانته، بل يبنيها — فمن يُعطي يحظى بشبكة دعم مهنية واسعة تعود عليه عند الحاجة. المنافسة في المحاماة لا تتعارض مع الزمالة، بل تتكامل معها.'},
+{n:42,t:'القيادة الهادئة والحكيمة',d:'القائد الحقيقي لا يُقاس بقدرته على إصدار الأوامر، بل بقدرته على تحفيز فريقه وتوجيهه واتخاذ القرارات في الأوقات الحرجة دون انفعال. القيادة في المجال القانوني تتطلب توازناً بين الحزم والمرونة، وبين الثقة بالنفس والتواضع. الهدوء سلاح القائد في الأزمات، والحكمة بوصلته في القرارات الصعبة.'},
+{n:43,t:'التحفيز والإلهام للفريق',d:'القائد الذي يكتفي بإصدار التعليمات يضمن تنفيذاً سطحياً، أما الذي يلهم فريقه فيخلق التزاماً داخلياً يدفعه للتميز. المحامي الملهم يصف الرسالة قبل المهمة، ويربط العمل اليومي بالأثر النهائي على حياة الموكلين. حماسه يسري لمن حوله، ويحوّل العمل القانوني من واجب روتيني إلى رسالة مهنية مشتركة.'},
+{n:44,t:'احترام جميع العاملين بالمهنة',d:'الاحترام ليس حكراً على القضاة وذوي النفوذ. المحامي الحقيقي يعامل كل من يعمل في المنظومة القانونية — من موظفين، وكتبة، وسعاة، وزملاء — بتقدير وإنصاف. هذا الاحترام يبني سمعة طيبة، ويسهّل الإجراءات، ويزرع الثقة المتبادلة. الناس يتذكرون من عاملهم بكرامة في وقت كان يستطيع فيه ألا يفعل.'},
+{n:45,t:'العدل في التعامل مع الآخرين',d:'المحامي الذي يطلب الإنصاف في المحكمة يجب أن يكون منصفاً في حياته المهنية. القائد العادل يوزّع المهام بإنصاف، ويكافئ الأداء بشفافية، ولا يحابي زميلاً على حساب آخر. العدل الداخلي يبني فريقاً يثق بقائده، أما المحاباة فتنهار بها الفرق ولو تأخر الانهيار. عدل المرء مع أقربائه أصدق امتحان.'},
+{n:46,t:'الالتزام بالمبادئ والقيم',d:'الالتزام بالمبادئ ما يمنح المحامي هيبته ومصداقيته. المتمسك بقيمه لا يتنازل عن الحقيقة من أجل مصلحة آنية، ولا يساوم على شرف المهنة مهما كانت الإغراءات. المبادئ ليست مجرد شعارات، بل اختيارات يومية صعبة تتراكم لتصنع شخصية. ومن لا تتوقف مبادئه عند مكاسب صغيرة، لا يعرف العالم ما يثني عزيمته.'},
+{n:47,t:'الإيجابية في المواقف الصعبة',d:'الإيجابية ليست تفكيراً متفائلاً ساذجاً، بل منهج عملي لإدارة الأزمات بحكمة. القضايا تتعقد، والأحكام قد تأتي خلاف التوقع، لكن المحامي الإيجابي لا يسمح للإحباط بإضعاف عزيمته. يبحث عن الفرصة في التحدي، ويحوّل الانتكاسة إلى درس، ويُبقي معنويات فريقه مرتفعة. هذه الإيجابية معدية، وتنقل العمل من الجمود إلى الحركة.'},
+{n:48,t:'خدمة العدالة قبل المصلحة الشخصية',d:'المحامي الحقيقي يجعل العدالة فوق كل اعتبار، حتى فوق مصلحته الخاصة. المهنة وُجدت لخدمة المجتمع وصيانة الحقوق، لا لتحقيق مكاسب مادية فقط. هذه القيمة هي جوهر القسم الذي يؤديه المحامي حين يكرّس نفسه للدفاع عن الحق دون مساومة. ومن يتمسك بها، يكسب ثقة المجتمع ومكانة لا تشتريها أتعاب.'},
+{n:49,t:'الإنصاف في الأحكام',d:'الإنصاف هو الوجه الإنساني للعدالة. المحامي المنصف لا ينظر للأمور من زاوية ضيقة، بل يقدّر المواقف بميزان العدل والضمير. حين يقيّم قضية، يرى وجهة نظر الخصم قبل أن يرى ضعف موقفه. حين يحكم على زميل، يتأمل الظروف قبل أن يصدر حكماً متسرعاً. الإنصاف ليس فضيلة أخلاقية فقط، بل أساس العدالة القانونية ذاتها.'},
+{n:50,t:'التواضع مع الآخرين رغم المكانة',d:'التواضع تاج الصفات الإنسانية التي تزيّن المحامي الناجح. مهما بلغت مكانته القانونية، يدرك أن الكبرياء لا يزيد صاحبه احتراماً، بل يبعد الناس. المحامي المتواضع يتعامل مع الجميع بروح المساواة، سواء كانوا زملاء مبتدئين أو موكلين بسطاء أو موظفين بالمحكمة. وكلما زادت مكانته، زاد قربه من الناس لا بُعده عنهم.'},
+]},
+{g:'الصفات الأخلاقية والسلوكية',short:'أخلاقية',desc:'الأمانة والصدق والضمير المهني',items:[
+{n:51,t:'الأمانة في العمل',d:'الأمانة ركيزة شرف المهنة الأولى. المحامي الأمين يحفظ أسرار موكله، ولا يسيء استخدام المعلومات التي تصل إليه بحكم عمله. تمتد الأمانة لتشمل دقته في إعداد المستندات، وحرصه على نقل الوقائع بصدق دون تزييف. الموكل يضع في يد محاميه قضيته وأحياناً حياته كلها، فالخيانة هنا ليست مجرد خطأ، بل انتهاك لجوهر العقد المهني.'},
+{n:52,t:'الصدق في القول والفعل',d:'الصدق قيمة مهنية تعكس نزاهة المحامي أمام القضاء والموكلين. المحامي الصادق لا يضلل المحكمة بحجج واهية، ولا يوهم موكله بنتائج غير واقعية، ولا يبالغ في حجم مهارته. صدقه يمنح كلماته ثقلاً، ويجعل حجته أقوى لأنها تستند إلى الحقائق لا الأوهام. ومن يُعرف بصدقه، تُقبل كلمته دون كبير عناء في الإثبات.'},
+{n:53,t:'الالتزام بالعهود',d:'الوفاء بالوعد مبدأ أساسي في العلاقات المهنية، سواء مع الموكل أو الزميل أو الخصم. المحامي الذي يلتزم بمواعيده ووعوده يرسّخ ثقافة الثقة في بيئته. كل وعد لا يُحترم يقلل رصيد المصداقية، وحين ينفد هذا الرصيد لا تعيده مذكرات بليغة. ومن لم يلتزم بكلمته في الصغائر، لا يُؤمَن عليه في الأمور الكبيرة.'},
+{n:54,t:'الصبر على العقبات',d:'المحاماة ليست طريقاً ممهداً، بل مليئة بالإجراءات المعقدة والمواقف المحبطة. المحامي يحتاج صبراً طويلاً وقدرة على التحمل دون فقدان حماسه أو توازنه. القضية قد تستغرق سنوات، والحكم قد يأتي في الاستئناف لا الابتدائية، والتنفيذ قد يحتاج معركة مستقلة. الصبر هنا ليس استسلاماً، بل مثابرة هادئة تصل بصاحبها للنتيجة.'},
+{n:55,t:'النزاهة والشفافية',d:'النزاهة هي الالتزام بالحق مهما كانت الإغراءات أو الضغوط، وهي الحد الفاصل بين المحترف الشريف والممارس الانتهازي. الشفافية تجعل تعامل المحامي واضحاً أمام عملائه وزملائه، فلا يخفي ما ينبغي إظهاره، ولا يلتبس قوله بتأويلات. حين يجتمعان معاً، يصبح المحامي محل ثقة لا تحتاج إثباتاً، وسمعته تسبقه في كل غرفة.'},
+{n:56,t:'الحكمة في اتخاذ القرار',d:'الحكمة هي النظر للأمور بعمق واتزان قبل اتخاذ الموقف. المحامي الحكيم لا يتسرع في إطلاق الأحكام، بل يزن كلماته بعقل بارد، ويضع كل احتمال في موضعه. يميّز بين المعركة الجديرة بالخوض والمعركة التي يخسر فيها حتى لو انتصر. الحكمة لا تُكتسب فقط بالعلم، بل بالتجربة والتأمل والقدرة على التعلم من أخطاء النفس والآخرين.'},
+{n:57,t:'العدالة في الحكم على الأمور',d:'العدالة ليست مبدأ قانونياً فقط، بل نهج حياة. المحامي العادل يتعامل مع القضايا والموكلين والزملاء من منطلق المساواة والاحترام، دون تحيّز أو تمييز. حين يستمع لطرف، يتذكر أن للطرف الآخر روايته. حين يحكم على موقف، يفكك معطياته قبل أن يصدر رأياً. هذه العقلية القضائية تنفعه في عمله، كما تنفعه في حياته كلها.'},
+{n:58,t:'الشجاعة الأدبية في قول الحق',d:'لا قيمة للعلم دون شجاعة في الدفاع عن الحق. المحامي الشجاع يقف في وجه الظلم حتى لو كان وحيداً، ويُعلن الحقيقة دون خوف من العواقب. يقول لموكله ما لا يحب سماعه، وللقاضي ما لا يحب الاعتراف به، ولزميله ما يجب أن يُقال. هذه الشجاعة تكسبه احتراماً لا يُشترى، ومكانة تظل بعد رحيل القضايا والمواقف.'},
+{n:59,t:'الرحمة بالضعيف',d:'المحامي الحقيقي لا يرى في القانون أداة ردع فقط، بل وسيلة رحمة وعدالة. تعاطفه مع الضعفاء والمظلومين لا يُضعف من مهنيته، بل يرفع من إنسانيته. قد يقبل قضية بأتعاب رمزية لمن لا يقدر، وقد يتنازل عن جزء من حقه ليساعد محتاجاً. هذه الرحمة ليست ضعفاً، بل وعي بأن المهنة في جوهرها خدمة إنسانية قبل أن تكون مكسباً.'},
+{n:60,t:'التحلي بالضمير المهني',d:'الضمير هو القاضي الداخلي الذي يوجّه المحامي في كل قراراته. من يحتكم إلى ضميره لا يحتاج رقيباً خارجياً، لأنه يعرف بنفسه متى يتوقف ومتى يتكلم. الضمير المهني يربط بين المعرفة القانونية والأخلاق الإنسانية، ويمنع المحامي من استغلال ثقة موكله أو ضعف خصمه. صوته خافت لكنه أعلى من أي ضوضاء، إن أحسن المرء الإصغاء.'},
+]},
+{g:'الصفات الحديثة والمستقبلية',short:'حديثة',desc:'التكنولوجيا والابتكار والعولمة',items:[
+{n:61,t:'الإلمام بالتكنولوجيا القانونية',d:'الممارسة القانونية لم تعد قلماً وورقاً، بل أنظمة إلكترونية متكاملة تُسرّع العمل وتنظّم الملفات. الإلمام بالتكنولوجيا القانونية لم يعد خياراً بل ضرورة للمحامي العصري. يشمل ذلك أنظمة إدارة المكاتب، وقواعد البيانات القانونية، وأدوات الاجتماعات الافتراضية، وحفظ الملفات السحابي. من يتأخر في هذا المضمار، يجد نفسه بطيئاً مقارنة بمنافسين أقل خبرة لكنهم مجهّزون بأدوات أفضل.'},
+{n:62,t:'استخدام أدوات البحث الإلكتروني',d:'البحث الإلكتروني يختصر ساعات من الجهد. المحامي الذي يجيد التعامل مع منصات البحث القانوني يصل إلى أحكام النقض والتشريعات والفتاوى والدراسات المقارنة في دقائق. المهارة هنا ليست في معرفة وجود الأدوات، بل في إتقان استخدامها: صياغة استعلام دقيق، تقييم مصداقية المصدر، وتمييز الجوهري من الهامشي في كم هائل من النتائج.'},
+{n:63,t:'فهم الأبعاد الاقتصادية للقضايا',d:'القضية القانونية ليست تفسيراً للنصوص فقط، بل لها آثار مالية تمسّ مصالح الأفراد والشركات. المحامي الذي يفهم الجانب الاقتصادي يدرك أن التقاضي الطويل قد يكبّد موكله خسائر تفوق المكسب المتوقع، فيبحث عن تسوية مناسبة. هذا الفهم يرفعه من دور المنفّذ القانوني إلى دور المستشار الاستراتيجي الذي يُحسب رأيه في القرارات المصيرية.'},
+{n:64,t:'التفكير التحليلي للمخاطر',d:'التحليل التحليلي للمخاطر يميّز المحامي المحترف الذي يسبق الأحداث بخطوة. لا ينتظر وقوع المشكلة ليتحرك، بل يتوقعها ويحللها قبل أن تتحول إلى أزمة. عند مراجعة عقد، يفكر في كل سيناريو احتمالي للنزاع. عند رفع دعوى، يدرس المخاطر قبل المكاسب. هذه العقلية الوقائية توفر على موكليه خسائر، وتبني سمعة المحامي الذي يُستشار قبل اتخاذ القرارات الكبيرة.'},
+{n:65,t:'الابتكار في الحلول القانونية',d:'الابتكار ليس خروجاً عن النص، بل استخدام النصوص بمرونة وعمق. المحامي المبدع لا يكتفي بتطبيق القوانين كما هي، بل يوظفها بذكاء لصالح موكله ويبحث عن مسارات جديدة. حين يصطدم بطريق مغلق، يفتح طريقاً آخر بنص مختلف أو إجراء بديل. الابتكار في المحاماة فن استخراج الحلول من نصوص قد يقرؤها غيره دون أن يلحظ ما تخفيه.'},
+{n:66,t:'تطوير مهارات التفاوض الرقمي',d:'العقود والاتفاقيات تتم الآن عبر الإنترنت، والمفاوضات تجري في غرف افتراضية. المحامي الذي لا يتقن التفاوض الرقمي يفقد ميزة في سوق يتجه يوماً بعد يوم نحو الرقمنة. التفاوض الرقمي له قواعد مختلفة: لغة الجسد محدودة، الوقت أضيق، التشتت أكبر. إتقانه يتطلب تركيزاً أعمق ولغة أوضح وتحضيراً أدق من التفاوض المباشر.'},
+{n:67,t:'مواكبة القوانين الدولية',d:'في عصر العولمة القانونية، لم يعد المحامي يكتفي بفهم القانون المحلي. الاتفاقيات الدولية والقوانين عبر الحدود تؤثر على نشاط الأفراد والشركات بشكل مباشر. مواكبة القوانين الدولية تفتح أمامه أسواقاً وقضايا أوسع، وتمكّنه من خدمة موكلين لهم نشاط دولي. ومن لا يطّلع على ما يحدث خارج حدوده، يحرم نفسه من شريحة مهمة من الممارسة.'},
+{n:68,t:'القراءة في القانون المقارن',d:'القراءة المقارنة توسّع مدارك المحامي وتكسبه فهماً عميقاً للنظم المختلفة. تكشف له أن القوانين ليست جامدة، بل انعكاس لتاريخ كل مجتمع وثقافته. حين يرى كيف عالج تشريع آخر مشكلة مشابهة، يكتسب أدوات تفكير جديدة قد ينقلها لقضيته. القانون المقارن ليس ترفاً أكاديمياً، بل مصدر إلهام عملي للمحامي الذي يبحث عن حلول غير تقليدية.'},
+{n:69,t:'فهم السياسات العامة وتأثيرها',d:'السياسات العامة هي الإطار الذي تُصاغ في ظله القوانين وتُدار به شؤون الدولة. فهمها يمنح المحامي رؤية استراتيجية تساعده على إدراك الخلفيات التي تقف وراء التشريعات والقرارات الإدارية. حين يستوعب اتجاه الدولة في قطاع معين، يستشرف القوانين القادمة، ويوجّه استشاراته بناءً على ذلك. هذه العين السياسية ترفعه من رد الفعل إلى التخطيط.'},
+{n:70,t:'تبنّي أساليب العمل الحديثة',d:'تتطور بيئات العمل القانونية بوتيرة غير مسبوقة. لم يعد النجاح قائماً على المعرفة القانونية وحدها، بل على القدرة على مواكبة التغيير وتبنّي أدوات وأساليب مبتكرة. العمل عن بُعد، الفرق متعددة الجنسيات، أتمتة المهام المتكررة — كلها تحولات على المحامي أن يستوعبها ويوظفها. التمسك بأساليب الماضي قد يكون مريحاً، لكنه طريق سريع للتقادم المهني.'},
+]},
+{g:'العلاقات العامة والمهنية',short:'علاقات',desc:'الشبكة المهنية والسمعة والإعلام',items:[
+{n:71,t:'بناء شبكة علاقات قانونية متينة',d:'العلاقات المهنية ليست مجرد تواصل اجتماعي، بل استثمار استراتيجي. شبكة العلاقات القوية توسّع دائرة الفرص، وتسمح بتبادل الخبرات، وتفتح أبواباً للحلول التي تستعصي على الفرد. المحامي الذي يبني شبكته بصدق ومثابرة يجد عند الحاجة مرجعاً، وعند التعقيد فريقاً، وعند الفرصة شريكاً. الشبكة تُبنى ببطء، لكنها سند يدوم العمر المهني كله.'},
+{n:72,t:'التواصل الإيجابي مع الجهات الرسمية',d:'العلاقة المهنية مع الجهات الرسمية تُسهّل الإجراءات وتسرّع المعاملات. المحامي الذي يبني هذه العلاقة على الاحترام والوضوح يجنّب نفسه عقبات بيروقراطية تُعطّل القضايا. التواصل الإيجابي لا يعني المحاباة أو تجاوز القانون، بل التعامل المهذّب الذي يدرك ضغط العمل على الموظف، ويُسهّل عليه قدر المستطاع. أبواب كثيرة تُفتح بكلمة طيبة لا تُكلف شيئاً.'},
+{n:73,t:'تسويق الذات بأسلوب مهني راقٍ',d:'تسويق الذات هنا ليس ترويجاً تجارياً، بل بناء صورة مهنية تُبرز الكفاءة والخبرة باحترام لقدسية المهنة. المحامي يسوّق نفسه بمحتوى قانوني قيّم، ومحاضرات مفيدة، ومقالات تكشف فهمه العميق. المهم أن يكون التسويق متسقاً مع وقار المهنة، فلا يتحول إلى دعاية صاخبة تنفر بدل أن تجذب. التوازن بين الإبراز والاحتشام فن لا يتقنه إلا قلة.'},
+{n:74,t:'الكتابة القانونية الاحترافية',d:'الكتابة القانونية الاحترافية تترجم الفكر إلى حجج وأسانيد تقنع القاضي وتطمئن الموكل. هي ليست نقلاً للنصوص أو تكديساً للمعلومات، بل عملية تحليلية تتطلب فهماً عميقاً للوقائع وقدرة على الصياغة الدقيقة. من يكتب جيداً، يفكر جيداً، ويُقرأ ما يكتبه باحترام. المذكرة الجيدة تحسم أحياناً ما لا تحسمه ساعات من المرافعة الشفهية.'},
+{n:75,t:'الظهور الإعلامي المتزن',d:'الإعلام سلاح ذو حدين: قد يثقّف المجتمع ويظهر الحقائق القانونية، وقد يسيء للمهنة إن استُخدم باندفاع. المحامي المتزن في ظهوره يدرك أن كلمته في الإعلام تخضع لمقاييس مختلفة عن قاعة المحكمة. يحضّر جيداً، يختار ألفاظه بدقة، ويمتنع عن الإثارة أو الترويج الشخصي الفاقع. الظهور الناجح يبني المكانة، والمتسرع يهدمها.'},
+{n:76,t:'تعزيز الثقة لدى العملاء',d:'الثقة حجر الأساس في علاقة المحامي بعملائه، وتبدأ من الشفافية. المحامي يوضح للعميل حقيقة موقفه دون مبالغة، ويشرح احتمالات النجاح والفشل بموضوعية، ويلتزم بمواعيده. هذه السلوكيات الصغيرة تتراكم لتبني سمعة تمتد لسنوات. الموكل الراضي يصبح مصدراً لعملاء جدد دون حملة تسويقية، فالتوصية الشخصية أقوى من أي إعلان.'},
+{n:77,t:'الحفاظ على سمعة المكتب',d:'السمعة لا تُصنع في يوم، بل ثمرة سنوات من العمل الجاد والالتزام بالقيم. المحامي الذي يحافظ على سمعة مكتبه يحرص على جودة كل تفصيلة: المراسلات، المواعيد، أسلوب الفريق، حتى مظهر المكان. السمعة الجيدة جذب طبيعي للعملاء، وحماية في أوقات الأزمات. ومن يضحي بها لمكسب آني، يخسر رأسماله المهني الحقيقي.'},
+{n:78,t:'إدارة الأزمات القانونية والإعلامية',d:'المحامي المحترف لا يكتفي بالنصوص، بل يتقن السيطرة على المواقف الحساسة التي تمس سمعة موكله. إدارة الأزمات فن قيادة تحت الضغط: قراءة سريعة للموقف، تواصل واضح مع الأطراف، احتواء قبل أن يخرج الأمر عن السيطرة. كل أزمة فرصة لإثبات الكفاءة، أو لتدمير ما بُني في سنوات. الفرق يصنعه التحضير المسبق وبرودة الأعصاب.'},
+{n:79,t:'التعامل اللبق مع الصحافة',d:'الكلمة في الإعلام لها وزن وتأثير، لذا يتعامل المحامي مع الصحفيين بلغة احترام ومهنية. اللباقة تعني أيضاً التحكم في المضمون والأسلوب: عدم التعليق على ما لا يعلمه، الالتزام بسرية موكليه، تجنب الإثارة. الصحفي المحترف يقدّر المحامي الذي يُساعده دون أن يتجاوز، ويعود إليه مرة بعد مرة كمصدر موثوق.'},
+{n:80,t:'احترام صورة المهنة في المجتمع',d:'احترام صورة مهنة المحاماة من أسمى القيم. المحامي الواعي يدرك أن سلوكه داخل قاعة المحكمة وخارجها ينعكس على صورة المهنة في أعين الناس. تعليق عشوائي على وسائل التواصل، تصرف غير لائق في مكان عام، مزاح غير مناسب — كلها تصرفات قد لا يلاحظها هو، لكنها تترك أثراً. حماية صورة المهنة مسؤولية كل محامٍ، لا مسؤولية النقابة وحدها.'},
+]},
+{g:'صفات الريادة والتميّز',short:'ريادة',desc:'الطموح والتفوق وصناعة القدوة',items:[
+{n:81,t:'الطموح لتحقيق النجاح',d:'الطموح وقود المحامي نحو القمة. الطموح لا ينتظر الفرص بل يصنعها، ولا يرضى بالحد الأدنى من النجاح بل يسعى لتوسيع آفاقه. الطموح في المحاماة لا يعني التسرع أو البحث عن الشهرة، بل رغبة واعية في التطور المستمر. ومن لا يطمح لشيء، لا يصل لشيء — والاكتفاء بالقائم رغم وجود فرصة للنمو هو شكل خفي من التراجع.'},
+{n:82,t:'الإصرار على تحقيق العدالة',d:'الإصرار على تحقيق العدالة جوهر مهنة المحاماة. المحامي الذي يحمل هذا الإصرار لا يتعامل مع القضايا كمجرد ملفات، بل كرسالة إنسانية. هذا الإصرار يمنحه احترام القضاة وثقة الموكلين، ويدفعه لاستنفاد كل طريق قانوني قبل أن يستسلم. ومن يجعل العدالة هدفاً، يجد القوة لتحمل الإجراءات الطويلة والعقبات المتراكمة دون أن تخبو همّته.'},
+{n:83,t:'تحمّل المسؤولية في المواقف الصعبة',d:'المحامي القائد يثبت في المواقف التي يتراجع فيها غيره. يتحمل تبعات قراراته المهنية والأخلاقية بثقة، ولا يختبئ خلف الأعذار أو يلقي اللوم على الظروف. حين تخسر القضية، يواجه موكله بصدق ويبحث عن البدائل. حين يُخطئ فريقه، يتحمل المسؤولية أمام العميل قبل أن يصلح الخلل داخلياً. هذا النوع من المسؤولية يبني قائداً، لا مجرد محامٍ ناجح.'},
+{n:84,t:'العزيمة والثبات أمام العقبات',d:'المحاماة طريق مليء بالإحباطات: قضايا تخسر، مواعيد تتأجل، أحكام غير عادلة. العزيمة ما يفصل بين من يستمر ومن ينسحب. الثبات ليس عناداً، بل قناعة بأن المسار الطويل يصنع المهنة، وأن التراكم أهم من الومضة. ومن يصمد في وجه عقبة واحدة كبيرة، يكتشف لاحقاً أنها كانت اختباراً مهّد له القفزة المهنية التالية.'},
+{n:85,t:'حب التحدي والبحث عن الحل',d:'المحامي الذي يحب التحدي لا يرى في المشكلات عوائق، بل فرصاً للتفكير والإبداع. التحدي اختبار لقدراته العقلية ومهاراته المهنية. حين يواجه قضية معقدة يفرح بها بدل أن يهرب منها، لأنها تخرج أفضل ما فيه. هذه العقلية تجذب القضايا الكبيرة والاستشارات النوعية، فالقضايا الصعبة تحتاج محامياً يعشقها، لا محامياً يتحملها.'},
+{n:86,t:'التفوق في الأداء المهني',d:'التفوق ليس حدثاً، بل عادة. المحامي المتفوق لا يكتفي بأداء الواجبات، بل يقدم خدمة متكاملة دقيقة محترفة في كل خطوة. يفحص المذكرة مرتين، يراجع التواريخ ثلاث مرات، يستعد للجلسة قبل ليلة كاملة لا قبل ساعة. هذا التفوق نتاج انضباط ومثابرة، وهو ما يخلق فرقاً ملحوظاً بمرور الوقت بين من يكتفي بالمقبول ومن يطلب الممتاز.'},
+{n:87,t:'الابتسامة رغم الضغط',d:'القدرة على الحفاظ على الابتسامة رغم الضغوط ليست مظهراً شكلياً، بل رمز للقوة والتحكم في الذات. المحامي الذي يبتسم في الأزمة يبث الطمأنينة لمن حوله، ويشير بأنه يسيطر على الموقف لا العكس. هذا التحكم العاطفي مهارة تُكتسب، وتنفع في المرافعة والتفاوض وإدارة الفريق على حد سواء — فمن يضبط مزاجه يضبط محيطه.'},
+{n:88,t:'السعي الدائم للتطور',d:'السعي للتطور ضرورة مهنية، لا خيار ترفي. المحامي المتطور يقرأ، يحضر دورات، يلتقي بمتخصصين، يجرّب أدوات جديدة. لا ينظر للخلف ليرى ما حقق، بل للأمام ليرى ما يمكن تحقيقه. التطور ليس سباقاً مع الآخرين، بل مع نسخة الأمس من النفس. ومن يتطور كل يوم بنسبة صغيرة، ينظر بعد سنوات فيرى مسافة هائلة بين ما كان وما أصبح.'},
+{n:89,t:'الريادة في مجاله القانوني',d:'الريادة لا تتحقق بالصدفة، بل نتاج جهد متواصل ومعرفة عميقة ورؤية واضحة. المحامي الرائد يطوّر المفهوم القانوني ذاته من خلال البحث والمشاركة في صياغة الفكر القانوني الحديث. يكتب، يحاضر، يشارك في لجان مهنية، يبني سمعة في تخصص محدد. الريادة في الجزء أهم من العمومية في الكل، فمن يُعرف بشيء واحد بدقة، يجد القضايا تأتيه فيه دون بحث.'},
+{n:90,t:'تقديم القدوة المهنية للجيل الجديد',d:'أعظم صور الريادة أن يكون المحامي قدوة يُحتذى بها. القدوة تجسّد في أفعالها أعلى معايير النزاهة والانضباط. تقديم القدوة لا يعني الوعظ، بل السلوك اليومي الذي يراه المتدرّب فيتعلم. الجيل الجديد يقرأ من القائد قبل الكتب، فما يفعله أبلغ مما يقوله. وأكبر إرث يتركه المحامي لمهنته، تلاميذ يحملون الراية بعده بنفس الشرف.'},
+]},
+{g:'صفات إنسانية وروحية تكمل الشخصية',short:'إنسانية',desc:'الرحمة والإنسانية ورسالة العدالة',items:[
+{n:91,t:'الرحمة والإنصاف',d:'الرحمة والإنصاف جوهر العدالة الحقيقية. المحامي الذي يتحلى بالرحمة لا يرى في موكله مجرد ملف، بل إنساناً له مشاعر وآلام. والإنصاف يجعله يقدّر كل طرف بميزان عادل، حتى الخصم. حين تجتمع الصفتان، يصبح المحامي قدوة في أخلاقه، ورمزاً للنزاهة في عمله. هذا التكامل بين الإنسانية والمهنية ما يميز المحامي عن مجرد رجل قانون.'},
+{n:92,t:'احترام الإنسان قبل القضية',d:'الموكل ليس رقماً في سجل المكتب، بل إنسان له مشاعر واحتياجات. المحامي الذي يحترم إنسانية موكله يستمع له قبل أن يحلل ملفه، ويتعاطف مع قلقه قبل أن يقدم استشارته. هذا الاحترام يبني علاقة تتجاوز القضية الواحدة، ويجعل المحامي يقدم خدمة قانونية متكاملة تجمع بين الحق والرحمة. والقانون بلا إنسانية أداة جامدة لا روح فيها.'},
+{n:93,t:'الإيمان برسالة العدالة',d:'الإيمان برسالة العدالة العمود الفقري لكل محامٍ متميز. هذا الإيمان يجعله مستعداً للتضحية بالراحة الشخصية أو الكسب السريع مقابل الالتزام بالعدل. من يؤمن أن مهنته رسالة، يقاوم الإغراءات أسهل من غيره، ويصبر على المشقات أطول من غيره. وفي النهاية يحوّل المحامي نفسه من منفّذ للمهام إلى صانع فرق حقيقي في حياة الناس وفي المجتمع كله.'},
+{n:94,t:'الإخلاص في العمل',d:'الإخلاص يحوّل المهنة من وظيفة إلى رسالة. المحامي المخلص يؤدي مهامه بتفانٍ، ويبذل أقصى جهده لتحقيق نتائج عادلة لموكليه دون التفات للمصالح الشخصية أو سهولة الإنجاز. يعمل في القضية الصغيرة كما يعمل في الكبيرة، ويعطي الموكل المتواضع ما يعطيه للموكل الثري. هذا التساوي في العطاء بصمة لا يخطئها المراقب، وأساس لاحترام يدوم.'},
+{n:95,t:'ضبط النفس عند الغضب',d:'الغضب يفسد الحجة ويُفقد التركيز ويهدر فرصاً قد لا تتكرر. المحامي الذي يضبط نفسه عند الغضب يحافظ على وضوح ذهنه، ويتعامل مع الاستفزاز بهدوء يحوّل الموقف لصالحه. هذه السيطرة الانفعالية ليست ضعفاً، بل قوة تحتاج تدريباً ووعياً ذاتياً. ومن لا يحكم نفسه عند الانفعال، يصعب أن يقنع الآخرين بأنه يستطيع إدارة قضاياهم بحكمة.'},
+{n:96,t:'السعي للإصلاح قبل الخصومة',d:'السعي للإصلاح قبل اللجوء للقضاء علامة نضج المحامي ووعيه بمسؤولياته. حل النزاعات بالطرق الودية يوفر الوقت والجهد، ويقلل التكاليف المالية والمعنوية على الأطراف، ويحفظ علاقات قد تستمر. المحامي الذي يفهم هذا يبدأ دائماً باستكشاف إمكانية التسوية، فإن تعذرت لجأ للقضاء. ومن يحرّض على الخصومة لمكسب آني، يفرّط في فرص أكبر طويلة المدى.'},
+{n:97,t:'احترام كرامة الموكل والخصم',d:'احترام كرامة كل طرف من المبادئ الجوهرية للمحاماة النزيهة. الموكل يستحق الإنصات والاهتمام، والخصم يستحق الاحترام القانوني والإنساني مهما كانت طبيعة النزاع. المحامي الذي يهين خصمه يهبط بمستوى المرافعة كلها، ويفتح باباً للرد بالمثل. أما من يحتفظ بكرامة الجميع، يدير النزاع بكفاءة وهدوء، ويترك انطباعاً يدوم بعد انتهاء القضية.'},
+{n:98,t:'النزاهة في القول والفعل',d:'النزاهة العمود الفقري للثقة في المحاماة. المحامي النزيه لا يضلل المحكمة، ولا يخفي الحقائق، ولا يسعى لمصالح شخصية على حساب العدالة. النزاهة ليست سلوكاً مع الآخرين فقط، بل اتساقاً داخلياً بين ما يعتقده وما يقوله ويفعله. ومن يعيش هذا الاتساق، يجد قوة داخلية لا تهتز أمام الإغراءات، وثقة من المحيطين تأتي دون طلب.'},
+{n:99,t:'التسامح والتوازن الإنساني',d:'التسامح يمنح المحامي القدرة على إدارة النزاعات بحكمة، بعيداً عن الانفعالات أو رغبة الانتقام. المتسامح يتعامل مع الأطراف المختلفة بروح هادئة، ويحافظ على العدالة دون تحيّز. التسامح لا يعني التنازل عن الحق، بل التعامل بقلب لا يحمل ضغائن. والتوازن الإنساني يجعل المحامي يعيش حياة أوسع من قاعة المحكمة، ويعود لعمله بطاقة لا تنضب.'},
+{n:100,t:'أن يكون صوتاً للحق لا للمصلحة',d:'أن يكون المحامي صوتاً للحق قبل أي اعتبار، هو ما يميز المحامي الحقيقي عن غيره. الدفاع عن العدالة يُقدَّم على أي مصلحة شخصية أو مادية. هذه الصفة تضمن أن كل عمل يقوم به المحامي موجّه لخدمة الحق وحماية الحقوق وتعزيز الثقة بالقانون. ومن يصبح صوتاً للحق بصدق، يجد أن الناس يبحثون عنه ليس لأنه الأفضل فقط، بل لأنه مأمون.'},
+]},
+];
+
+// Flat traits list for navigation (1..100)
+const TRAITS_FLAT=TRAITS_BOOK.flatMap((g,gi)=>g.items.map(it=>({...it,g:g.g,short:g.short,gi})));
+// ASSESS_TRAITS derived from TRAITS_BOOK for backward compatibility with assessment page
+const ASSESS_TRAITS=TRAITS_BOOK.map(g=>({g:g.short,fullG:g.g,items:g.items.map(it=>it.t)}));
+const ASSESS_SKILLS=[
+  {t:'المرافعة والإقناع القضائي',d:'تقديم الحجج بشكل مقنع أمام المحكمة'},
+  {t:'البحث والتحليل القانوني',d:'إيجاد النصوص والسوابق القضائية ذات الصلة'},
+  {t:'صياغة المذكرات والعقود',d:'الكتابة القانونية الدقيقة والواضحة'},
+  {t:'التفاوض وحل النزاعات',d:'التوصل لتسويات مُرضية خارج المحكمة'},
+  {t:'إدارة الوقت والأولويات',d:'التعامل مع قضايا متعددة دون تفويت مواعيد'},
+  {t:'التواصل الفعّال مع الموكل',d:'إدارة توقعاته وإبقائه على اطلاع'},
+  {t:'المعرفة الإجرائية العميقة',d:'إتقان المرافعات والإجراءات الجنائية عملياً'},
+  {t:'الاستخدام الاحترافي للتكنولوجيا',d:'البحث الرقمي والأدوات القانونية'},
+  {t:'بناء العلاقات المهنية',d:'شبكة علاقات مع القضاة والزملاء'},
+  {t:'الذكاء التجاري والمالي',d:'إدارة المكتب كمشروع مربح ومتنامٍ'},
+];
+let assessScores={};
+function initAssessment(){
+  assessScores=JSON.parse(localStorage.getItem('mm_assess')||'{}');
+  const te=document.getElementById('assess-traits'),se=document.getElementById('assess-skills');
+  if(!te)return;
+  te.innerHTML=TRAITS_BOOK.map(g=>g.items.map((it,j)=>{
+    const key=g.short+'_'+j,val=assessScores[key]||0;
+    return`<div style="background:var(--bg);border:1px solid ${val?'var(--gold-l)':'var(--border)'};border-radius:4px;padding:7px 10px;display:flex;align-items:center;gap:6px;" data-tkey="${key}">
+      <div style="flex:1;cursor:pointer;" onclick="toggleTrait('${key}',this.parentElement)">
+        <div style="font-size:10px;color:var(--text3);">${g.short}</div>
+        <div class="t-name" style="font-size:12px;color:${val?'var(--navy)':'var(--text2)'};font-weight:${val?700:400};">${val?'✓ ':''}${it.t}</div>
+      </div>
+      <button class="tg-info-link" onclick="event.stopPropagation();openTraitModal(${it.n})" title="اعرف أكثر">ⓘ</button>
+    </div>`;
+  }).join('')).join('');
+  se.innerHTML=ASSESS_SKILLS.map((s,i)=>{
+    const key='skill_'+i,val=assessScores[key]||0;
+    return`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
+      <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--navy);">${s.t}</div><div style="font-size:11px;color:var(--text3);">${s.d}</div></div>
+      <div style="display:flex;gap:4px;">${[1,2,3,4,5].map(n=>`<div onclick="rateSkill('${key}',${n},this.parentElement)" data-n="${n}" style="width:22px;height:22px;border-radius:50%;border:2px solid ${n<=val?'var(--gold)':'var(--border)'};background:${n<=val?'var(--gold)':'transparent'};cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center;color:${n<=val?'white':'var(--text3)'};">${n}</div>`).join('')}</div></div>`;
+  }).join('');
+  updateScore();
+}
+function toggleTrait(key,el){
+  assessScores[key]=assessScores[key]?0:1;const on=assessScores[key];
+  el.style.borderColor=on?'var(--gold-l)':'var(--border)';
+  const d=el.querySelector('.t-name');d.style.color=on?'var(--navy)':'var(--text2)';d.style.fontWeight=on?700:400;
+  d.textContent=(on?'✓ ':'')+d.textContent.replace('✓ ','');
+  localStorage.setItem('mm_assess',JSON.stringify(assessScores));updateScore();
+}
+function rateSkill(key,n,container){
+  assessScores[key]=n;
+  container.querySelectorAll('[data-n]').forEach(d=>{const dn=+d.dataset.n;d.style.border=`2px solid ${dn<=n?'var(--gold)':'var(--border)'}`;d.style.background=dn<=n?'var(--gold)':'transparent';d.style.color=dn<=n?'white':'var(--text3)';});
+  localStorage.setItem('mm_assess',JSON.stringify(assessScores));updateScore();
+}
+function updateScore(){
+  const ts=Object.entries(assessScores).filter(([k,v])=>!k.startsWith('skill_')&&v).length;
+  const ss=Object.entries(assessScores).filter(([k])=>k.startsWith('skill_')).reduce((s,[,v])=>s+v,0);
+  const total=ts+ss,pct=Math.round(total/150*100);
+  document.getElementById('assess-score').textContent=total;
+  document.getElementById('assess-bar').style.width=pct+'%';
+  document.getElementById('assess-level').textContent=pct>=80?'محامٍ استثنائي ⭐':pct>=60?'محامٍ متميز':pct>=40?'على المسار الصحيح':pct>=20?'في طريق التطور':'ابدأ التقييم';
+  const bd=document.getElementById('assess-breakdown');
+  if(bd)bd.innerHTML=TRAITS_BOOK.map(g=>{const sc=g.items.filter((t,j)=>assessScores[g.short+'_'+j]).length;return`<div class="sr"><div class="sn" style="font-size:11px;">${g.short}</div><div class="sbar"><div class="sf" style="width:${sc*10}%"></div></div><div class="sp">${sc}/10</div></div>`;}).join('');
+}
+function resetAssessment(){if(!confirm('إعادة التقييم من الصفر؟'))return;assessScores={};localStorage.removeItem('mm_assess');initAssessment();}
+
+// TRAITS GUIDE
+let traitsInited=false;
+function initTraitsGuide(){
+  if(traitsInited)return;
+  traitsInited=true;
+  renderTraitsGrid();
+}
+function renderTraitsGrid(){
+  const grid=document.getElementById('tg-grid');
+  grid.innerHTML=TRAITS_BOOK.map((g,gi)=>{
+    const isOpen=gi===0;
+    return`<div class="tg-card${isOpen?' tg-on':''}" data-gi="${gi}">
+      <div class="tg-card-h" onclick="this.parentElement.classList.toggle('tg-on')">
+        <div class="tg-card-num">${gi+1}</div>
+        <div class="tg-card-t"><div class="tg-card-tt">${g.g}</div><div class="tg-card-ts">${g.desc} • ${g.items.length} صفات</div></div>
+        <div class="tg-card-toggle">◂</div>
+      </div>
+      <div class="tg-card-body">
+        <div class="tg-trait-list">${g.items.map(it=>`<div class="tg-trait" onclick="openTraitModal(${it.n})"><div class="tg-trait-num">${it.n}</div><div class="tg-trait-name">${it.t}</div><div class="tg-trait-arrow">←</div></div>`).join('')}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function searchTraits(){
+  const q=(document.getElementById('tg-q').value||'').trim();
+  const grid=document.getElementById('tg-grid'),results=document.getElementById('tg-results'),count=document.getElementById('tg-count');
+  if(!q){grid.style.display='grid';results.style.display='none';count.textContent='';return;}
+  grid.style.display='none';results.style.display='block';
+  const matches=TRAITS_FLAT.filter(t=>t.t.includes(q)||t.d.includes(q));
+  results.innerHTML=matches.length?matches.map(t=>`<div class="tg-search-result" onclick="openTraitModal(${t.n})"><div class="tg-search-result-num">${t.n}</div><div class="tg-search-result-i"><div class="tg-search-result-t">${t.t}</div><div class="tg-search-result-c">${t.g}</div></div><div class="tg-trait-arrow">←</div></div>`).join(''):'<div class="es"><div class="ei">📑</div><div class="et">لا توجد نتائج</div></div>';
+  count.textContent=`${matches.length} نتيجة`;
+}
+function toggleAllTraits(open){
+  document.querySelectorAll('#tg-grid .tg-card').forEach(c=>{
+    if(open)c.classList.add('tg-on');else c.classList.remove('tg-on');
+  });
+}
+let currentTraitNum=null;
+function openTraitModal(num){
+  const trait=TRAITS_FLAT.find(t=>t.n===num);
+  if(!trait)return;
+  currentTraitNum=num;
+  document.getElementById('tgm-num').textContent='#'+num;
+  document.getElementById('tgm-cat').textContent=trait.g;
+  document.getElementById('tgm-title').textContent=trait.t;
+  document.getElementById('tgm-body').textContent=trait.d;
+  document.getElementById('tgm-prev').disabled=num<=1;
+  document.getElementById('tgm-next').disabled=num>=100;
+  document.getElementById('tg-modal').classList.add('on');
+}
+function closeTraitModal(){document.getElementById('tg-modal').classList.remove('on');currentTraitNum=null;}
+function navTrait(d){if(currentTraitNum===null)return;const next=currentTraitNum+d;if(next>=1&&next<=100)openTraitModal(next);}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('tg-modal').classList.contains('on'))return;
+  if(e.key==='Escape')closeTraitModal();
+  else if(e.key==='ArrowLeft')navTrait(1);
+  else if(e.key==='ArrowRight')navTrait(-1);
+});
+
+// ============ BACKUP & EXPORT ============
+const DBg=k=>JSON.parse(localStorage.getItem('mm_'+k)||'[]');
+function fdShort(d){if(!d)return'—';try{return new Date(d+'T00:00:00').toLocaleDateString('ar-EG',{year:'numeric',month:'2-digit',day:'2-digit'});}catch(e){return d;}}
+function fdLong(d){if(!d)return'—';try{return new Date(d).toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'});}catch(e){return d;}}
+function daysSince(ts){if(!ts)return 999;return Math.floor((Date.now()-ts)/(1000*60*60*24));}
+
+function initBackup(){
+  // Stats
+  const cases=DBg('cases'),clients=DBg('clients'),sessions=DBg('sessions'),fees=DBg('fees');
+  const totalFees=fees.reduce((s,f)=>s+(f.total||0),0),totalPaid=fees.reduce((s,f)=>s+(f.paid||0),0);
+  const stats=[
+    {n:'الموكلين',v:clients.length,c:'#1a7a4a'},
+    {n:'القضايا',v:cases.length,c:'#b8860b'},
+    {n:'الجلسات',v:sessions.length,c:'#2980b9'},
+    {n:'إجمالي الأتعاب',v:totalFees.toLocaleString('ar-EG')+' ج',c:'#0c1a2e'},
+  ];
+  document.getElementById('bk-stats').innerHTML=stats.map(s=>`<div style="background:var(--bg);padding:12px;border-radius:6px;border-right:3px solid ${s.c};">
+    <div style="font-size:11px;color:var(--text3);margin-bottom:4px;">${s.n}</div>
+    <div style="font-size:18px;font-weight:700;color:${s.c};">${s.v}</div>
+  </div>`).join('');
+  
+  // Last export dates
+  const pdfTs=parseInt(localStorage.getItem('mm_last_pdf_export')||'0');
+  const xlsTs=parseInt(localStorage.getItem('mm_last_excel_export')||'0');
+  document.getElementById('bk-pdf-last').textContent=pdfTs?'آخر تصدير: '+fdLong(new Date(pdfTs).toISOString())+' ('+daysSince(pdfTs)+' يوم)':'آخر تصدير: لم يتم بعد';
+  document.getElementById('bk-excel-last').textContent=xlsTs?'آخر تصدير: '+fdLong(new Date(xlsTs).toISOString())+' ('+daysSince(xlsTs)+' يوم)':'آخر تصدير: لم يتم بعد';
+  
+  // Reminder banner
+  const lastExport=Math.max(pdfTs,xlsTs);
+  const days=daysSince(lastExport);
+  const banner=document.getElementById('bk-reminder');
+  if(!lastExport){banner.style.display='flex';document.getElementById('bk-reminder-text').textContent='ابدأ بتصدير أول نسخة من بياناتك الآن';}
+  else if(days>=7){banner.style.display='flex';document.getElementById('bk-reminder-text').textContent=`مر ${days} يوم على آخر تصدير. وقت النسخة الأسبوعية!`;}
+  else{banner.style.display='none';}
+}
+
+function exportExcel(){
+  if(typeof XLSX==='undefined'){alert('مكتبة Excel لم تحمّل بعد، حاول مجدداً');return;}
+  const cases=DBg('cases'),clients=DBg('clients'),sessions=DBg('sessions'),fees=DBg('fees');
+  const wb=XLSX.utils.book_new();
+  const today=new Date().toLocaleDateString('en-CA');
+  
+  // Sheet 1: Summary
+  const totalFees=fees.reduce((s,f)=>s+(f.total||0),0),totalPaid=fees.reduce((s,f)=>s+(f.paid||0),0);
+  const upcoming=sessions.filter(s=>{const d=new Date(s.date);const now=new Date();return d>=now&&d<=new Date(now.getTime()+30*24*60*60*1000);}).length;
+  const summary=[
+    ['تقرير مكتب المحاماة'],['تاريخ التصدير',new Date().toLocaleDateString('ar-EG')],[],
+    ['البند','القيمة'],
+    ['عدد الموكلين',clients.length],
+    ['عدد القضايا',cases.length],
+    ['القضايا الجارية',cases.filter(c=>c.status==='جارية').length],
+    ['عدد الجلسات الكلي',sessions.length],
+    ['الجلسات خلال 30 يوم',upcoming],
+    ['إجمالي الأتعاب (جنيه)',totalFees],
+    ['إجمالي المدفوع (جنيه)',totalPaid],
+    ['إجمالي المتبقي (جنيه)',totalFees-totalPaid],
+  ];
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(summary),'ملخص');
+  
+  // Sheet 2: Clients
+  const clientsRows=[['الاسم','الهاتف','الإيميل','النوع','ملاحظات']];
+  clients.forEach(c=>clientsRows.push([c.name||'',c.phone||'',c.email||'',c.type||'',c.notes||'']));
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(clientsRows),'الموكلين');
+  
+  // Sheet 3: Cases
+  const casesRows=[['رقم القضية','الموكل','النوع','المحكمة','الحالة','تاريخ البدء','أقرب جلسة','ملاحظات']];
+  cases.forEach(c=>casesRows.push([c.caseNum||'',c.client||'',c.type||'',c.court||'',c.status||'',c.start||'',c.next||'',c.notes||'']));
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(casesRows),'القضايا');
+  
+  // Sheet 4: Sessions
+  const sessRows=[['التاريخ','الوقت','الموكل','رقم القضية','المحكمة','ملاحظات']];
+  [...sessions].sort((a,b)=>new Date(a.date)-new Date(b.date)).forEach(s=>sessRows.push([s.date||'',s.time||'',s.client||'',s.caseNum||'',s.court||'',s.notes||'']));
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sessRows),'الجلسات');
+  
+  // Sheet 5: Fees
+  const feesRows=[['الموكل','رقم القضية','الإجمالي','المدفوع','المتبقي','الحالة','ملاحظات']];
+  fees.forEach(f=>feesRows.push([f.client||'',f.caseNum||'',f.total||0,f.paid||0,f.remaining||0,f.status||'',f.notes||'']));
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(feesRows),'الأتعاب');
+  
+  // Sheet 6: Sajl (case log)
+  const sajlRows=[['رقم القضية','الموكل','التاريخ','النوع','التفاصيل']];
+  cases.forEach(c=>{(c.sajl||[]).forEach(e=>sajlRows.push([c.caseNum||'',c.client||'',e.date||'',e.type||'',e.text||'']));});
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sajlRows),'سجل القضايا');
+  
+  XLSX.writeFile(wb,`نسخة-احتياطية-${today}.xlsx`);
+  localStorage.setItem('mm_last_excel_export',Date.now());
+  initBackup();
+}
+
+function exportPDF(){
+  const cases=DBg('cases'),clients=DBg('clients'),sessions=DBg('sessions'),fees=DBg('fees');
+  const totalFees=fees.reduce((s,f)=>s+(f.total||0),0),totalPaid=fees.reduce((s,f)=>s+(f.paid||0),0);
+  const today=new Date().toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'});
+  const ec={'فتح قضية':'#1a7a4a','جلسة':'#2980b9','حكم':'#b8860b','تأجيل':'#888','مذكرة':'#555','دفعة':'#1a7a4a','اتصال':'#666','ملاحظة':'#888'};
+  const sc={'جارية':'#1a7a4a','منتظرة':'#2980b9','منتهية':'#888','موقوفة':'#c0392b','مسدد':'#1a7a4a','جزئي':'#b8860b','غير مسدد':'#c0392b'};
+  
+  // Helper: get case-related data
+  const caseSessionsOf=cid=>sessions.filter(s=>s.caseId===cid).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const caseFeesOf=cid=>fees.filter(f=>f.caseId===cid);
+  const clientCasesOf=cid=>cases.filter(c=>c.clientId===cid);
+  
+  // Build per-client section
+  const clientsHtml=clients.length?clients.map((cl,ci)=>{
+    const cls=clientCasesOf(cl.id);
+    return `<div class="client-block ${ci>0?'page-break':''}">
+      <div class="client-hdr">
+        <div class="client-name">${cl.name||'—'}</div>
+        <div class="client-meta">
+          ${cl.phone?`<span>📞 ${cl.phone}</span>`:''}
+          ${cl.email?`<span>✉ ${cl.email}</span>`:''}
+          ${cl.type?`<span>👤 ${cl.type}</span>`:''}
+        </div>
+        ${cl.notes?`<div class="client-notes">${cl.notes}</div>`:''}
+      </div>
+      ${cls.length?cls.map(c=>{
+        const csess=caseSessionsOf(c.id),cfees=caseFeesOf(c.id),csajl=c.sajl||[];
+        const cTotal=cfees.reduce((s,f)=>s+(f.total||0),0),cPaid=cfees.reduce((s,f)=>s+(f.paid||0),0);
+        return `<div class="case-block">
+          <div class="case-hdr">
+            <span class="case-num">${c.caseNum||'—'}</span>
+            <span class="case-status" style="background:${sc[c.status]||'#888'};">${c.status||'—'}</span>
+          </div>
+          <table class="kv-tbl">
+            <tr><td>النوع</td><td>${c.type||'—'}</td><td>المحكمة</td><td>${c.court||'—'}</td></tr>
+            <tr><td>تاريخ البدء</td><td>${fdShort(c.start)}</td><td>أقرب جلسة</td><td>${fdShort(c.next)}</td></tr>
+            ${c.notes?`<tr><td>ملاحظات</td><td colspan="3">${c.notes}</td></tr>`:''}
+          </table>
+          
+          ${cfees.length?`<div class="sub-sec">
+            <div class="sub-t">💰 الأتعاب</div>
+            <table class="data-tbl">
+              <thead><tr><th>الإجمالي</th><th>المدفوع</th><th>المتبقي</th><th>الحالة</th><th>ملاحظات</th></tr></thead>
+              <tbody>${cfees.map(f=>`<tr>
+                <td>${(f.total||0).toLocaleString('ar-EG')} ج</td>
+                <td style="color:#1a7a4a;">${(f.paid||0).toLocaleString('ar-EG')} ج</td>
+                <td style="color:#c0392b;">${(f.remaining||0).toLocaleString('ar-EG')} ج</td>
+                <td>${f.status||'—'}</td>
+                <td>${f.notes||'—'}</td>
+              </tr>`).join('')}
+              <tr style="background:#fdf8ee;font-weight:700;">
+                <td>${cTotal.toLocaleString('ar-EG')} ج</td>
+                <td>${cPaid.toLocaleString('ar-EG')} ج</td>
+                <td>${(cTotal-cPaid).toLocaleString('ar-EG')} ج</td>
+                <td colspan="2">الإجمالي</td>
+              </tr>
+              </tbody>
+            </table>
+            ${c.payments&&c.payments.length?`<div class="payments-list">
+              <div class="sub-t" style="font-size:12px;margin-top:8px;">الدفعات المسجلة</div>
+              <table class="data-tbl">
+                <thead><tr><th>المبلغ</th><th>التاريخ</th><th>ملاحظة</th></tr></thead>
+                <tbody>${c.payments.map(p=>`<tr><td>${(p.amount||0).toLocaleString('ar-EG')} ج</td><td>${fdShort(p.date)}</td><td>${p.note||'—'}</td></tr>`).join('')}</tbody>
+              </table>
+            </div>`:''}
+          </div>`:''}
+          
+          ${csess.length?`<div class="sub-sec">
+            <div class="sub-t">📅 الجلسات (${csess.length})</div>
+            <table class="data-tbl">
+              <thead><tr><th>التاريخ</th><th>الوقت</th><th>المحكمة</th><th>الملاحظات</th></tr></thead>
+              <tbody>${csess.map(s=>`<tr>
+                <td>${fdShort(s.date)}</td>
+                <td>${s.time||'—'}</td>
+                <td>${s.court||'—'}</td>
+                <td>${s.notes||'—'}</td>
+              </tr>`).join('')}</tbody>
+            </table>
+          </div>`:''}
+          
+          ${csajl.length?`<div class="sub-sec">
+            <div class="sub-t">📜 سجل القضية (${csajl.length})</div>
+            ${[...csajl].reverse().map(e=>`<div class="evt" style="border-right:3px solid ${ec[e.type]||'#888'};">
+              <div class="evt-hdr"><span style="color:${ec[e.type]||'#888'};font-weight:700;">${e.type||'إدخال'}</span><span>${fdShort(e.date)}</span></div>
+              <div class="evt-text">${e.text||''}</div>
+            </div>`).join('')}
+          </div>`:''}
+        </div>`;
+      }).join(''):'<div class="empty">لا توجد قضايا لهذا الموكل</div>'}
+    </div>`;
+  }).join(''):'<div class="empty">لا يوجد موكلين مسجلين</div>';
+  
+  // Standalone reference tables
+  const allSessionsHtml=sessions.length?`<div class="sec page-break">
+    <div class="sec-t">📅 كل الجلسات (${sessions.length}) — مرجع شامل</div>
+    <table class="data-tbl">
+      <thead><tr><th>التاريخ</th><th>الوقت</th><th>الموكل</th><th>القضية</th><th>المحكمة</th><th>ملاحظات</th></tr></thead>
+      <tbody>${[...sessions].sort((a,b)=>new Date(a.date)-new Date(b.date)).map(s=>`<tr>
+        <td>${fdShort(s.date)}</td><td>${s.time||'—'}</td><td>${s.client||'—'}</td>
+        <td>${s.caseNum||'—'}</td><td>${s.court||'—'}</td><td>${s.notes||'—'}</td>
+      </tr>`).join('')}</tbody>
+    </table>
+  </div>`:'';
+  
+  const allFeesHtml=fees.length?`<div class="sec">
+    <div class="sec-t">💰 كل الأتعاب (${fees.length}) — مرجع شامل</div>
+    <table class="data-tbl">
+      <thead><tr><th>الموكل</th><th>القضية</th><th>الإجمالي</th><th>المدفوع</th><th>المتبقي</th><th>الحالة</th><th>ملاحظات</th></tr></thead>
+      <tbody>${fees.map(f=>`<tr>
+        <td>${f.client||'—'}</td><td>${f.caseNum||'—'}</td>
+        <td>${(f.total||0).toLocaleString('ar-EG')}</td>
+        <td style="color:#1a7a4a;">${(f.paid||0).toLocaleString('ar-EG')}</td>
+        <td style="color:#c0392b;">${(f.remaining||0).toLocaleString('ar-EG')}</td>
+        <td>${f.status||'—'}</td><td>${f.notes||'—'}</td>
+      </tr>`).join('')}
+      <tr style="background:#fdf8ee;font-weight:700;">
+        <td colspan="2">الإجمالي</td>
+        <td>${totalFees.toLocaleString('ar-EG')}</td>
+        <td>${totalPaid.toLocaleString('ar-EG')}</td>
+        <td>${(totalFees-totalPaid).toLocaleString('ar-EG')}</td>
+        <td colspan="2"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>`:'';
+  
+  // Full timeline (no truncation)
+  const allEvents=[];
+  cases.forEach(c=>{
+    if(c.start)allEvents.push({date:c.start,type:'فتح قضية',text:`${c.caseNum||''} — ${c.client||''}${c.type?' ('+c.type+')':''}`});
+    (c.sajl||[]).forEach(e=>{if(e.type!=='جلسة')allEvents.push({date:e.date,type:e.type,text:`${c.caseNum||''} — ${e.text}`});});
+  });
+  sessions.forEach(s=>{allEvents.push({date:s.date,type:'جلسة',text:`${s.client||''} — ${s.caseNum||''}${s.court?' أمام '+s.court:''}${s.notes?' — '+s.notes:''}`});});
+  allEvents.sort((a,b)=>new Date(b.date)-new Date(a.date));
+  
+  const timelineHtml=allEvents.length?`<div class="sec page-break">
+    <div class="sec-t">📜 السجل الزمني الشامل (${allEvents.length} إدخال)</div>
+    ${allEvents.map(e=>`<div class="evt" style="border-right:3px solid ${ec[e.type]||'#888'};">
+      <div class="evt-hdr"><span style="color:${ec[e.type]||'#888'};font-weight:700;">${e.type}</span><span>${fdShort(e.date)}</span></div>
+      <div class="evt-text">${e.text}</div>
+    </div>`).join('')}
+  </div>`:'';
+  
+  const fullHtml=`<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>نسخة شاملة — ${today}</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Cairo',sans-serif;color:#1a1a1a;direction:rtl;padding:24px;background:white;}
+.hdr{text-align:center;border-bottom:3px double #b8860b;padding-bottom:18px;margin-bottom:22px;}
+.hdr h1{font-family:'Amiri',serif;font-size:28px;color:#0c1a2e;font-weight:700;}
+.hdr .sub{font-size:13px;color:#666;margin-top:6px;}
+.hdr .date{font-size:12px;color:#888;margin-top:4px;}
+
+.summary{background:#fdf8ee;border:1px solid #b8860b;padding:14px;border-radius:6px;margin-bottom:22px;page-break-inside:avoid;}
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.summary-item{background:white;padding:10px;border-radius:4px;text-align:center;border:1px solid #e2ddd4;}
+.summary-item .lbl{font-size:11px;color:#666;}
+.summary-item .val{font-size:18px;font-weight:700;color:#0c1a2e;margin-top:4px;}
+
+.sec{margin-bottom:22px;}
+.sec-t{font-size:18px;color:#0c1a2e;border-right:4px solid #b8860b;padding-right:10px;margin-bottom:12px;font-weight:700;background:#fafaf7;padding:8px 10px;}
+
+.client-block{margin-bottom:24px;border:1px solid #d4c99a;border-radius:6px;overflow:hidden;}
+.client-hdr{background:#0c1a2e;color:white;padding:14px 18px;}
+.client-name{font-size:18px;font-weight:700;font-family:'Amiri',serif;}
+.client-meta{font-size:12px;margin-top:6px;display:flex;gap:14px;flex-wrap:wrap;color:#c9a84c;}
+.client-notes{font-size:11px;color:#bbb;margin-top:6px;font-style:italic;}
+
+.case-block{padding:14px 18px;border-bottom:1px solid #e2ddd4;page-break-inside:avoid;}
+.case-block:last-child{border-bottom:none;}
+.case-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.case-num{font-size:15px;font-weight:700;color:#0c1a2e;}
+.case-status{font-size:11px;color:white;padding:3px 10px;border-radius:12px;}
+
+.kv-tbl{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:10px;}
+.kv-tbl td{padding:5px 8px;border:1px solid #e2ddd4;}
+.kv-tbl td:nth-child(odd){background:#fdf8ee;font-weight:600;width:18%;}
+
+.sub-sec{margin-top:12px;padding-top:10px;border-top:1px dashed #e2ddd4;}
+.sub-t{font-size:13px;font-weight:700;color:#b8860b;margin-bottom:8px;}
+
+.data-tbl{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:6px;}
+.data-tbl th{background:#0c1a2e;color:white;padding:6px 8px;border:1px solid #0c1a2e;text-align:right;}
+.data-tbl td{padding:5px 8px;border:1px solid #e2ddd4;}
+
+.evt{padding:7px 10px;background:#fafaf7;margin-bottom:4px;page-break-inside:avoid;border-radius:0 3px 3px 0;}
+.evt-hdr{display:flex;justify-content:space-between;font-size:10px;color:#666;margin-bottom:3px;}
+.evt-text{font-size:12px;color:#1a1a1a;}
+
+.empty{padding:14px;text-align:center;color:#888;font-size:12px;background:#fafaf7;border-radius:4px;}
+
+.foot{text-align:center;font-size:10px;color:#999;margin-top:24px;border-top:1px solid #e2ddd4;padding-top:10px;}
+
+.page-break{page-break-before:always;}
+.print-btn{position:fixed;top:20px;left:20px;padding:12px 24px;background:#0c1a2e;color:white;border:none;font-family:'Cairo',sans-serif;font-size:14px;cursor:pointer;border-radius:4px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+.print-btn:hover{background:#1a2a3e;}
+@media print{
+  .print-btn{display:none !important;}
+  body{padding:12px;}
+  .case-block,.client-block,.evt,.summary,.sub-sec{page-break-inside:avoid;}
+}
+</style>
+</head>
+<body>
+<button class="print-btn" onclick="window.print()">🖨 حفظ كـ PDF أو طباعة</button>
+
+<div class="hdr">
+  <h1>النسخة الشاملة لبيانات المكتب</h1>
+  <div class="sub">أرشيف كامل لكل البيانات المسجلة في السيستم</div>
+  <div class="date">تاريخ التصدير: ${today}</div>
+</div>
+
+<div class="summary">
+  <div class="sec-t" style="background:transparent;border:none;padding:0;margin-bottom:10px;">📊 إحصائيات شاملة</div>
+  <div class="summary-grid">
+    <div class="summary-item"><div class="lbl">الموكلين</div><div class="val">${clients.length}</div></div>
+    <div class="summary-item"><div class="lbl">القضايا</div><div class="val">${cases.length}</div></div>
+    <div class="summary-item"><div class="lbl">القضايا الجارية</div><div class="val" style="color:#1a7a4a;">${cases.filter(c=>c.status==='جارية').length}</div></div>
+    <div class="summary-item"><div class="lbl">الجلسات</div><div class="val">${sessions.length}</div></div>
+    <div class="summary-item"><div class="lbl">إجمالي الأتعاب</div><div class="val">${totalFees.toLocaleString('ar-EG')} ج</div></div>
+    <div class="summary-item"><div class="lbl">المحصّل</div><div class="val" style="color:#1a7a4a;">${totalPaid.toLocaleString('ar-EG')} ج</div></div>
+    <div class="summary-item" style="grid-column:1/-1;"><div class="lbl">المتبقي على الموكلين</div><div class="val" style="color:#c0392b;">${(totalFees-totalPaid).toLocaleString('ar-EG')} ج</div></div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-t">👥 الموكلين والقضايا (${clients.length} موكل)</div>
+  ${clientsHtml}
+</div>
+
+${allSessionsHtml}
+${allFeesHtml}
+${timelineHtml}
+
+<div class="foot">
+  مشروع محامي — نسخة شاملة من بيانات المكتب<br>
+  هذه النسخة كاملة وتحتوي على كل التفاصيل المسجلة في السيستم حتى تاريخ التصدير
+</div>
+<script>window.addEventListener('load',()=>setTimeout(()=>window.print(),700));<\/script>
+</body>
+</html>`;
+  
+  const w=window.open('','_blank');
+  if(!w){alert('برجاء السماح بفتح النوافذ المنبثقة عشان يطلع التقرير');return;}
+  w.document.write(fullHtml);
+  w.document.close();
+  localStorage.setItem('mm_last_pdf_export',Date.now());
+  initBackup();
+}
+
+
+updateGoals();
+renderContracts();
+
+async function logout(){
+  if(confirm('تسجيل الخروج؟')){
+    await sb.auth.signOut();
+    window.location.href='login.html';
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مشروع محامي — المراجع القانونية</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f6f3;--bg2:#fff;--navy:#0c1a2e;--gold:#b8860b;--gold-l:#c9a84c;--gold-bg:#fdf8ee;--text:#1a1a1a;--text2:#555;--text3:#888;--border:#e2ddd4;--border2:#d4c99a;--card:#fff;--danger:#c0392b;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.app{display:flex;min-height:100vh;}
+.sb{width:240px;min-height:100vh;background:var(--navy);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.sb-logo{padding:20px;border-bottom:1px solid rgba(255,255,255,0.1);}
+.sb-logo-t{font-family:'Amiri',serif;font-size:22px;color:#c9a84c;display:block;}
+.sb-logo-u{font-size:11px;color:rgba(255,255,255,0.4);margin-top:3px;display:block;}
+.nav-sec{padding:10px 10px 4px;}
+.nav-lbl{font-size:9px;color:rgba(201,168,76,0.6);letter-spacing:2px;padding:0 8px;margin-bottom:3px;}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 10px;cursor:pointer;color:rgba(255,255,255,0.45);font-size:13px;transition:all 0.15s;border:1px solid transparent;border-radius:3px;text-decoration:none;}
+.ni:hover{color:rgba(255,255,255,0.85);background:rgba(255,255,255,0.06);}
+.ni.on{color:#c9a84c;background:rgba(201,168,76,0.12);border-color:rgba(201,168,76,0.25);}
+.ni-ic{font-size:13px;width:16px;text-align:center;}
+.sb-foot{margin-top:auto;padding:12px;border-top:1px solid rgba(255,255,255,0.1);}
+.sb-foot a{display:block;padding:7px;background:none;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.4);font-family:'Cairo',sans-serif;font-size:11px;cursor:pointer;border-radius:3px;text-decoration:none;text-align:center;}
+.sb-foot a:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.7);}
+.main{flex:1;overflow-y:auto;}
+.pg{display:none;padding:26px 30px;}.pg.on{display:block;}
+.pg-hdr{margin-bottom:20px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.pg-t{font-family:'Amiri',serif;font-size:26px;color:var(--navy);}
+.pg-s{font-size:12px;color:var(--text3);margin-top:2px;}
+.dc{background:var(--card);border:1px solid var(--border);padding:16px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+.dc-t{font-size:11px;color:var(--gold);letter-spacing:1px;font-weight:600;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.si-inp{padding:9px 12px;background:var(--card);border:1px solid var(--border);color:var(--text);font-family:'Cairo',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;border-radius:4px;}
+.si-inp:focus{border-color:var(--gold-l);}
+.si-inp::placeholder{color:var(--text3);}
+.ab{padding:9px 16px;background:var(--navy);border:none;color:#c9a84c;font-family:'Cairo',sans-serif;font-size:13px;cursor:pointer;border-radius:4px;}
+.ab:hover{background:#0d2240;}
+.bc2{padding:9px 16px;background:none;border:1px solid var(--border);color:var(--text2);font-family:'Cairo',sans-serif;cursor:pointer;font-size:13px;border-radius:4px;}
+.bc2:hover{background:var(--bg);}
+.dt{width:100%;border-collapse:collapse;background:var(--card);border-radius:6px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+.dt th{text-align:right;padding:10px 12px;font-size:10px;color:var(--gold);letter-spacing:2px;border-bottom:2px solid var(--border);font-weight:600;background:var(--gold-bg);}
+.dt td{padding:11px 12px;font-size:13px;border-bottom:1px solid var(--border);color:var(--text);}
+.dt tr:last-child td{border-bottom:none;}
+.dt tr:hover td{background:#fafaf7;}
+.bx{display:inline-block;padding:3px 9px;font-size:11px;border-radius:20px;font-weight:600;}
+.ba{background:#e8f5ee;color:#1a7a4a;}.bp{background:#fdf3d0;color:#8a6200;}.bc{background:#f0f0f0;color:#777;}.bu{background:#fdecea;color:#c0392b;}
+.fs{width:100%;padding:9px 12px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'Cairo',sans-serif;font-size:13px;outline:none;border-radius:4px;}
+.fs:focus{border-color:var(--gold-l);}
+.es{text-align:center;padding:40px 20px;color:var(--text3);}
+.ei{font-size:34px;margin-bottom:8px;opacity:0.3;}
+.et{font-size:13px;}
+.sr{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.sn{font-size:12px;color:var(--text2);width:130px;}
+.sbar{flex:1;height:6px;background:var(--border);border-radius:3px;}
+.sf{height:100%;background:var(--gold);border-radius:3px;}
+.sp{font-size:12px;color:var(--gold);width:34px;text-align:left;font-weight:700;}
+/* GUIDE PAGE */
+.gtabs{display:flex;gap:4px;margin-bottom:18px;border-bottom:2px solid var(--border);padding-bottom:0;}
+.gtab{padding:10px 18px;background:none;border:none;border-bottom:3px solid transparent;color:var(--text2);font-family:'Cairo',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.18s;margin-bottom:-2px;}
+.gtab:hover{color:var(--navy);}
+.gtab.gon{color:var(--gold);border-bottom-color:var(--gold);}
+.gtab-c{display:none;}
+.gtab-c.gon{display:block;}
+.gfilter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
+.gchip{padding:6px 14px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);font-family:'Cairo',sans-serif;font-size:11px;cursor:pointer;border-radius:20px;transition:all 0.15s;font-weight:600;}
+.gchip:hover{border-color:var(--gold-l);}
+.gchip.gon{background:var(--navy);color:var(--gold);border-color:var(--navy);}
+.term-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px;}
+.term-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,0.04);position:relative;transition:all 0.15s;}
+.term-card:hover{border-color:var(--gold-l);box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.term-num{position:absolute;top:12px;left:14px;width:24px;height:24px;background:var(--gold-bg);color:var(--gold);border:1px solid var(--border2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;}
+.term-t{font-family:'Amiri',serif;font-size:18px;color:var(--navy);font-weight:700;margin-bottom:6px;padding-left:32px;}
+.term-d{font-size:13px;color:var(--text);line-height:1.75;}
+.def-section{background:var(--card);border:1px solid var(--border);border-radius:6px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+.def-section-h{padding:13px 16px;background:#f5f3ee;border-bottom:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;transition:background 0.15s;}
+.def-section-h:hover{background:#efeae0;}
+.def-section.gon .def-section-h{background:var(--gold-bg);border-bottom-color:var(--border2);}
+.def-section-t{display:flex;align-items:center;gap:10px;flex:1;}
+.def-section-name{font-family:'Amiri',serif;font-size:17px;color:var(--navy);font-weight:700;}
+.def-section-cnt{font-size:11px;color:var(--text3);background:var(--bg);padding:2px 8px;border-radius:10px;}
+.def-section-i{font-size:14px;color:var(--gold);transition:transform 0.2s;}
+.def-section.gon .def-section-i{transform:rotate(90deg);}
+.def-section-body{display:none;padding:14px 16px;}
+.def-section.gon .def-section-body{display:block;}
+.def-section-note{font-size:12px;color:var(--text2);background:#fff8f0;border-right:3px solid var(--gold-l);padding:8px 11px;margin-bottom:12px;border-radius:0 4px 4px 0;line-height:1.6;}
+.def-group{margin-bottom:14px;}
+.def-group:last-child{margin-bottom:0;}
+.def-group-t{font-size:12px;color:var(--gold);letter-spacing:0.5px;font-weight:700;margin-bottom:8px;padding-bottom:6px;border-bottom:1px dashed var(--border2);}
+.def-list{display:flex;flex-direction:column;gap:5px;}
+.def-item{display:flex;align-items:flex-start;gap:8px;padding:8px 11px;background:var(--bg);border:1px solid var(--border);border-radius:4px;font-size:13px;color:var(--text);line-height:1.55;transition:all 0.15s;}
+.def-item:hover{background:#fafaf5;border-color:var(--border2);}
+.def-item-bullet{color:var(--gold);font-weight:700;flex-shrink:0;}
+.def-item-text{flex:1;}
+.def-copy{padding:4px 9px;background:none;border:1px solid var(--border);color:var(--text3);font-family:'Cairo',sans-serif;font-size:10px;cursor:pointer;border-radius:3px;flex-shrink:0;transition:all 0.15s;white-space:nowrap;}
+.def-copy:hover{background:var(--gold-bg);color:var(--gold);border-color:var(--border2);}
+.def-copy.copied{background:#e8f5ee;color:#1a7a4a;border-color:#bbe5cc;}
+.civil-card{background:var(--card);border:1px solid var(--border);border-radius:6px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+.civil-h{padding:14px 16px;background:linear-gradient(to left,#f5f3ee,var(--card));border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;cursor:pointer;}
+.civil-h:hover{background:linear-gradient(to left,#efeae0,#fafaf5);}
+.civil-num{width:30px;height:30px;background:var(--navy);color:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;}
+.civil-t{font-family:'Amiri',serif;font-size:17px;color:var(--navy);font-weight:700;flex:1;}
+.civil-toggle{font-size:14px;color:var(--gold);transition:transform 0.2s;}
+.civil-card.gon .civil-toggle{transform:rotate(90deg);}
+.civil-body{display:none;padding:14px 18px 16px;}
+.civil-card.gon .civil-body{display:block;}
+.civil-desc{font-size:13px;color:var(--text);line-height:1.75;margin-bottom:11px;}
+.civil-items-t{font-size:11px;color:var(--gold);letter-spacing:0.5px;font-weight:700;margin-bottom:6px;}
+.civil-items{display:flex;flex-direction:column;gap:5px;margin-bottom:11px;}
+.civil-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text);padding:6px 10px;background:var(--bg);border-radius:4px;}
+.civil-item-bullet{color:var(--gold);font-weight:700;flex-shrink:0;}
+.civil-ex{font-size:12px;color:var(--text2);background:#f0f8ff;border-right:3px solid #2980b9;padding:9px 12px;border-radius:0 4px 4px 0;line-height:1.6;}
+.civil-ex-l{color:#2980b9;font-weight:700;}
+.guide-stat{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);}
+.guide-stat-v{color:var(--gold);font-weight:700;}
+.gexpand{padding:6px 12px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);font-family:'Cairo',sans-serif;font-size:11px;cursor:pointer;border-radius:4px;font-weight:600;}
+.gexpand:hover{background:var(--gold-bg);color:var(--gold);border-color:var(--border2);}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<!-- Auth Loading Screen -->
+<div id="auth-loading" style="position:fixed;inset:0;background:#0c1a2e;color:#c9a84c;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;font-family:'Cairo',sans-serif;z-index:9999;">
+  <div style="width:32px;height:32px;border:3px solid rgba(201,168,76,0.3);border-top-color:#c9a84c;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+  <div style="font-size:13px;letter-spacing:2px;">جاري التحقق...</div>
+</div>
+<script>
+const SUPABASE_URL = 'https://gjskifonnyyrrwhvlewg.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdqc2tpZm9ubnl5cnJ3aHZsZXdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4OTM1MjIsImV4cCI6MjA5MzQ2OTUyMn0.Xn1UFCzaPGp6ZVv5lAiRUPvJ6KQvSdMyDssqiIgvAdM';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let currentUser = null, currentProfile = null;
+
+(async () => {
+  const {data: {session}} = await sb.auth.getSession();
+  if(!session || !session.user){window.location.href = 'login.html';return;}
+  currentUser = session.user;
+  const {data: profile, error} = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+  if(error || !profile){await sb.auth.signOut();window.location.href = 'login.html';return;}
+  currentProfile = profile;
+  if(profile.status === 'suspended' || profile.status === 'banned'){
+    alert(profile.status === 'suspended' ? 'حسابك معلّق' : 'حسابك محظور');
+    await sb.auth.signOut();window.location.href = 'login.html';return;
+  }
+  if(profile.is_admin){window.location.href = 'admin.html';return;}
+  document.getElementById('auth-loading').style.display = 'none';
+})();
+
+async function logout(){
+  if(confirm('تسجيل الخروج؟')){
+    await sb.auth.signOut();
+    window.location.href='login.html';
+  }
+}
+</script>
+<div class="app">
+<div class="sb">
+  <div class="sb-logo">
+    <span class="sb-logo-t">مشروع محامي</span>
+    <span class="sb-logo-u">المراجع القانونية</span>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-lbl">المراجع</div>
+    <div class="ni on" onclick="go('deadlines',this)"><span class="ni-ic">⏱</span>جدول المواعيد</div>
+    <div class="ni" onclick="go('laws',this)"><span class="ni-ic">📖</span>دليل القوانين</div>
+    <div class="ni" onclick="go('glossary',this)"><span class="ni-ic">🔤</span>قاموس المصطلحات</div>
+    <div class="ni" onclick="go('defenses',this)"><span class="ni-ic">🛡</span>مكتبة الدفوع</div>
+    <div class="ni" onclick="go('guide',this)"><span class="ni-ic">📑</span>دليل المحكمة والدفوع</div>
+    <div class="ni" onclick="go('digital',this)"><span class="ni-ic">🌐</span>الدليل الرقمي</div>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-lbl">صفحات أخرى</div>
+    <a class="ni" href="index.html"><span class="ni-ic">◈</span>إدارة المكتب</a>
+    <a class="ni" href="tools.html"><span class="ni-ic">🛠</span>الأدوات والتطوير</a>
+  </div>
+  <div class="sb-foot">
+    <button onclick="logout()" style="width:100%;padding:8px;background:none;border:1px solid rgba(200,50,50,0.35);color:rgba(220,100,100,0.8);font-family:'Cairo',sans-serif;font-size:11px;cursor:pointer;border-radius:4px;">⏻ تسجيل الخروج</button>
+  </div>
+</div>
+<div class="main">
+
+<!-- DEADLINES -->
+<div id="pg-deadlines" class="pg on">
+  <div class="pg-hdr">
+    <div><div class="pg-t">جدول المواعيد والمدد القانونية</div><div class="pg-s">مواعيد الإجراءات والتقادم — مصدرها قانون المرافعات والقانون المدني المصري</div></div>
+    <input class="si-inp" placeholder="بحث في المواعيد..." id="deadlines-q" oninput="filterDeadlines(this.value)" style="width:240px;">
+  </div>
+  <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;" id="dl-cats">
+    <button class="ab" onclick="setDLCat('',this)" style="font-size:11px;padding:5px 12px;">الكل</button>
+    <button class="bc2" onclick="setDLCat('مرافعات',this)" style="font-size:11px;padding:5px 12px;border-radius:20px;">قانون المرافعات</button>
+    <button class="bc2" onclick="setDLCat('مدني',this)" style="font-size:11px;padding:5px 12px;border-radius:20px;">القانون المدني</button>
+    <span style="font-size:11px;color:var(--text3);align-self:center;margin-right:auto;" id="dl-count"></span>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;" id="dl-grid">
+    <div class="dc" data-col="مرافعات">
+      <div class="dc-t">⚖ المواعيد في قانون المرافعات</div>
+      <table class="dt"><thead><tr><th>الإجراء</th><th>المدة</th><th>المادة</th></tr></thead>
+      <tbody id="proc-tbl"></tbody></table>
+    </div>
+    <div class="dc" data-col="مدني">
+      <div class="dc-t">📜 المواعيد في القانون المدني</div>
+      <table class="dt"><thead><tr><th>الموضوع</th><th>المدة</th><th>المادة</th></tr></thead>
+      <tbody id="civil-tbl"></tbody></table>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px;">
+    <div style="background:#fff8f0;border-right:3px solid var(--gold-l);padding:10px 12px;border-radius:0 4px 4px 0;font-size:12px;color:var(--text2);">⚠ فوات ميعاد الطعن أو التقادم = سقوط الحق نهائياً وتقضي به المحكمة من تلقاء نفسها</div>
+    <div style="background:#f0f8ff;border-right:3px solid #2980b9;padding:10px 12px;border-radius:0 4px 4px 0;font-size:12px;color:var(--text2);">📌 المواعيد الجنائية واردة في قانون الإجراءات الجنائية ومنها: المعارضة (10 أيام)، استئناف الجنح (10 أيام)، النقض الجنائي (60 يوماً)</div>
+  </div>
+</div>
+
+<!-- LAWS -->
+<div id="pg-laws" class="pg">
+  <div class="pg-hdr">
+    <div><div class="pg-t">دليل أهم القوانين المصرية</div><div class="pg-s">القوانين الأساسية مرتبة بالتخصص</div></div>
+    <input class="si-inp" placeholder="بحث باسم القانون أو رقمه..." id="laws-q" oninput="filterLaws(this.value)" style="width:240px;">
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="dc"><div class="dc-t">📋 القوانين الإجرائية الأساسية</div>
+        <table class="dt laws-tbl"><thead><tr><th>القانون</th><th>الرقم</th><th>الاختصاص</th></tr></thead><tbody>
+          <tr><td>قانون المرافعات المدنية والتجارية</td><td><span class="bx ba">13 / 1968</span></td><td>إجراءات التقاضي — الطعون — المواعيد</td></tr>
+          <tr><td>قانون الإجراءات الجنائية</td><td><span class="bx bu">150 / 1950</span></td><td>التحقيق والمحاكمة الجنائية</td></tr>
+          <tr><td>قانون الإثبات في المواد المدنية</td><td><span class="bx bp">25 / 1968</span></td><td>الكتابة — الشهادة — القرائن — اليمين</td></tr>
+          <tr><td>قانون السلطة القضائية</td><td><span class="bx bc">46 / 1972</span></td><td>تنظيم القضاء — اختصاصات المحاكم</td></tr>
+          <tr><td>قانون مجلس الدولة</td><td><span class="bx bc">47 / 1972</span></td><td>القضاء الإداري — الطعن في القرارات الحكومية</td></tr>
+          <tr><td>قانون التحكيم</td><td><span class="bx bp">27 / 1994</span></td><td>التحكيم المحلي والدولي</td></tr>
+        </tbody></table>
+      </div>
+      <div class="dc"><div class="dc-t">👔 القانون المدني والتجاري</div>
+        <table class="dt laws-tbl"><thead><tr><th>القانون</th><th>الرقم</th><th>الاختصاص</th></tr></thead><tbody>
+          <tr><td>القانون المدني</td><td><span class="bx ba">131 / 1948</span></td><td>العقود — المسؤولية — الحقوق العينية — التقادم</td></tr>
+          <tr><td>قانون التجارة</td><td><span class="bx ba">17 / 1999</span></td><td>الأعمال التجارية — الإفلاس — الأوراق التجارية</td></tr>
+          <tr><td>قانون الشركات</td><td><span class="bx ba">159 / 1981</span></td><td>الشركات المساهمة — ذات مسؤولية محدودة</td></tr>
+          <tr><td>قانون الاستثمار</td><td><span class="bx ba">72 / 2017</span></td><td>ضمانات المستثمرين — الحوافز — التراخيص</td></tr>
+          <tr><td>قانون الملكية الفكرية</td><td><span class="bx bp">82 / 2002</span></td><td>حقوق التأليف — العلامات التجارية — براءات الاختراع</td></tr>
+          <tr><td>قانون التجارة الإلكترونية</td><td><span class="bx bp">15 / 2004</span></td><td>المعاملات الرقمية — التوقيع الإلكتروني</td></tr>
+        </tbody></table>
+      </div>
+      <div class="dc"><div class="dc-t">⚖ القانون الجنائي</div>
+        <table class="dt laws-tbl"><thead><tr><th>القانون</th><th>الرقم</th><th>الاختصاص</th></tr></thead><tbody>
+          <tr><td>قانون العقوبات</td><td><span class="bx bu">58 / 1937</span></td><td>الجرائم وعقوباتها — الجنايات والجنح</td></tr>
+          <tr><td>قانون مكافحة الإرهاب</td><td><span class="bx bu">94 / 2015</span></td><td>تعريف الإرهاب — العقوبات — الإجراءات</td></tr>
+          <tr><td>قانون مكافحة غسل الأموال</td><td><span class="bx bu">80 / 2002</span></td><td>الجرائم المالية — الإبلاغ — التحقيق</td></tr>
+          <tr><td>قانون جرائم تقنية المعلومات</td><td><span class="bx bu">175 / 2018</span></td><td>الجرائم الإلكترونية — السب والقذف الرقمي</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="dc"><div class="dc-t">👨‍👩‍👧 الأسرة والأحوال الشخصية</div>
+        <table class="dt laws-tbl"><thead><tr><th>القانون</th><th>الرقم</th><th>الاختصاص</th></tr></thead><tbody>
+          <tr><td>قانون الأحوال الشخصية</td><td><span class="bx bp">25/1920 + 25/1929</span></td><td>الزواج — الطلاق — النفقة — الحضانة</td></tr>
+          <tr><td>قانون إجراءات التقاضي في الأحوال</td><td><span class="bx bp">1 / 2000</span></td><td>الخلع — محاكم الأسرة — الإجراءات</td></tr>
+          <tr><td>قانون الطفل</td><td><span class="bx bp">12 / 1996</span></td><td>حقوق الطفل — الحضانة</td></tr>
+          <tr><td>قانون الميراث</td><td><span class="bx bc">77 / 1943</span></td><td>أحكام الإرث والوصية وفق الشريعة</td></tr>
+        </tbody></table>
+      </div>
+      <div class="dc"><div class="dc-t">🏠 العقارات والإيجارات</div>
+        <table class="dt laws-tbl"><thead><tr><th>القانون</th><th>الرقم</th><th>الاختصاص</th></tr></thead><tbody>
+          <tr><td>قانون الشهر العقاري</td><td><span class="bx ba">114 / 1946</span></td><td>التسجيل العقاري — الشهر — الرهن</td></tr>
+          <tr><td>قانون الإيجار القديم</td><td><span class="bx bc">49 / 1977</span></td><td>العقارات المؤجرة قبل 1996</td></tr>
+          <tr><td>قانون الإيجار الجديد</td><td><span class="bx ba">4 / 1996</span></td><td>الإيجارات الجديدة — حرية التعاقد</td></tr>
+          <tr><td>قانون البناء الموحد</td><td><span class="bx bp">119 / 2008</span></td><td>تراخيص البناء — المخالفات</td></tr>
+        </tbody></table>
+      </div>
+      <div class="dc"><div class="dc-t">👷 العمل والتأمينات</div>
+        <table class="dt laws-tbl"><thead><tr><th>القانون</th><th>الرقم</th><th>الاختصاص</th></tr></thead><tbody>
+          <tr><td>قانون العمل</td><td><span class="bx ba">12 / 2003</span></td><td>عقد العمل — الفصل — الأجور — النقابات</td></tr>
+          <tr><td>قانون التأمين الاجتماعي</td><td><span class="bx ba">79 / 1975</span></td><td>التأمينات — المعاشات — إصابات العمل</td></tr>
+        </tbody></table>
+      </div>
+      <div class="dc"><div class="dc-t">📜 قوانين المحامي تحديداً</div>
+        <table class="dt laws-tbl"><thead><tr><th>القانون</th><th>الرقم</th><th>الاختصاص</th></tr></thead><tbody>
+          <tr><td>قانون المحاماة</td><td><span class="bx ba">17 / 1983</span></td><td>القيد — درجات المحاماة — الأتعاب — النقابة</td></tr>
+          <tr><td>قانون حالات الطعن بالنقض</td><td><span class="bx ba">57 / 1959</span></td><td>إجراءات النقض — مواعيده — شروط قبوله</td></tr>
+          <tr><td>قانون رسوم التوثيق والشهر</td><td><span class="bx bc">70 / 1964</span></td><td>رسوم التوثيق — الشهر العقاري</td></tr>
+          <tr><td>قانون الرسوم القضائية</td><td><span class="bx bc">90 / 1944</span></td><td>رسوم رفع الدعاوى — الإعفاءات</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GLOSSARY -->
+<div id="pg-glossary" class="pg">
+  <div class="pg-hdr">
+    <div><div class="pg-t">قاموس مصطلحات المحاكم</div><div class="pg-s">ابحث عن أي مصطلح واعرف معناه وإجراءاته</div></div>
+    <input class="si-inp" id="glossary-q" placeholder="ابحث عن مصطلح..." oninput="filterGlossary()" style="width:260px;">
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;" id="glossary-cats"></div>
+  <div id="glossary-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;"></div>
+</div>
+
+<!-- DEFENSES -->
+<div id="pg-defenses" class="pg">
+  <div class="pg-hdr"><div><div class="pg-t">مكتبة الدفوع</div><div class="pg-s">اختر نوع القضية واطلع الدفوع المناسبة</div></div></div>
+  <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+    <select class="fs" id="def-type" onchange="filterDefenses()" style="width:190px;"><option value="">كل القضايا</option><option>جنائي</option><option>مدني</option><option>تجاري</option><option>أحوال شخصية</option><option>عقاري</option><option>إداري</option><option>عمالي</option></select>
+    <select class="fs" id="def-cat" onchange="filterDefenses()" style="width:170px;"><option value="">كل الدفوع</option><option>دفع شكلي</option><option>دفع موضوعي</option><option>دفع ببطلان</option></select>
+    <input class="si-inp" id="def-q" placeholder="بحث..." oninput="filterDefenses()" style="width:200px;">
+  </div>
+  <div id="defenses-list" style="display:flex;flex-direction:column;gap:8px;"></div>
+</div>
+
+<!-- DIGITAL -->
+<div id="pg-digital" class="pg">
+  <div class="pg-hdr"><div><div class="pg-t">الدليل الرقمي للمحامي</div><div class="pg-s">أهم المواقع والأدوات التي يحتاجها المحامي العصري</div></div></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+    <div class="dc"><div class="dc-t">📚 مكتبات ومصادر قانونية</div><div id="digital-legal"></div></div>
+    <div class="dc"><div class="dc-t">🛠 أدوات العمل اليومي</div><div id="digital-tools"></div></div>
+    <div class="dc"><div class="dc-t">🏛 جهات حكومية مهمة</div><div id="digital-gov"></div></div>
+    <div class="dc"><div class="dc-t">⚡ نصائح رقمية من مشروع محامي</div><div id="digital-tips"></div></div>
+  </div>
+</div>
+
+<!-- GUIDE -->
+<div id="pg-guide" class="pg">
+  <div class="pg-hdr">
+    <div><div class="pg-t">دليل المحكمة والدفوع القانونية</div><div class="pg-s">مرجع شامل لمصطلحات المحاكم والدفوع الجنائية والمدنية</div></div>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div class="guide-stat"><span>مصطلحات:</span><span class="guide-stat-v" id="g-stat-terms">12</span></div>
+      <div class="guide-stat"><span>دفوع جنائية:</span><span class="guide-stat-v" id="g-stat-crim">111</span></div>
+      <div class="guide-stat"><span>دفوع مدنية:</span><span class="guide-stat-v" id="g-stat-civ">7</span></div>
+    </div>
+  </div>
+
+  <div class="gtabs">
+    <button class="gtab gon" onclick="switchGuideTab('terms',this)">📋 مصطلحات المحاكم</button>
+    <button class="gtab" onclick="switchGuideTab('criminal',this)">⚖ الدفوع الجنائية</button>
+    <button class="gtab" onclick="switchGuideTab('civil',this)">📜 الدفوع المدنية والتجارية</button>
+  </div>
+
+  <!-- TERMS TAB -->
+  <div id="gtab-terms" class="gtab-c gon">
+    <div class="gfilter-bar">
+      <input class="si-inp" id="terms-q" placeholder="ابحث في المصطلحات..." oninput="filterTerms()" style="width:280px;">
+      <span style="font-size:11px;color:var(--text3);" id="terms-count"></span>
+    </div>
+    <div class="term-grid" id="terms-list"></div>
+  </div>
+
+  <!-- CRIMINAL TAB -->
+  <div id="gtab-criminal" class="gtab-c">
+    <div class="gfilter-bar">
+      <input class="si-inp" id="crim-q" placeholder="ابحث في الدفوع الجنائية..." oninput="filterCriminalDefenses()" style="width:280px;">
+      <button class="gchip gon" data-cf="all" onclick="setCrimFilter('all',this)">الكل</button>
+      <button class="gchip" data-cf="non-public" onclick="setCrimFilter('non-public',this)">غير متعلقة بالنظام العام</button>
+      <button class="gchip" data-cf="public" onclick="setCrimFilter('public',this)">متعلقة بالنظام العام</button>
+      <button class="gchip" data-cf="other" onclick="setCrimFilter('other',this)">دفوع متنوعة</button>
+      <button class="gexpand" onclick="toggleAllCrim(true)">فتح الكل</button>
+      <button class="gexpand" onclick="toggleAllCrim(false)">طي الكل</button>
+      <span style="font-size:11px;color:var(--text3);" id="crim-count"></span>
+    </div>
+    <div id="crim-list"></div>
+  </div>
+
+  <!-- CIVIL TAB -->
+  <div id="gtab-civil" class="gtab-c">
+    <div class="gfilter-bar">
+      <input class="si-inp" id="civ-q" placeholder="ابحث في الدفوع المدنية..." oninput="filterCivilDefenses()" style="width:280px;">
+      <button class="gexpand" onclick="toggleAllCivil(true)">فتح الكل</button>
+      <button class="gexpand" onclick="toggleAllCivil(false)">طي الكل</button>
+      <span style="font-size:11px;color:var(--text3);" id="civ-count"></span>
+    </div>
+    <div id="civ-list"></div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+<script>
+function go(id,el){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  if(el)el.classList.add('on');
+  ({glossary:initGlossary,defenses:filterDefenses,digital:initDigital,guide:initGuide,deadlines:renderDeadlines}[id]||function(){})();
+}
+// DEADLINES DATA & RENDERING
+const PROC_DEADLINES=[
+  {t:'إعلان قرار الحيازة بعد صدوره',d:'3 أيام',a:'م 4 مرافعات'},
+  {t:'التظلم من قرار الحيازة بعد إعلانه',d:'15 يوم',a:'م 4 مرافعات'},
+  {t:'اعتبار الدعوى كأن لم تكن',d:'3 شهور',a:'م 30 مرافعات'},
+  {t:'تجديد الدعوى من الشطب',d:'60 يوم',a:'م 82 مرافعات'},
+  {t:'تعجيل الدعوى من الوقف الجزائي',d:'15 يوم',a:'م 99 مرافعات'},
+  {t:'تعجيل الدعوى من الوقف الاتفاقي',d:'8 أيام',a:'م 128 مرافعات'},
+  {t:'انقضاء الخصومة من آخر إجراء صحيح',d:'سنتان',a:'م 129 مرافعات'},
+  {t:'انقضاء الخصومة (في حالات خاصة)',d:'6 شهور',a:'م 134 مرافعات'},
+  {t:'التظلم من أمر تقدير مصاريف الدعوى',d:'8 أيام',a:'م 190 مرافعات'},
+  {t:'التظلم من الأمر على عريضة',d:'10 أيام',a:'م 192 مرافعات'},
+  {t:'استئناف الأمر على عريضة إذا لم ينفذ',d:'30 يوم',a:'م 197 مرافعات'},
+  {t:'سقوط التكليف بالوفاء في أمر الأداء',d:'5 أيام',a:'م 202 مرافعات'},
+  {t:'وجوب إعلان الصحيفة وأمر الأداء',d:'3 شهور',a:'م 205 مرافعات'},
+  {t:'التظلم من الأمر الصادر بالأداء',d:'10 أيام',a:'م 206 مرافعات'},
+  {t:'ميعاد طلب الأداء وصحة إجراءات الحجز',d:'8 أيام',a:'م 210 مرافعات'},
+  {t:'ميعاد إعلان الحاجز للمحجوز عليه',d:'8 أيام',a:'م 220 مرافعات'},
+  {t:'دعوى ثبوت الحق في الحجز',d:'8 أيام',a:'م 220 مرافعات'},
+  {t:'ميعاد الاستئناف',d:'40 يوم',a:'م 227 مرافعات'},
+  {t:'الاستئناف في المواد المستعجلة',d:'15 يوم',a:'م 227 مرافعات'},
+  {t:'الاستئناف أمام النائب العام',d:'60 يوم',a:'م 227 مرافعات'},
+  {t:'إعلان من في الذمة من المحجوز لديه',d:'15 يوم',a:'م 229 مرافعات'},
+  {t:'دعوى صحة الحجز التحفظي',d:'8 أيام',a:'م 230 مرافعات'},
+  {t:'ميعاد التماس إعادة النظر (الغش/التواطؤ/الإهمال الجسيم)',d:'40 يوم',a:'م 242 مرافعات'},
+  {t:'الحجز الواقع تحت يد المصالح الحكومية أو وحدات الإدارة المحلية',d:'3 سنوات',a:'م 250 مرافعات'},
+  {t:'ميعاد النقض (يضاف 4 أيام مسافة)',d:'60 يوم',a:'م 252 مرافعات'},
+  {t:'إيداع مذكرة أسباب الطعن بالنقض',d:'15 يوم',a:'م 258 مرافعات'},
+  {t:'تسجيل تنبيه نزع الملكية',d:'90 يوم',a:'م 414 مرافعات'},
+  {t:'إنذار بالعزم على صرف المبالغ المودعة',d:'3 أيام',a:'م 491 مرافعات'},
+  {t:'ميعاد الإعلان بشواهد التزوير',d:'8 أيام',a:'مادة 49 إثبات'},
+  {t:'ميعاد الحكم في معارضة تقدير الرسوم',d:'15 يوم',a:'مادة 18 رسوم'},
+];
+const CIVIL_DEADLINES=[
+  {t:'سقوط الحق في إقامة دعوى إبطال العقد',d:'3 سنوات',a:'م 139 مدني'},
+  {t:'سقوط دعوى البطلان',d:'15 سنة',a:'م 141 مدني'},
+  {t:'ميعاد سقوط دعوى التعويض',d:'3 سنوات',a:'م 172 مدني'},
+  {t:'سقوط دعوى الإثراء بلا سبب من تاريخ العلم',d:'3 سنوات',a:'م 180 مدني'},
+  {t:'سقوط دعوى الإثراء من تاريخ نشأة الحق',d:'15 سنة',a:'م 180 مدني'},
+  {t:'سقوط الحق في إقامة دعوى الفضالة',d:'3 سنوات',a:'م 197 مدني'},
+  {t:'سقوط دعوى الفضالة من تاريخ نشأة الحق',d:'15 سنة',a:'م 197 مدني'},
+  {t:'سقوط دعوى عدم نفاذ التصرف',d:'3 سنوات',a:'م 242 مدني'},
+  {t:'سقوط دعوى عدم النفاذ من تاريخ التصرف',d:'15 سنة',a:'م 242 مدني'},
+  {t:'المعارضة في الأحكام الصادرة بالإعسار',d:'8 أيام',a:'م 252 مدني'},
+  {t:'استئناف الأحكام الصادرة بالإعسار',d:'15 يوم',a:'م 252 مدني'},
+  {t:'التظلم من الحجز على إيرادات المدين',d:'3 أيام',a:'م 259 مدني'},
+  {t:'ميعاد الاعتراض على حوالة الدين',d:'6 أشهر',a:'م 322 مدني'},
+  {t:'ميعاد تقادم الالتزام',d:'15 سنة',a:'م 374 مدني'},
+  {t:'ميعاد تقادم الحقوق الدورية',d:'5 سنوات',a:'م 375 مدني'},
+  {t:'تقادم أتعاب الأطباء والمهندسين والمحامين',d:'5 سنوات',a:'م 376 مدني'},
+  {t:'تقادم الرسوم والضرائب المستحقة للدولة',d:'3 سنوات',a:'م 377 مدني'},
+  {t:'تقادم حقوق الخدم والتجار والعمال والصناع',d:'سنة',a:'م 378 مدني'},
+  {t:'تقادم دعوى تكملة الثمن بسبب الغبن',d:'3 سنوات',a:'م 426 مدني'},
+  {t:'سقوط دعوى الضمان من وقت تسليم المبيع',d:'سنة',a:'م 452 مدني'},
+  {t:'سقوط الضمان في عقود المقاولات',d:'10 سنوات',a:'م 651 مدني'},
+  {t:'سقوط دعوى الضمان في حالة التهدم',d:'3 سنوات',a:'م 654 مدني'},
+  {t:'تقادم الدعاوى المتعلقة بالعامل',d:'سنة',a:'م 698 مدني'},
+  {t:'تقادم الدعاوى الناشئة عن عقد التأمين',d:'3 سنوات',a:'م 752 مدني'},
+  {t:'تقادم دعوى نقض القسمة',d:'سنة',a:'م 845 مدني'},
+  {t:'إبداء الرأي في الأخذ بالشفعة',d:'15 يوم',a:'م 940 مدني'},
+  {t:'إيداع الثمن الحقيقي للشفعة في خزنة المحكمة',d:'30 يوماً',a:'م 942 مدني'},
+  {t:'إبداء الرغبة في الشفعة من تاريخ التسجيل',d:'6 شهور',a:'م 948 مدني'},
+  {t:'طلب رد الحيازة من تاريخ فقدها',d:'سنة',a:'م 958 مدني'},
+  {t:'سقوط حق إقامة دعوى منع التعرض',d:'سنة',a:'م 961 مدني'},
+  {t:'التقادم المكسب للملكية بالحيازة المادية',d:'15 سنة',a:'م 968 مدني'},
+  {t:'التقادم المكسب للملكية المستندة لسبب صريح',d:'5 سنوات',a:'م 969 مدني'},
+  {t:'التقادم المكسب لحقوق الإرث',d:'33 سنة',a:'م 970 مدني'},
+];
+function dlBadge(d){
+  const m=d.match(/(\d+)/),n=m?parseInt(m[1]):0;
+  // Days: ≤15 days = urgent (red), more = standard (green)
+  if(/يوم|أيام/.test(d))return n<=15?'bu':'ba';
+  // Months = orange/blue
+  if(/شهر|شهور|أشهر/.test(d))return'bp';
+  // Years = gray
+  if(/سنة|سنوات|سنتان/.test(d))return'bc';
+  return'bp';
+}
+let dlActiveCat='',dlQuery='';
+function setDLCat(cat,btn){
+  dlActiveCat=cat;
+  document.querySelectorAll('#dl-cats button').forEach(b=>{b.className='bc2';b.style.borderRadius='20px';b.style.padding='5px 12px';});
+  btn.className='ab';btn.style.borderRadius='4px';
+  renderDeadlines();
+}
+function renderDeadlines(){
+  const procT=document.getElementById('proc-tbl'),civilT=document.getElementById('civil-tbl');
+  if(!procT||!civilT)return;
+  const grid=document.getElementById('dl-grid');
+  // Filter by category — show/hide whole columns
+  grid.querySelectorAll('[data-col]').forEach(c=>{c.style.display=(!dlActiveCat||c.dataset.col===dlActiveCat)?'':'none';});
+  if(dlActiveCat==='مرافعات')grid.style.gridTemplateColumns='1fr';
+  else if(dlActiveCat==='مدني')grid.style.gridTemplateColumns='1fr';
+  else grid.style.gridTemplateColumns='1fr 1fr';
+  const q=dlQuery.trim();
+  const procF=PROC_DEADLINES.filter(r=>!q||r.t.includes(q)||r.d.includes(q)||r.a.includes(q));
+  const civilF=CIVIL_DEADLINES.filter(r=>!q||r.t.includes(q)||r.d.includes(q)||r.a.includes(q));
+  procT.innerHTML=procF.map(r=>`<tr><td>${r.t}</td><td><span class="bx ${dlBadge(r.d)}">${r.d}</span></td><td>${r.a}</td></tr>`).join('')||'<tr><td colspan="3" style="text-align:center;color:var(--text3);padding:14px;">لا توجد نتائج</td></tr>';
+  civilT.innerHTML=civilF.map(r=>`<tr><td>${r.t}</td><td><span class="bx ${dlBadge(r.d)}">${r.d}</span></td><td>${r.a}</td></tr>`).join('')||'<tr><td colspan="3" style="text-align:center;color:var(--text3);padding:14px;">لا توجد نتائج</td></tr>';
+  const c=document.getElementById('dl-count');
+  let total;
+  if(dlActiveCat==='مرافعات')total=procF.length;
+  else if(dlActiveCat==='مدني')total=civilF.length;
+  else total=procF.length+civilF.length;
+  c.textContent=q?`${total} نتيجة`:`${total} ميعاد`;
+}
+function filterDeadlines(q){dlQuery=q||'';renderDeadlines();}
+function filterLaws(q){document.querySelectorAll('.laws-tbl tbody tr').forEach(r=>{r.style.display=(!q||r.textContent.includes(q))?'':'none';});}
+
+// GLOSSARY
+const GLOSSARY=[
+  {t:'الرول',c:'إجراءات',d:'قائمة على باب قاعة المحكمة تحتوي أرقام القضايا المنظورة في الجلسة.',p:'تحقق من رقمك في الرول قبل دخول أي جلسة.'},
+  {t:'الحاجب',c:'إجراءات',d:'الموظف المسؤول عن تنظيم دخول المحكمة وإدارة الجلسات.',p:'معرفة الحاجب تختصر وقتك وتسهل إجراءاتك.'},
+  {t:'قلم الكتاب',c:'إجراءات',d:'إدارة المحكمة المسؤولة عن استلام وحفظ صحف الدعاوى والوثائق وإعلانها.',p:'كل ورقة رسمية تمر بقلم الكتاب قبل أي إجراء.'},
+  {t:'التأجيل',c:'إجراءات',d:'طلب نقل نظر القضية لجلسة قادمة لمزيد من التحضير.',p:'يُطلب لفظاً أمام المحكمة ويُسجل في محضر الجلسة.'},
+  {t:'صحيفة الدعوى',c:'إجراءات',d:'الورقة الرسمية التي يرفع بها المدعي دعواه وتحتوي أطراف النزاع والطلبات.',p:'تُودع لقلم الكتاب وتُعلن للمدعى عليه خلال 30 يوماً.'},
+  {t:'الإعلان',c:'إجراءات',d:'تبليغ رسمي لأحد أطراف الدعوى بورقة قضائية عن طريق المحضر.',p:'الإعلان الصحيح شرط أساسي لصحة الإجراءات وبدء المواعيد.'},
+  {t:'المحضر القضائي',c:'إجراءات',d:'موظف قضائي مختص بإعلان الأوراق القضائية وتنفيذ الأحكام.',p:'تسليم الورقة للمحضر لا يعني تمام الإعلان — لازم يعلن فعلاً.'},
+  {t:'المذكرة',c:'مستندات',d:'وثيقة مكتوبة يقدمها المحامي للمحكمة تشرح موقف موكله ودفوعه وطلباته.',p:'تُقدم في مواعيد محددة وتُرفق بالمستندات المؤيدة.'},
+  {t:'الدفع الشكلي',c:'دفوع',d:'دفع يتعلق بإجراءات التقاضي لا بموضوع النزاع.',p:'يجب إبداؤه قبل الخوض في الموضوع وإلا سقط الحق فيه.'},
+  {t:'الدفع بعدم الاختصاص',c:'دفوع',d:'ادعاء بأن المحكمة غير مختصة بنظر الدعوى نوعياً أو مكانياً.',p:'يُبدى أولاً قبل أي دفاع آخر وإلا اعتُبر تنازلاً عنه.'},
+  {t:'الدفع بعدم القبول',c:'دفوع',d:'دفع بأن الدعوى غير مقبولة لانعدام الصفة أو المصلحة.',p:'يختلف عن الاختصاص — يتعلق بالخصم لا بالمحكمة.'},
+  {t:'قوة الأمر المقضي',c:'أحكام',d:'الحجية التي يكتسبها الحكم النهائي فتمنع إعادة نظر النزاع ذاته.',p:'حجة دفاع قوية متى ثبت صدور حكم سابق في نفس النزاع.'},
+  {t:'الحكم الحضوري',c:'أحكام',d:'حكم يصدر في حضور الخصم أو بعد إعلانه قانونياً وعدم حضوره اختياراً.',p:'لا يجوز المعارضة فيه — الطعن فيه بالاستئناف فقط.'},
+  {t:'الحكم الغيابي',c:'أحكام',d:'حكم يصدر دون علم المحكوم عليه أو لعدم إعلانه قانونياً.',p:'يجوز المعارضة فيه خلال 10 أيام من تاريخ الإعلان.'},
+  {t:'المعارضة',c:'طعون',d:'طريق طعن في الحكم الغيابي يرفعه من صدر ضده.',p:'ميعادها 10 أيام من إعلان المتهم بشخصه بالحكم.'},
+  {t:'الاستئناف',c:'طعون',d:'طريق طعن عادي في الأحكام يُرفع لمحكمة أعلى درجة.',p:'أهم طريق طعن — يعيد الدعوى كاملة للمحكمة الأعلى.'},
+  {t:'الطعن بالنقض',c:'طعون',d:'طريق طعن أمام محكمة النقض يقتصر على الأخطاء القانونية فقط.',p:'لا ينظر في الوقائع — فقط في صحة تطبيق القانون.'},
+  {t:'التماس إعادة النظر',c:'طعون',d:'طريق طعن استثنائي في الأحكام النهائية لأسباب محددة كالتزوير.',p:'محدود بحالات قانونية على سبيل الحصر.'},
+  {t:'الحبس الاحتياطي',c:'جنائي',d:'إجراء تحفظي بحبس المتهم قبل صدور حكم لضمان سير التحقيق.',p:'مدته محددة قانوناً — راقبها دائماً.'},
+  {t:'النيابة العامة',c:'جنائي',d:'جهة قضائية تمثل الدولة في تحريك الدعوى الجنائية والتحقيق.',p:'لا يجوز التحقيق مع محامٍ إلا بمعرفة أحد أعضائها.'},
+  {t:'الكفالة',c:'جنائي',d:'مبلغ مالي يودعه المتهم ضماناً لحضوره في المواعيد القضائية.',p:'يختلف مقدارها بحسب طبيعة القضية وتقدير المحكمة.'},
+  {t:'أمر الإحالة',c:'جنائي',d:'قرار من النيابة بإحالة المتهم لمحكمة الجنايات أو الجنح.',p:'يحدد التهم وأدلة الاتهام ويفتح باب المرافعة.'},
+  {t:'التوكيل الرسمي',c:'وثائق',d:'مستند موثق يُخوّل المحامي التمثيل القانوني عن الموكل.',p:'لكل نوع قضية توكيل محدد — تأكد من صياغته بدقة.'},
+  {t:'الشهر العقاري',c:'عقارات',d:'جهة تختص بتسجيل التصرفات العقارية وإعطائها الحجية القانونية.',p:'التصرف العقاري غير المسجل لا حجية له على الغير.'},
+  {t:'محكمة الأسرة',c:'أحوال شخصية',d:'محكمة متخصصة تنظر قضايا الزواج والطلاق والنفقة والحضانة.',p:'الإعلان الصحيح للطرف الآخر شرط أساسي.'},
+  {t:'الخلع',c:'أحوال شخصية',d:'حق المرأة في طلب التطليق مقابل رد مهرها دون موافقة الزوج.',p:'حق مقرر بالقانون 1 / 2000 — لا يحتاج سبباً محدداً.'},
+  {t:'النفقة',c:'أحوال شخصية',d:'الالتزام المالي بالإنفاق على الزوجة والأولاد وفق الشريعة.',p:'تُحدد بحسب حال الزوج وحاجة المنفق عليه.'},
+  {t:'التحكيم',c:'بديل قضائي',d:'نظام لفض النزاعات خارج المحاكم عبر محكم يختاره الطرفان.',p:'شرط التحكيم في العقد يمنع اللجوء للقضاء الرسمي.'},
+  {t:'الوساطة والصلح',c:'بديل قضائي',d:'إجراء ودي لتسوية النزاع بالاتفاق بمساعدة وسيط محايد.',p:'في قضايا الأسرة والعمل — تجربة الصلح شرط قانوني أحياناً.'},
+];
+const GLOSS_CATS=[...new Set(GLOSSARY.map(g=>g.c))];
+let activeGlossCat='';
+function initGlossary(){
+  const catsEl=document.getElementById('glossary-cats');
+  if(!catsEl||catsEl.children.length>0)return;
+  const makeBtn=(label,cat,active)=>{const b=document.createElement('button');b.className=active?'ab':'bc2';b.style.cssText='font-size:11px;padding:5px 12px;border-radius:20px;';b.textContent=label;b.onclick=()=>{activeGlossCat=cat;document.querySelectorAll('#glossary-cats button').forEach(x=>x.className='bc2');b.className='ab';filterGlossary();};catsEl.appendChild(b);};
+  makeBtn('الكل','',true);GLOSS_CATS.forEach(c=>makeBtn(c,c,false));filterGlossary();
+}
+function filterGlossary(){
+  const q=(document.getElementById('glossary-q').value||'').trim();
+  const filtered=GLOSSARY.filter(g=>(!activeGlossCat||g.c===activeGlossCat)&&(!q||g.t.includes(q)||g.d.includes(q)));
+  const list=document.getElementById('glossary-list');
+  list.innerHTML=filtered.map(g=>`<div class="dc"><div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;"><span style="font-size:16px;font-weight:700;color:var(--navy);">${g.t}</span><span class="bx bp" style="font-size:10px;">${g.c}</span></div><div style="font-size:13px;color:var(--text);line-height:1.7;margin-bottom:8px;">${g.d}</div><div style="font-size:12px;color:var(--gold);background:var(--gold-bg);padding:6px 10px;border-right:3px solid var(--gold-l);">💡 ${g.p}</div></div>`).join('')||'<div class="es"><div class="ei">🔤</div><div class="et">لا توجد نتائج</div></div>';
+}
+
+// DEFENSES
+const DEFENSES=[
+  {type:'جنائي',cat:'دفع شكلي',title:'الدفع بعدم اختصاص المحكمة الجنائية',body:'يُبدى إذا كانت الواقعة تدخل في اختصاص محكمة أخرى من حيث النوع أو المكان.',tip:'يُبدى أولاً قبل أي دفاع في الموضوع وإلا سقط.'},
+  {type:'جنائي',cat:'دفع شكلي',title:'الدفع ببطلان ورقة التكليف بالحضور',body:'إذا جاءت ورقة التكليف ناقصة البيانات أو أُعلنت بطريقة مخالفة للقانون.',tip:'راجع اسم المتهم والتهمة وتاريخ الجلسة بدقة.'},
+  {type:'جنائي',cat:'دفع شكلي',title:'الدفع بانقضاء الدعوى الجنائية بالتقادم',body:'إذا انقضت المدة القانونية دون تحريك الدعوى (3 سنوات جنح — 10 جنايات).',tip:'احسب المدة من يوم وقوع الجريمة لا من يوم الضبط.'},
+  {type:'جنائي',cat:'دفع شكلي',title:'الدفع بسبق الفصل في الدعوى',body:'إذا سبق صدور حكم نهائي في نفس الواقعة ضد نفس المتهم.',tip:'أحضر صورة الحكم السابق وإعلانه كمستندات دعم.'},
+  {type:'جنائي',cat:'دفع موضوعي',title:'الدفع بانتفاء القصد الجنائي',body:'إثبات أن المتهم لم تتوافر لديه نية ارتكاب الجريمة.',tip:'يُستند إلى ظروف الواقعة وملابساتها وشهادات الشهود.'},
+  {type:'جنائي',cat:'دفع موضوعي',title:'الدفع بالإكراه',body:'إذا ارتكب المتهم الفعل تحت إكراه مادي أو معنوي أسلب إرادته.',tip:'الإكراه المادي أقوى حجة — وثّقه بشهادات وتقارير طبية.'},
+  {type:'جنائي',cat:'دفع موضوعي',title:'الدفع بعدم كفاية الدليل',body:'الطعن في أدلة الاتهام وإثبات عدم كفايتها للإدانة.',tip:'ركز على الثغرات في الإجراءات وتقارير الخبراء.'},
+  {type:'جنائي',cat:'دفع ببطلان',title:'الدفع ببطلان الاعتراف لانتزاعه بالإكراه',body:'الاعتراف المنتزع بالإكراه أو التهديد باطل ولا يُعتد به.',tip:'راجع محضر الاستجواب وأوقاته وظروف الإدلاء.'},
+  {type:'جنائي',cat:'دفع ببطلان',title:'الدفع ببطلان القبض لعدم مشروعيته',body:'إذا جرى القبض دون أمر قضائي أو في غير حالات التلبس.',tip:'البطلان يمتد لكل ما ترتب عليه من إجراءات.'},
+  {type:'مدني',cat:'دفع شكلي',title:'الدفع بعدم الاختصاص المحلي',body:'إذا رُفعت الدعوى أمام محكمة غير مختصة مكانياً.',tip:'يُبدى قبل الكلام في الموضوع — الاختصاص بموطن المدعى عليه.'},
+  {type:'مدني',cat:'دفع شكلي',title:'الدفع بعدم قبول الدعوى لانعدام الصفة',body:'إذا رفع الدعوى أو رُفعت ضد من ليس له صفة في الخصومة.',tip:'الصفة تختلف عن الأهلية — تتعلق بمن له حق التقاضي.'},
+  {type:'مدني',cat:'دفع شكلي',title:'الدفع بعدم قبول الدعوى لانعدام المصلحة',body:'إذا لم تكن للمدعي مصلحة قانونية قائمة ومشروعة.',tip:'المصلحة يجب أن تكون شخصية ومباشرة وقائمة.'},
+  {type:'مدني',cat:'دفع شكلي',title:'الدفع بسقوط الخصومة',body:'إذا لم يطلب أحد الخصمين السير في الدعوى خلال سنتين.',tip:'راجع تاريخ آخر جلسة وتأكد من عدم انقطاع المدة.'},
+  {type:'مدني',cat:'دفع موضوعي',title:'الدفع بانقضاء الحق بالتقادم',body:'إذا مضت المدة القانونية على الحق دون مطالبة (15 سنة كأصل).',tip:'التقادم لا يسري تلقائياً — يجب إبداؤه كدفع صريح.'},
+  {type:'مدني',cat:'دفع موضوعي',title:'الدفع بالوفاء',body:'إثبات أن المدعى عليه أوفى بالتزامه المطالب به.',tip:'وثّق الوفاء بإيصالات وحوالات بنكية وشهادات تحريرية.'},
+  {type:'مدني',cat:'دفع ببطلان',title:'الدفع ببطلان العقد لعيب في الإرادة',body:'إذا شاب العقد غلط جوهري أو تدليس أو إكراه.',tip:'مدة دعوى البطلان النسبي 3 سنوات من اكتشاف العيب.'},
+  {type:'تجاري',cat:'دفع شكلي',title:'الدفع بعدم اختصاص المحكمة الابتدائية',body:'إذا كانت قيمة الدعوى تدخل في اختصاص المحكمة الاقتصادية.',tip:'المحاكم الاقتصادية مختصة بقضايا فوق 5 مليون جنيه.'},
+  {type:'تجاري',cat:'دفع موضوعي',title:'الدفع بشرط التحكيم',body:'إذا تضمن العقد شرط تحكيم يوجب اللجوء للتحكيم أولاً.',tip:'المحكمة تقضي بعدم قبول الدعوى إذا ثبت وجود شرط التحكيم.'},
+  {type:'تجاري',cat:'دفع موضوعي',title:'الدفع بعدم استحقاق الدين لعدم حلول أجله',body:'إذا كان الدين التجاري لم يحل أجله بعد.',tip:'راجع ميعاد الاستحقاق في العقد بدقة.'},
+  {type:'أحوال شخصية',cat:'دفع شكلي',title:'الدفع بعدم اختصاص محكمة الأسرة مكانياً',body:'الاختصاص لمحكمة موطن المدعى عليه أو موطن الزوجة في النفقة.',tip:'في دعاوى النفقة يمكن رفعها في موطن الزوجة — استفد منه.'},
+  {type:'أحوال شخصية',cat:'دفع موضوعي',title:'الدفع بانعدام الضرر في دعوى الطلاق للضرر',body:'إثبات أن الزوج لم يُلحق أذى مادياً أو معنوياً بالزوجة.',tip:'الضرر يجب أن يكون موثقاً — شهادات وتقارير طبية.'},
+  {type:'عقاري',cat:'دفع موضوعي',title:'الدفع بالتقادم المكسب للملكية',body:'إذا وضع المدعى عليه يده على العقار بصفة هادئة ومستمرة 15 سنة.',tip:'وضع اليد يجب إثباته بشهود ومستندات من البداية.'},
+  {type:'عقاري',cat:'دفع شكلي',title:'الدفع بعدم شهر عقد المدعي',body:'إذا لم يُسجَّل عقد المدعي في الشهر العقاري فلا يحتج به على الغير.',tip:'الملكية لا تنتقل قانوناً إلا بالتسجيل في الشهر العقاري.'},
+  {type:'إداري',cat:'دفع شكلي',title:'الدفع بعدم قبول الدعوى لرفعها قبل التظلم',body:'بعض القرارات تشترط التظلم أولاً قبل اللجوء لمجلس الدولة.',tip:'التظلم قد يكون وجوبياً أو اختيارياً حسب طبيعة القرار.'},
+  {type:'إداري',cat:'دفع شكلي',title:'الدفع بفوات ميعاد الطعن في القرار الإداري',body:'ميعاد الطعن 60 يوماً من تاريخ العلم اليقيني بالقرار.',tip:'العلم اليقيني يبدأ منه الميعاد حتى دون إعلان رسمي.'},
+  {type:'عمالي',cat:'دفع موضوعي',title:'الدفع بأن الفصل كان بسبب مشروع',body:'إثبات أن فصل العامل جاء لأسباب تأديبية مشروعة.',tip:'يجب اتباع الإجراءات التأديبية كاملة قبل قرار الفصل.'},
+  {type:'عمالي',cat:'دفع شكلي',title:'الدفع بعدم قبول الدعوى لعدم اللجوء للتوفيق',body:'قانون العمل يوجب عرض النزاع على لجنة التوفيق أولاً.',tip:'اللجوء المباشر للقضاء دون التوفيق يُرتب عدم قبول الدعوى.'},
+];
+function filterDefenses(){
+  const type=document.getElementById('def-type').value,cat=document.getElementById('def-cat').value,q=(document.getElementById('def-q').value||'').trim();
+  const filtered=DEFENSES.filter(d=>(!type||d.type===type)&&(!cat||d.cat===cat)&&(!q||d.title.includes(q)||d.body.includes(q)));
+  const list=document.getElementById('defenses-list');
+  if(!filtered.length){list.innerHTML='<div class="es"><div class="ei">🛡</div><div class="et">لا توجد نتائج</div></div>';return;}
+  const catColor={'دفع شكلي':'bp','دفع موضوعي':'ba','دفع ببطلان':'bu'};
+  list.innerHTML=filtered.map(d=>`<div class="dc"><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;"><span class="bx ${catColor[d.cat]||'bp'}">${d.cat}</span><span class="bx bc" style="font-size:10px;">${d.type}</span><span style="font-size:15px;font-weight:700;color:var(--navy);">${d.title}</span></div><div style="font-size:13px;color:var(--text);line-height:1.7;margin-bottom:8px;">${d.body}</div><div style="font-size:12px;color:var(--gold);background:var(--gold-bg);padding:6px 10px;border-right:3px solid var(--gold-l);">💡 ${d.tip}</div></div>`).join('');
+}
+
+// DIGITAL
+function initDigital(){
+  const r=(id,items)=>document.getElementById(id).innerHTML=items.map(i=>i.url
+    ?`<a href="${i.url}" target="_blank" style="text-decoration:none;"><div style="background:var(--bg);border:1px solid var(--border);padding:10px 14px;border-radius:4px;" onmouseover="this.style.borderColor='var(--gold-l)'" onmouseout="this.style.borderColor='var(--border)'"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:13px;font-weight:700;color:var(--navy);">${i.name}</span>${i.note?`<span class="bx ba" style="font-size:10px;">${i.note}</span>`:''}</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">${i.desc}</div></div></a>`
+    :`<div style="background:var(--gold-bg);border-right:3px solid var(--gold-l);padding:9px 12px;border-radius:0 4px 4px 0;font-size:12px;color:var(--text2);">${i}</div>`
+  ).join('');
+  r('digital-legal',[
+    {name:'منشورات',url:'https://manshurat.org',desc:'التشريعات والأحكام المصرية — الأشمل',note:'مجاني'},
+    {name:'نقابة المحامين — التشريعات',url:'https://egyls.com',desc:'القوانين والأحكام من النقابة',note:'مجاني'},
+    {name:'محكمة النقض المصرية',url:'https://cc.gov.eg',desc:'أحكام النقض الرسمية',note:'مجاني'},
+    {name:'الجريدة الرسمية',url:'https://ipa.gov.eg',desc:'القوانين فور صدورها رسمياً',note:'مجاني'},
+    {name:'مجلس الدولة',url:'https://www.conseil-etat.eg',desc:'أحكام المحاكم الإدارية',note:'مجاني'},
+    {name:'Google Scholar',url:'https://scholar.google.com',desc:'أبحاث قانونية وسوابق دولية',note:'مجاني'},
+  ]);
+  r('digital-tools',[
+    {name:'Google Workspace',url:'https://workspace.google.com',desc:'البريد + الملفات + التقويم الاحترافي',note:'مدفوع'},
+    {name:'CamScanner',url:'https://www.camscanner.com',desc:'تحويل المستندات لـ PDF عبر الهاتف',note:'مجاني'},
+    {name:'WhatsApp Business',url:'https://business.whatsapp.com',desc:'تواصل احترافي + ردود تلقائية',note:'مجاني'},
+    {name:'Calendly',url:'https://calendly.com',desc:'جدولة المواعيد — الموكل يختار وقته',note:'مجاني'},
+    {name:'Zoom',url:'https://zoom.us',desc:'اجتماعات ومقابلات عن بُعد',note:'مجاني'},
+    {name:'Notion',url:'https://notion.so',desc:'تنظيم الملاحظات والأبحاث',note:'مجاني'},
+    {name:'Smallpdf',url:'https://smallpdf.com',desc:'تعديل وتوقيع PDF إلكترونياً',note:'مجاني'},
+  ]);
+  r('digital-gov',[
+    {name:'الشهر العقاري',url:'https://www.moj.gov.eg',desc:'استعلام عن الملكية والرهون والتسجيل'},
+    {name:'السجل التجاري',url:'https://cr.gov.eg',desc:'بحث عن الشركات والسجلات التجارية'},
+    {name:'هيئة قضايا الدولة',url:'https://www.scc.gov.eg',desc:'القضايا التي تكون الدولة طرفاً فيها'},
+    {name:'الرقم القومي',url:'https://www.nid.gov.eg',desc:'التحقق من بيانات الهوية'},
+  ]);
+  r('digital-tips',[
+    'استخدم بريد إلكتروني احترافي — اسمك@مكتبك.com لا Yahoo أو Hotmail',
+    'خصص رقم هاتف منفصل للعمل — لا تخلط الشخصي بالمهني',
+    'عمل Backup أسبوعي على Google Drive وقرص خارجي',
+    'صوّر كل مستند ورقي بـ CamScanner فوراً قبل أن يضيع',
+    'فعّل الردود التلقائية على WhatsApp Business خارج ساعات العمل',
+    'احرص على LinkedIn profile احترافي — الشركات تبحث هناك',
+    'استخدم تقويماً رقمياً لجلساتك — لا اعتماد على الذاكرة وحدها',
+  ]);
+}
+
+// ===== GUIDE: COURT TERMS =====
+const COURT_TERMS=[
+  {n:1,t:'الجدول',d:'مكتب داخل المحكمة تُقيَّد فيه بيانات القضايا منذ دخولها وحتى انتهاء إجراءاتها. ويُعدّ المرجع الأساسي للحصول على أي معلومات متعلقة بالقضية، سواء كانت في مرحلة التحقيق أو تم تحديد جلسة لنظرها. فمن خلاله يمكن معرفة عضو النيابة المختص، أو تاريخ الجلسة والدائرة المختصة، كما يُستعان به في استخراج الشهادات المتعلقة بالقضية.'},
+  {n:2,t:'الأجندة',d:'السجل الذي يُدوَّن فيه ما تم في الجلسات، وأرقام الحصر، وقرارات المحكمة السابقة. ومن خلالها يمكن معرفة ترتيب القضايا (الرول) وما تم اتخاذه من قرارات. وتكون الأجندة في حوزة سكرتير الجلسة (أمير الرس)، وتُحدَّد وفقاً لأيام الجلسات.'},
+  {n:3,t:'الاستيفاء',d:'قسم يوجد بالمحكمة أو قسم الشرطة، ويضم عدداً من أمناء الشرطة، ويختص باستكمال البيانات أو الإجراءات أو الأوراق الناقصة في المحاضر.'},
+  {n:4,t:'الرول',d:'قائمة تُعلَّق على باب قاعة الجلسة، تتضمن ترتيب القضايا المنظورة خلالها. ويُستدَل منها على ترتيب نظر القضية، سواء برقمها أو بأسماء الخصوم، لمعرفة توقيت النداء عليها.'},
+  {n:5,t:'الحاجب',d:'الموظف المختص بتنظيم الجلسة، حيث يتولى الإعلان عن انعقاد المحكمة، وينادي على القضايا وفقاً لترتيبها في الرول.'},
+  {n:6,t:'الفهرس',d:'السجل الذي يُستخدم للتحقق مما إذا كانت هناك قضايا مرفوعة ضد شخص معين، حيث يتضمن ترتيب القضايا الواردة إلى المحكمة.'},
+  {n:7,t:'دفتر الحصر',d:'يوجد نوعان: <strong>حصر تحقيق</strong> — يُمنح للقضية أثناء مرحلة التحقيق، ويكون مرتبطاً بعضو النيابة المختص، ويُستخدم للاستعلام عن سير التحقيق. <strong>حصر قضايا</strong> — يُخصَّص بعد إحالة القضية أو صدور حكم فيها، ويُستخدم في مرحلة التنفيذ لمعرفة ما إذا تم اتخاذ إجراءات مثل المعارضة أو الاستئناف.'},
+  {n:8,t:'دفتر الصادر والوارد',d:'سجل تُقيَّد فيه المحاضر والقضايا الواردة إلى المحكمة أو الصادرة منها إلى جهات أخرى، مثل الإحالة إلى محكمة أخرى أو إلى مصلحة الخبراء.'},
+  {n:9,t:'رئيس القلم',d:'المسؤول عن سكرتارية الجلسات، ويختص بحفظ الأختام الرسمية (ومنها خاتم النشر)، كما يتولى تحديد الرسوم القضائية وختم المستندات المتعلقة بدائرته.'},
+  {n:10,t:'سكرتير الجلسة (أمير الرس)',d:'الموظف المختص بتدوين وقائع الجلسة، ويحتفظ بأجندة الجلسات، ويُستخرج من خلاله الصور الرسمية للأحكام ومحاضر الجلسات.'},
+  {n:11,t:'حرس المحكمة',d:'يتكون من ضباط وأفراد الشرطة، على رأسهم قائد الحرس، ويتولون تأمين المحكمة أثناء انعقاد الجلسات.'},
+  {n:12,t:'الحفظ',d:'القسم الذي تُودَع به القضايا التي صدر فيها قرار بالحفظ أو لم يُفصَل فيها، وتظل محفوظة به لمدة طويلة، ويمكن الرجوع إليها عند الحاجة.'},
+];
+
+// ===== GUIDE: CRIMINAL DEFENSES =====
+const CRIMINAL_DEFENSES=[
+  {
+    cls:'non-public',
+    name:'الدفوع غير المتعلقة بالنظام العام',
+    note:'لا يجوز للمحكمة أن تقضي بها من تلقاء نفسها — يجب التمسك بها من قِبَل الدفاع.',
+    groups:[
+      {t:'دفوع واردة على القبض والتفتيش والتلبس والاستيقاف',items:[
+        'الدفع ببطلان القبض والتفتيش لعدم وجود دلائل كافية',
+        'الدفع ببطلان القبض والتفتيش لوقوعهما قبل معرفة كنه المضبوطات',
+        'الدفع ببطلان القبض والتفتيش لانتفاء حالة التلبس',
+        'الدفع ببطلان القبض والتفتيش لوقوعهما قبل صدور إذن النيابة العامة',
+        'الدفع بتجاوز حدود التفتيش الوقائي',
+        'الدفع ببطلان جميع الإجراءات اللاحقة للقبض الباطل لكونها آثاراً مترتبة عليها',
+        'الدفع ببطلان القبض والتفتيش لمخالفة الإذن من حيث مكان تنفيذه',
+        'الدفع ببطلان التفتيش لإجرائه في مكان يستحيل وجود الأحراز المتحرى عنها فيه',
+        'الدفع بعدم تحقق الشروط القانونية لتوافر حالة التلبس لقيام الضابط بالشهادة منفرداً',
+        'الدفع بعدم توافر أركان حالة التلبس لكون الواقعة كُشفت بطريق الصدفة دون تدخل إرادة الضابط',
+        'الدفع بعدم توافر حالة التلبس المنصوص عليها بالمادة (30) إجراءات جنائية',
+        'الدفع بانتفاء حالة التلبس لانعدام التخلي الإرادي',
+        'الدفع ببطلان الاستيقاف لانتفاء مبرراته',
+        'الدفع بتجاوز القائم بالاستيقاف لحدود سلطته القانونية',
+        'الدفع بتجهيل مكان الضبط',
+      ]},
+      {t:'الدفوع الواردة على القصد الجنائي',items:[
+        'الدفع بانتفاء القصد الجنائي لتوافر الإكراه المادي',
+        'الدفع بانتفاء القصد الجنائي لتوافر الإكراه الأدبي أو المعنوي',
+        'الدفع بانتفاء أركان القصد الجنائي (المادي أو المعنوي أو كليهما)',
+        'الدفع بمنازعة القصد الجنائي في جرائم الاتجار بالمخدرات (حيازة — عرضية — مجردة)',
+      ]},
+      {t:'الدفوع الواردة على تحقيقات النيابة',items:[
+        'الدفع بقصور التحقيقات',
+        'الدفع بغموض تحقيقات النيابة العامة وقصورها',
+        'الدفع ببطلان التحقيقات لمباشرتها من غير مختص دون ندب',
+        'الدفع ببطلان التحقيقات لكونها أثراً للقبض الباطل',
+        'الدفع ببطلان الاستجواب لانتفاء ضماناته القانونية، أو لصدوره من غير مختص، أو لعدم حضور محامٍ مع المتهم في غير حالات الاستعجال وفق المادة 124 إجراءات جنائية',
+      ]},
+      {t:'الدفوع الواردة على المعاينة',items:[
+        'الدفع ببطلان المعاينة التي تمت بمعرفة النيابة العامة',
+      ]},
+      {t:'الدفوع الواردة على الاتهام',items:[
+        'الدفع بانتفاء صلة المتهم بالجريمة',
+        'الدفع بانتفاء التهمة وانعدام الدليل',
+        'الدفع بانقطاع علاقة السببية بين الفعل والنتيجة',
+        'الدفع بعدم خضوع مكان الضبط لسيطرة المتهم',
+        'الدفع بشيوع الاتهام',
+        'الدفع بتلفيق الاتهام',
+        'الدفع بكيدية الاتهام',
+        'الدفع بالكيدية والتلفيق للتلاحق اللازم',
+        'الدفع بفساد دليل الإسناد',
+        'الدفع بخلو الأوراق من دليل',
+        'الدفع بعدم معقولية الواقعة',
+        'الدفع باستحالة الرؤية',
+        'الدفع بوجود ارتباط بين الواقعة ووقائع أخرى',
+      ]},
+      {t:'الدفوع الواردة على الحرز',items:[
+        'الدفع بعدم الاعتداد بالحرز للعبث بمحتوياته أو للتباين فيه',
+      ]},
+      {t:'الدفوع الواردة على أقوال المجني عليه أو اعترافه',items:[
+        'الدفع ببطلان أقوال المجني عليه لتعرضه لإكراه مادي أو معنوي أو كليهما',
+        'الدفع ببطلان الاعتراف لتوافر الإكراه المادي',
+        'الدفع ببطلان الاعتراف لتوافر الإكراه الأدبي أو المعنوي',
+      ]},
+      {t:'الدفوع الواردة على أقوال الشهود',items:[
+        'الدفع بتناقض أقوال الشهود',
+        'الدفع ببطلان أقوال الشهود لافتقارها للنزاهة والموضوعية',
+        'الدفع ببطلان أقوال الشهود لكونها وليدة إكراه مادي',
+        'الدفع ببطلان أقوال الشهود لكونها وليدة إكراه أدبي أو معنوي',
+      ]},
+      {t:'الدفوع الواردة على محضر جمع الاستدلالات والتحريات',items:[
+        'الدفع ببطلان محضر جمع الاستدلالات لكونه وليد إكراه مادي أو معنوي',
+        'الدفع بعدم جدية التحريات',
+        'الدفع بعدم ولاية جهة التحري في إجراء التحريات',
+        'الدفع بعدم جدية التحريات لاعتمادها على مصادر شفهية غير ثابتة بالأوراق',
+        'الدفع بتزوير محضر الضبط أو التحريات أو كليهما',
+        'الدفع بالمنازعة في شخص المتحرى عنه (اختلاف الشخص المضبوط عن المقصود بالتحريات)',
+      ]},
+      {t:'الدفوع الواردة على إذن النيابة بالقبض أو التفتيش',items:[
+        'الدفع ببطلان الإذن لمخالفته الشروط القانونية',
+        'الدفع بتجاوز الاختصاص المكاني لمصدر الإذن',
+        'الدفع بأن الجريمة احتمالية وليست حالة',
+        'الدفع بعدم كفاية الدلائل على ارتكاب الجريمة',
+        'الدفع بعدم نسبة الجريمة لشخص معين',
+        'الدفع بصدور الإذن من غير مختص',
+        'الدفع ببطلان الإذن لصدوره عن جريمة مستقبلية أو احتمالية',
+        'الدفع ببطلان الإذن لعدم جدية التحريات',
+        'الدفع ببطلان الإذن لصدوره من معاون نيابة دون ندب',
+      ]},
+      {t:'الدفوع المتعلقة بانقضاء الدعوى وموانع المسؤولية والإعفاء',items:[
+        'الدفع بانقضاء الدعوى الجنائية بالتقادم أو بالصلح أو بالوفاة أو بالتنازل عن الشكوى',
+        'الدفع بتوافر حالة الدفاع الشرعي',
+        'الدفع بالجنون أو العاهة العقلية',
+        'الدفع بفقد الوعي أو السكر أو الغيبوبة الناشئة عنه',
+        'الدفع بتوافر عذر معفٍ أو مخفف للعقاب',
+      ]},
+      {t:'الدفوع المتعلقة بالدليل الطبي والتقرير الطبي',items:[
+        'الدفع بأن التقرير الطبي دليل إصابة وليس دليل إدانة',
+        'الدفع بتناقض الدليل القولي مع الدليل الطبي',
+        'الدفع بعدم تناسب الأداة المستخدمة مع الإصابة',
+        'الدفع بأن الإصابات يمكن افتعالها إذا كانت سطحية',
+        'الدفع بعدم معقولية الواقعة',
+        'الدفع بالتأخر في الإبلاغ',
+        'الدفع بكيدية وتلفيق الاتهام',
+        'الدفع بعدم وجود شهود',
+        'الدفع ببطلان تقرير الطب الشرعي لجهالته أو قصوره',
+      ]},
+      {t:'الدفوع المتعلقة بإقامة الدعوى وإجراءات المحاكمة',items:[
+        'الدفع بتحريك الدعوى دون طلب أو شكوى في الحالات التي يستلزمها القانون',
+        'الدفع بتحريك الدعوى من غير ذي صفة',
+        'الدفع ببطلان إجراءات المحاكمة',
+        'الدفع بعدم جواز نظر الدعوى لسابقة الفصل فيها',
+      ]},
+    ]
+  },
+  {
+    cls:'public',
+    name:'الدفوع المتعلقة بالنظام العام',
+    note:'يجوز للمحكمة إثارتها من تلقاء نفسها في أي مرحلة من مراحل الدعوى الجنائية.',
+    groups:[
+      {t:'الاختصاص',items:[
+        'الدفع بعدم الاختصاص المحلي',
+        'الدفع بعدم الاختصاص النوعي',
+        'الدفع بعدم الاختصاص الولائي',
+      ]},
+      {t:'انقضاء الدعوى الجنائية',items:[
+        'الدفع بانقضاء الدعوى بمضي المدة',
+        'الدفع بانقضاء الدعوى بالوفاة',
+        'الدفع بانقضاء الدعوى بالصلح',
+        'الدفع بانقضاء الدعوى بالتنازل عن الشكوى أو الطلب',
+      ]},
+      {t:'الجريمة',items:[
+        'الدفع بتلفيق وشيوع الاتهام',
+        'الدفع بالتأخر في الإبلاغ',
+        'الدفع بكيدية الاتهام',
+        'الدفع بتناقض الأدلة القولية والفنية',
+      ]},
+      {t:'الدفوع الشكلية',items:[
+        'الدفع ببطلان الاستجواب لعدم حضور محامٍ',
+        'الدفع ببطلان سماع الشهود دون حلف اليمين',
+        'الدفع ببطلان إذن التفتيش',
+        'الدفع ببطلان الضبط',
+        'الدفع ببطلان التحريات لعدم جديتها',
+        'الدفع ببطلان الحكم لعدم حضور محامٍ في الجنايات',
+        'الدفع بانتفاء حالة التلبس',
+        'الدفع ببطلان تفتيش الأنثى بمعرفة رجل',
+      ]},
+      {t:'موانع المسؤولية',items:[
+        'الدفع بالجنون أو العاهة العقلية',
+        'الدفع بحالة السكر أو الغيبوبة',
+        'الدفع بحالة الضرورة أو الإكراه المادي',
+      ]},
+      {t:'الدفوع الموضوعية',items:[
+        'الدفع بعدم معقولية التهمة',
+        'الدفع بعدم التصور المنطقي للواقعة',
+        'الدفع بعدم كفاية الأدلة',
+        'الدفع بعدم توافر الركن المادي',
+        'الدفع بعدم توافر القصد الجنائي',
+        'الدفع بانقطاع علاقة السببية',
+        'الدفع بأن الأحكام الجنائية تُبنى على الجزم واليقين',
+      ]},
+    ]
+  },
+  {
+    cls:'other',
+    name:'دفوع متنوعة',
+    note:'دفوع مستقلة لا تنتمي للتقسيمين السابقين.',
+    groups:[
+      {t:'دفوع متنوعة',items:[
+        'الدفع ببطلان قبول المذكرات المقدمة بعد الميعاد',
+        'الدفع بعدم جواز نظر الاستئناف أو سقوطه للتقرير به بعد الميعاد',
+        'الدفع ببطلان ورقة التكليف بالحضور',
+      ]},
+    ]
+  },
+];
+
+// ===== GUIDE: CIVIL DEFENSES =====
+const CIVIL_DEFENSES=[
+  {n:1,t:'الدفوع الشكلية',d:'تهدف إلى رفض الدعوى لعيوب في الشكل القانوني.',items:[
+    'عدم الاختصاص (نوعياً أو مكانياً)',
+    'عدم تقديم الدعوى بالشكل الصحيح',
+    'التأخر في رفع الدعوى',
+  ],ex:'رفع دعوى أمام محكمة غير مختصة جغرافياً أو نوعياً'},
+  {n:2,t:'الدفوع الموضوعية',d:'تتعلق بالموضوع الأساسي للدعوى.',items:[
+    'الدفع ببطلان العقد',
+    'عدم وجود التزام قانوني',
+    'سقوط الحق بسبب التقادم',
+  ],ex:'دفع المتهم بعدم صحة العقد التجاري أو انتهاء مدة التقادم'},
+  {n:3,t:'الدفوع المتعلقة بالمسؤولية',d:'تهدف إلى تقليل أو إلغاء المسؤولية المدنية أو التجارية.',items:[
+    'القوة القاهرة',
+    'عدم وجود خطأ',
+    'تقصير الطرف الآخر',
+  ],ex:'دفع المتهم بعدم مسؤوليته عن الضرر بسبب حادث خارج عن إرادته'},
+  {n:4,t:'الدفوع المتعلقة بالحق في الملكية أو التصرف',d:'تهدف لحماية حقوق الملكية أو التصرفات القانونية للأطراف.',items:[
+    'الدفع ببطلان البيع',
+    'الدفع ببطلان التنازل',
+    'الدفع ببطلان التصرف غير القانوني',
+  ],ex:'الدفع بعدم صحة سند ملكية أو عقد بيع'},
+  {n:5,t:'الدفوع المتعلقة بالعقود والاتفاقيات',d:'تعتمد على نصوص العقود والالتزامات المتفق عليها.',items:[
+    'عدم تنفيذ العقد من الطرف الآخر',
+    'وجود شروط تعجيزية',
+  ],ex:'دفع بعدم صحة المطالبة المالية بسبب إخلال الطرف الآخر بالشروط التعاقدية'},
+  {n:6,t:'الدفوع المتعلقة بالتقادم',d:'استناداً إلى سقوط الحق بسبب مرور الزمن. ويختلف التقادم حسب نوع الدعوى المدنية أو التجارية.',items:[
+    'سقوط الحق بمرور الزمن المحدد قانوناً',
+    'انقضاء مدة المطالبة المالية',
+    'تقادم الدعوى التجارية',
+  ],ex:'دفع بعدم قبول دعوى مطالبة مالية بسبب مرور فترة التقادم المحددة في القانون'},
+  {n:7,t:'الدفوع المتعلقة بالإجراءات القانونية',d:'تهدف للطعن على مخالفات الإجراءات أثناء رفع الدعوى أو نظرها.',items:[
+    'عدم تسليم الاستدعاءات بشكل قانوني',
+    'مخالفة الأحكام المتعلقة بالإجراءات',
+  ],ex:'دفع ببطلان الدعوى لعدم إبلاغ الخصم بالشكل القانوني'},
+];
+
+let crimFilter='all', guideInited=false;
+
+function initGuide(){
+  if(guideInited)return;
+  guideInited=true;
+  renderTerms();
+  renderCriminal();
+  renderCivil();
+  // update stats
+  const crimCount=CRIMINAL_DEFENSES.reduce((s,sec)=>s+sec.groups.reduce((g,gr)=>g+gr.items.length,0),0);
+  document.getElementById('g-stat-terms').textContent=COURT_TERMS.length;
+  document.getElementById('g-stat-crim').textContent=crimCount;
+  document.getElementById('g-stat-civ').textContent=CIVIL_DEFENSES.length;
+}
+
+function switchGuideTab(name,btn){
+  document.querySelectorAll('.gtab').forEach(t=>t.classList.remove('gon'));
+  document.querySelectorAll('.gtab-c').forEach(c=>c.classList.remove('gon'));
+  btn.classList.add('gon');
+  document.getElementById('gtab-'+name).classList.add('gon');
+}
+
+function escAttr(s){return s.replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+
+// TERMS
+function renderTerms(){
+  const q=(document.getElementById('terms-q').value||'').trim();
+  const filtered=COURT_TERMS.filter(t=>!q||t.t.includes(q)||t.d.includes(q));
+  const list=document.getElementById('terms-list');
+  list.innerHTML=filtered.length?filtered.map(t=>`<div class="term-card"><div class="term-num">${t.n}</div><div class="term-t">${t.t}</div><div class="term-d">${t.d}</div></div>`).join(''):'<div class="es" style="grid-column:1/-1;"><div class="ei">📋</div><div class="et">لا توجد نتائج</div></div>';
+  document.getElementById('terms-count').textContent=filtered.length===COURT_TERMS.length?`${COURT_TERMS.length} مصطلح`:`${filtered.length} من ${COURT_TERMS.length}`;
+}
+function filterTerms(){renderTerms();}
+
+// CRIMINAL
+function renderCriminal(){
+  const q=(document.getElementById('crim-q').value||'').trim();
+  const list=document.getElementById('crim-list');
+  let totalShown=0,totalAll=0;
+  const html=CRIMINAL_DEFENSES.map((sec,si)=>{
+    if(crimFilter!=='all'&&crimFilter!==sec.cls)return '';
+    const grpsHtml=sec.groups.map((g,gi)=>{
+      const items=g.items.filter(it=>!q||it.includes(q));
+      totalAll+=g.items.length;
+      totalShown+=items.length;
+      if(!items.length)return '';
+      const itemsHtml=items.map(it=>`<div class="def-item"><span class="def-item-bullet">◂</span><span class="def-item-text">${it}</span><button class="def-copy" onclick="copyDefense(this,'${escAttr(it)}')">نسخ</button></div>`).join('');
+      return `<div class="def-group"><div class="def-group-t">${g.t} <span style="color:var(--text3);font-weight:400;">(${items.length})</span></div><div class="def-list">${itemsHtml}</div></div>`;
+    }).join('');
+    if(!grpsHtml)return '';
+    const colorBar=sec.cls==='public'?'#c0392b':sec.cls==='non-public'?'#b8860b':'#555';
+    const isOpen=(q||crimFilter!=='all')?true:(si===0);
+    return `<div class="def-section${isOpen?' gon':''}" data-sec="${si}"><div class="def-section-h" onclick="this.parentElement.classList.toggle('gon')"><div class="def-section-t"><span style="width:4px;height:22px;background:${colorBar};border-radius:2px;"></span><span class="def-section-name">${sec.name}</span></div><span class="def-section-i">◂</span></div><div class="def-section-body"><div class="def-section-note">${sec.note}</div>${grpsHtml}</div></div>`;
+  }).join('');
+  list.innerHTML=html||'<div class="es"><div class="ei">⚖</div><div class="et">لا توجد نتائج</div></div>';
+  document.getElementById('crim-count').textContent=q||crimFilter!=='all'?`${totalShown} نتيجة`:`${totalAll} دفع`;
+}
+function filterCriminalDefenses(){renderCriminal();}
+function setCrimFilter(f,btn){
+  crimFilter=f;
+  document.querySelectorAll('#gtab-criminal .gchip').forEach(c=>c.classList.remove('gon'));
+  btn.classList.add('gon');
+  renderCriminal();
+}
+function toggleAllCrim(open){
+  document.querySelectorAll('#crim-list .def-section').forEach(s=>{
+    if(open)s.classList.add('gon');else s.classList.remove('gon');
+  });
+}
+
+// CIVIL
+function renderCivil(){
+  const q=(document.getElementById('civ-q').value||'').trim();
+  const list=document.getElementById('civ-list');
+  const filtered=CIVIL_DEFENSES.filter(c=>!q||c.t.includes(q)||c.d.includes(q)||c.items.some(it=>it.includes(q))||c.ex.includes(q));
+  list.innerHTML=filtered.length?filtered.map((c,i)=>{
+    const itemsHtml=c.items.map(it=>`<div class="civil-item"><span class="civil-item-bullet">◂</span><span>${it}</span></div>`).join('');
+    const isOpen=q?true:(i===0);
+    return `<div class="civil-card${isOpen?' gon':''}"><div class="civil-h" onclick="this.parentElement.classList.toggle('gon')"><div class="civil-num">${c.n}</div><div class="civil-t">${c.t}</div><div class="civil-toggle">◂</div></div><div class="civil-body"><div class="civil-desc">${c.d}</div><div class="civil-items-t">يشمل:</div><div class="civil-items">${itemsHtml}</div><div class="civil-ex"><span class="civil-ex-l">مثال:</span> ${c.ex}</div></div></div>`;
+  }).join(''):'<div class="es"><div class="ei">📜</div><div class="et">لا توجد نتائج</div></div>';
+  document.getElementById('civ-count').textContent=q?`${filtered.length} من ${CIVIL_DEFENSES.length}`:`${CIVIL_DEFENSES.length} أقسام`;
+}
+function filterCivilDefenses(){renderCivil();}
+function toggleAllCivil(open){
+  document.querySelectorAll('#civ-list .civil-card').forEach(c=>{
+    if(open)c.classList.add('gon');else c.classList.remove('gon');
+  });
+}
+
+// COPY
+function copyDefense(btn,txt){
+  navigator.clipboard.writeText(txt).then(()=>{
+    const orig=btn.textContent;
+    btn.textContent='✓ تم';
+    btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent=orig;btn.classList.remove('copied');},1400);
+  }).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');btn.textContent='✓ تم';btn.classList.add('copied');setTimeout(()=>{btn.textContent='نسخ';btn.classList.remove('copied');},1400);}
+    catch(e){alert('تعذر النسخ');}
+    document.body.removeChild(ta);
+  });
+}
+renderDeadlines();
+</script>
+</body>
+</html>
