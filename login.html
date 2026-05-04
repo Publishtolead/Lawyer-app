@@ -3,1256 +3,403 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مشروع محامي — إدارة المكتب</title>
+<title>مشروع محامي — تسجيل الدخول</title>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#f7f6f3;--bg2:#fff;--navy:#0c1a2e;--gold:#b8860b;--gold-l:#c9a84c;--gold-bg:#fdf8ee;--text:#1a1a1a;--text2:#555;--text3:#888;--border:#e2ddd4;--border2:#d4c99a;--card:#fff;--danger:#c0392b;--success:#1a7a4a;}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
-.app{display:flex;min-height:100vh;}
-.sb{width:240px;min-height:100vh;background:var(--navy);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;}
-.sb-logo{padding:20px;border-bottom:1px solid rgba(255,255,255,0.1);}
-.sb-logo-t{font-family:'Amiri',serif;font-size:22px;color:#c9a84c;display:block;}
-.sb-logo-u{font-size:11px;color:rgba(255,255,255,0.4);margin-top:3px;display:block;}
-.nav-sec{padding:10px 10px 4px;}
-.nav-lbl{font-size:9px;color:rgba(201,168,76,0.6);letter-spacing:2px;padding:0 8px;margin-bottom:3px;}
-.ni{display:flex;align-items:center;gap:9px;padding:9px 10px;cursor:pointer;color:rgba(255,255,255,0.45);font-size:13px;transition:all 0.15s;border:1px solid transparent;border-radius:3px;text-decoration:none;}
-.ni:hover{color:rgba(255,255,255,0.85);background:rgba(255,255,255,0.06);}
-.ni.on{color:#c9a84c;background:rgba(201,168,76,0.12);border-color:rgba(201,168,76,0.25);}
-.ni-ic{font-size:13px;width:16px;text-align:center;}
-.sb-foot{margin-top:auto;padding:12px;border-top:1px solid rgba(255,255,255,0.1);}
-.sb-foot a{display:block;width:100%;padding:7px;background:none;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.4);font-family:'Cairo',sans-serif;font-size:11px;cursor:pointer;border-radius:3px;text-decoration:none;text-align:center;}
-.sb-foot a:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.7);}
-.main{flex:1;overflow-y:auto;}
-.pg{display:none;padding:26px 30px;}
-.pg.on{display:block;}
-.pg-hdr{margin-bottom:20px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
-.pg-t{font-family:'Amiri',serif;font-size:26px;color:var(--navy);}
-.pg-s{font-size:12px;color:var(--text3);margin-top:2px;}
-.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
-.sc{background:var(--card);border:1px solid var(--border);padding:16px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
-.sc-l{font-size:10px;color:var(--text3);letter-spacing:2px;margin-bottom:6px;}
-.sc-v{font-size:28px;font-weight:700;color:var(--gold);}
-.sc-c{font-size:11px;color:var(--text3);margin-top:2px;}
-.dg{display:grid;grid-template-columns:2fr 1fr;gap:12px;}
-.dc{background:var(--card);border:1px solid var(--border);padding:16px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
-.dc-t{font-size:11px;color:var(--gold);letter-spacing:1px;font-weight:600;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);}
-.si{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
-.si:last-child{border-bottom:none;}
-.si-d{background:var(--gold-bg);color:var(--gold);padding:3px 7px;font-size:11px;font-weight:600;min-width:62px;text-align:center;border:1px solid var(--border2);border-radius:3px;}
-.si-i{flex:1;}
-.si-n{font-size:13px;color:var(--text);}
-.si-c{font-size:11px;color:var(--text3);margin-top:1px;}
-.tb{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px;}
-.si-inp{padding:9px 12px;background:var(--card);border:1px solid var(--border);color:var(--text);font-family:'Cairo',sans-serif;font-size:13px;outline:none;width:230px;transition:border-color 0.2s;border-radius:4px;}
-.si-inp:focus{border-color:var(--gold-l);}
-.si-inp::placeholder{color:var(--text3);}
-.ab{padding:9px 16px;background:var(--navy);border:none;color:#c9a84c;font-family:'Cairo',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s;white-space:nowrap;border-radius:4px;}
-.ab:hover{background:#0d2240;}
-.dt{width:100%;border-collapse:collapse;background:var(--card);border-radius:6px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
-.dt th{text-align:right;padding:10px 12px;font-size:10px;color:var(--gold);letter-spacing:2px;border-bottom:2px solid var(--border);font-weight:600;background:var(--gold-bg);}
-.dt td{padding:11px 12px;font-size:13px;border-bottom:1px solid var(--border);color:var(--text);}
-.dt tr:last-child td{border-bottom:none;}
-.dt tr:hover td{background:#fafaf7;}
-.bx{display:inline-block;padding:3px 9px;font-size:11px;border-radius:20px;font-weight:600;}
-.ba{background:#e8f5ee;color:#1a7a4a;}.bp{background:#fdf3d0;color:#8a6200;}.bc{background:#f0f0f0;color:#777;}.bu{background:#fdecea;color:#c0392b;}
-.ra{display:flex;gap:5px;}
-.ra button{padding:4px 9px;border:1px solid var(--border);background:none;font-family:'Cairo',sans-serif;font-size:11px;cursor:pointer;transition:all 0.15s;border-radius:3px;}
-.ra .v{color:#2980b9;border-color:#bdd8f0;}.ra .v:hover{background:#eaf3fb;}
-.ra .e{color:var(--gold);border-color:#e2d095;}.ra .e:hover{background:var(--gold-bg);}
-.ra .d{color:var(--danger);border-color:#f5c0b8;}.ra .d:hover{background:#fdecea;}
-.mo{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:100;padding:16px;}
-.mo.on{display:flex;}
-.md{background:var(--bg2);border:1px solid var(--border);padding:24px 28px;width:520px;max-width:100%;max-height:92vh;overflow-y:auto;animation:fu 0.22s ease;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.12);}
-.md.w{width:760px;}.md.sm{width:420px;}
-@keyframes fu{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-.md-t{font-family:'Amiri',serif;font-size:22px;color:var(--navy);margin-bottom:18px;padding-bottom:10px;border-bottom:2px solid var(--border2);}
-.fr{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.fg{margin-bottom:13px;}
-.fl{display:block;font-size:11px;color:var(--text2);margin-bottom:4px;font-weight:600;}
-.fi,.fs,.fta{width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'Cairo',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;border-radius:4px;}
-.fi:focus,.fs:focus,.fta:focus{border-color:var(--gold-l);background:var(--bg2);}
-.fi::placeholder,.fta::placeholder{color:var(--text3);}
-.fta{resize:vertical;min-height:72px;}
-.mf{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;padding-top:12px;border-top:1px solid var(--border);}
-.bc2{padding:9px 16px;background:none;border:1px solid var(--border);color:var(--text2);font-family:'Cairo',sans-serif;cursor:pointer;font-size:13px;border-radius:4px;}
-.bc2:hover{background:var(--bg);}
-.bs{padding:9px 24px;background:var(--navy);border:none;color:#c9a84c;font-family:'Cairo',sans-serif;font-weight:700;cursor:pointer;font-size:13px;border-radius:4px;}
-.bd{padding:9px 16px;background:var(--danger);border:none;color:white;font-family:'Cairo',sans-serif;cursor:pointer;font-size:13px;border-radius:4px;}
-.sj-i{display:flex;gap:11px;margin-bottom:14px;position:relative;}
-.sj-i:not(:last-child)::before{content:'';position:absolute;right:11px;top:24px;bottom:-6px;width:1px;background:var(--border);}
-.sj-dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--gold-l);background:var(--bg2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:var(--gold);}
-.sj-dot.f{background:var(--gold);color:white;border-color:var(--gold);}
-.sj-body{flex:1;}
-.sj-date{font-size:10px;color:var(--text3);margin-bottom:1px;}
-.sj-text{font-size:13px;color:var(--text);line-height:1.6;}
-.sj-type{font-size:10px;color:var(--gold);margin-top:1px;font-weight:600;}
-.dk{font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;}
-.dv{font-size:13px;color:var(--text);margin-bottom:10px;}
-.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;}
-.sec-t{font-size:11px;color:var(--navy);letter-spacing:1px;font-weight:700;margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid var(--border2);text-transform:uppercase;}
-.fee-tbl{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:10px;}
-.fee-tbl th{text-align:right;padding:6px 8px;background:var(--gold-bg);color:var(--gold);font-size:10px;letter-spacing:1px;border-bottom:1px solid var(--border2);}
-.fee-tbl td{padding:7px 8px;border-bottom:1px solid var(--border);color:var(--text);}
-.fee-tbl tr:last-child td{border-bottom:none;}
-.fee-total-row td{font-weight:700;color:var(--navy);background:#f5f3ee;}
-.del-warn{background:#fff8f0;border:1px solid #f5c0a0;border-radius:6px;padding:12px 14px;margin-bottom:14px;}
-.del-warn-t{font-size:13px;font-weight:700;color:#c0392b;margin-bottom:6px;}
-.del-warn-item{font-size:12px;color:#666;padding:3px 0;display:flex;align-items:center;gap:6px;}
-.del-warn-item::before{content:'⚠';font-size:11px;}
-.fsm{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
-.fsc{background:var(--card);border:1px solid var(--border);padding:16px;text-align:center;border-radius:6px;}
-.fsl{font-size:10px;color:var(--text3);letter-spacing:1px;font-weight:600;margin-bottom:6px;}
-.fsv{font-size:22px;color:var(--gold);font-weight:700;}
-.fsu{font-size:11px;color:var(--text3);margin-top:1px;}
-.dtabs{display:flex;gap:2px;margin-bottom:16px;border-bottom:2px solid var(--border);}
-.dtab{padding:8px 16px;cursor:pointer;font-size:13px;color:var(--text3);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.15s;}
-.dtab.on{color:var(--navy);border-bottom-color:var(--gold);font-weight:600;}
-.dtab-content{display:none;}.dtab-content.on{display:block;}
-.uf{background:var(--bg);border:1px solid var(--border);padding:12px;border-radius:4px;margin-top:8px;}
-.uf-r{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
-.nc-box{background:var(--gold-bg);border:1px solid var(--border2);padding:12px;margin-bottom:13px;border-radius:4px;}
-.nc-box-t{font-size:11px;color:var(--gold);margin-bottom:10px;letter-spacing:1px;font-weight:700;}
-.lnk{font-size:11px;color:#2980b9;cursor:pointer;text-decoration:underline;}
-.es{text-align:center;padding:40px 20px;color:var(--text3);}
-.ei{font-size:34px;margin-bottom:8px;opacity:0.3;}
-.et{font-size:13px;}
-.sr{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.sn{font-size:12px;color:var(--text2);width:130px;}
-.sbar{flex:1;height:6px;background:var(--border);border-radius:3px;}
-.sf{height:100%;background:var(--gold);border-radius:3px;}
-.sp{font-size:12px;color:var(--gold);width:34px;text-align:left;font-weight:700;}
-/* Auth loading screen */
-#auth-loading{position:fixed;inset:0;background:#0c1a2e;color:#c9a84c;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;font-family:'Cairo',sans-serif;z-index:9999;}
-#auth-loading .ldr{width:32px;height:32px;border:3px solid rgba(201,168,76,0.3);border-top-color:#c9a84c;border-radius:50%;animation:spin 0.8s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#f7f6f3;--bg2:#fff;--navy:#0c1a2e;--navy2:#1a2a3e;--gold:#b8860b;--gold-l:#c9a84c;--gold-bg:#fdf8ee;--text:#1a1a1a;--text2:#555;--text3:#888;--border:#e2ddd4;--card:#fff;--danger:#c0392b;--success:#1a7a4a;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Cairo',sans-serif;background:linear-gradient(135deg,#0c1a2e 0%,#1a2a3e 100%);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+
+.box{background:white;border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,0.3);width:100%;max-width:440px;border-top:4px solid var(--gold);overflow:hidden;}
+.hd{padding:30px 32px 14px;text-align:center;background:var(--gold-bg);}
+.logo{font-size:36px;}
+.ttl{font-family:'Amiri',serif;font-size:28px;color:var(--navy);font-weight:700;margin-top:6px;}
+.sub{font-size:11px;color:var(--text3);letter-spacing:2px;}
+
+.tabs{display:flex;border-bottom:1px solid var(--border);}
+.tab{flex:1;padding:12px;text-align:center;cursor:pointer;font-size:13px;font-weight:600;color:var(--text2);border-bottom:2px solid transparent;transition:all 0.2s;background:none;border:none;font-family:'Cairo',sans-serif;}
+.tab.on{color:var(--navy);border-bottom-color:var(--gold);background:var(--gold-bg);}
+.tab:hover:not(.on){background:var(--bg);}
+
+.body{padding:24px 32px 28px;}
+.pn{display:none;}
+.pn.on{display:block;}
+
+.fld{margin-bottom:14px;}
+.fld label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-weight:600;}
+.fld input{width:100%;padding:11px 13px;border:1px solid var(--border);border-radius:5px;font-family:'Cairo',sans-serif;font-size:13px;background:white;}
+.fld input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(184,134,11,0.1);}
+.fld input.code-in{font-family:monospace;letter-spacing:2px;text-transform:uppercase;direction:ltr;text-align:center;font-size:14px;}
+.fld input.email-in{direction:ltr;text-align:left;}
+.fld .hint{font-size:10px;color:var(--text3);margin-top:4px;}
+
+.btn{width:100%;padding:13px;background:var(--navy);color:white;border:none;font-family:'Cairo',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border-radius:5px;margin-top:8px;transition:all 0.2s;}
+.btn:hover:not(:disabled){background:var(--navy2);}
+.btn:disabled{opacity:0.6;cursor:not-allowed;}
+.btn.success{background:var(--success);}
+.btn.success:hover:not(:disabled){background:#0f6638;}
+
+.msg{padding:10px 13px;border-radius:5px;font-size:12px;margin-bottom:12px;display:none;line-height:1.7;}
+.msg.err{background:#fef2f2;border:1px solid #fca5a5;color:var(--danger);}
+.msg.ok{background:#f0fdf4;border:1px solid #86efac;color:var(--success);}
+.msg.info{background:#eff6ff;border:1px solid #93c5fd;color:#1e40af;}
+.msg.show{display:block;}
+
+.foot{padding:14px 32px;text-align:center;font-size:11px;color:var(--text3);background:var(--bg);border-top:1px solid var(--border);}
+
+.ldr{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.divider{text-align:center;font-size:11px;color:var(--text3);margin:14px 0;position:relative;}
+.divider::before,.divider::after{content:'';position:absolute;top:50%;width:42%;height:1px;background:var(--border);}
+.divider::before{right:0;}
+.divider::after{left:0;}
+
+.success-screen{text-align:center;padding:14px 0;}
+.success-screen .ic{font-size:48px;color:var(--success);margin-bottom:10px;}
+.success-screen h3{font-family:'Amiri',serif;font-size:22px;color:var(--navy);margin-bottom:8px;}
+.success-screen p{font-size:13px;color:var(--text2);line-height:1.8;}
+</style>
 </head>
 <body>
-<!-- Auth Loading Screen -->
-<div id="auth-loading">
-  <div class="ldr"></div>
-  <div style="font-size:13px;letter-spacing:2px;">جاري التحقق...</div>
+
+<div class="box">
+  <div class="hd">
+    <div class="logo">⚖️</div>
+    <div class="ttl">مشروع محامي</div>
+    <div class="sub">LAWYER MANAGEMENT SYSTEM</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" onclick="showTab('signin',this)">تسجيل الدخول</button>
+    <button class="tab" onclick="showTab('signup',this)">حساب جديد</button>
+    <button class="tab" onclick="showTab('forgot',this)">نسيت الباسوورد</button>
+  </div>
+
+  <div class="body">
+
+    <!-- SIGN IN -->
+    <div class="pn on" id="pn-signin">
+      <div class="msg" id="msg-signin"></div>
+      <div class="fld">
+        <label>الإيميل</label>
+        <input type="email" class="email-in" id="si-email" placeholder="example@email.com" autocomplete="email">
+      </div>
+      <div class="fld">
+        <label>الباسوورد</label>
+        <input type="password" id="si-pwd" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="btn" id="si-btn" onclick="doSignIn()">دخول</button>
+    </div>
+
+    <!-- SIGN UP -->
+    <div class="pn" id="pn-signup">
+      <div class="msg" id="msg-signup"></div>
+      <div id="signup-form">
+        <div class="fld">
+          <label>الاسم بالكامل</label>
+          <input type="text" id="su-name" placeholder="مثلاً: محمد أحمد علي">
+        </div>
+        <div class="fld">
+          <label>الإيميل</label>
+          <input type="email" class="email-in" id="su-email" placeholder="example@email.com" autocomplete="email">
+        </div>
+        <div class="fld">
+          <label>الباسوورد</label>
+          <input type="password" id="su-pwd" placeholder="6 أحرف على الأقل" autocomplete="new-password">
+          <div class="hint">حرفين على الأقل، يفضل تحتوي أرقام ورموز</div>
+        </div>
+        <div class="fld">
+          <label>كود التفعيل</label>
+          <input type="text" class="code-in" id="su-code" placeholder="MM-XXXX-XXXX" maxlength="12">
+          <div class="hint">الكود الموجود مع الكتاب أو المرسل لك</div>
+        </div>
+        <button class="btn success" id="su-btn" onclick="doSignUp()">إنشاء حساب وتفعيل</button>
+      </div>
+      
+      <div id="signup-success" style="display:none;">
+        <div class="success-screen">
+          <div class="ic">✓</div>
+          <h3>تم إنشاء حسابك بنجاح</h3>
+          <p>تم تفعيل الكود وحفظ بياناتك.<br>جاري تحويلك إلى السيستم...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORGOT PASSWORD -->
+    <div class="pn" id="pn-forgot">
+      <div class="msg info show" style="margin-bottom:14px;">
+        💡 ادخل إيميلك وهنبعتلك رابط لإعادة تعيين الباسوورد
+      </div>
+      <div class="msg" id="msg-forgot"></div>
+      <div class="fld">
+        <label>الإيميل</label>
+        <input type="email" class="email-in" id="fp-email" placeholder="example@email.com" autocomplete="email">
+      </div>
+      <button class="btn" id="fp-btn" onclick="doForgot()">إرسال رابط إعادة التعيين</button>
+    </div>
+
+  </div>
+
+  <div class="foot">© 2026 مشروع محامي · جميع الحقوق محفوظة</div>
 </div>
+
 <script>
-// =============================================================
-// AUTH GATE — لازم يشتغل قبل أي حاجة
-// =============================================================
+// ============================================================
+// SUPABASE CONFIG
+// ============================================================
 const SUPABASE_URL = 'https://gjskifonnyyrrwhvlewg.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdqc2tpZm9ubnl5cnJ3aHZsZXdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4OTM1MjIsImV4cCI6MjA5MzQ2OTUyMn0.Xn1UFCzaPGp6ZVv5lAiRUPvJ6KQvSdMyDssqiIgvAdM';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-let currentUser = null;
-let currentProfile = null;
 
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ============================================================
+// AUTH CHECK ON LOAD — لو مسجل بالفعل، redirect
+// ============================================================
 (async () => {
   const {data: {session}} = await sb.auth.getSession();
-  if(!session || !session.user){
-    window.location.href = 'login.html';
-    return;
+  if(session && session.user){
+    window.location.href = 'index.html';
   }
-  currentUser = session.user;
-  
-  // Get profile
-  const {data: profile, error} = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
-  if(error || !profile){
-    alert('خطأ في قراءة بيانات الحساب');
-    await sb.auth.signOut();
-    window.location.href = 'login.html';
-    return;
-  }
-  currentProfile = profile;
-  
-  // Check status
-  if(profile.status === 'suspended' || profile.status === 'banned'){
-    alert(profile.status === 'suspended' ? 'حسابك معلّق. تواصل مع الدعم.' : 'حسابك محظور.');
-    await sb.auth.signOut();
-    window.location.href = 'login.html';
-    return;
-  }
-  
-  // If admin, redirect to admin panel
-  if(profile.is_admin){
-    window.location.href = 'admin.html';
-    return;
-  }
-  
-  // Auth OK — hide loading, show app
-  document.getElementById('auth-loading').style.display = 'none';
-  // Set user name in UI if there's an element for it
-  const nameEl = document.getElementById('current-user-name');
-  if(nameEl) nameEl.textContent = profile.full_name || profile.email;
 })();
 
-// Logout function — usable from anywhere
-async function logout(){
-  if(confirm('تسجيل الخروج؟')){
-    await sb.auth.signOut();
-    window.location.href = 'login.html';
-  }
-}
-</script>
-<div class="app">
-<div class="sb">
-  <div class="sb-logo">
-    <span class="sb-logo-t">مشروع محامي</span>
-    <span class="sb-logo-u">فريد الأخضر</span>
-  </div>
-  <div class="nav-sec">
-    <div class="nav-lbl">الرئيسية</div>
-    <div class="ni on" onclick="go('dashboard',this)"><span class="ni-ic">◈</span>لوحة التحكم</div>
-  </div>
-  <div class="nav-sec">
-    <div class="nav-lbl">إدارة المكتب</div>
-    <div class="ni" onclick="go('cases',this)"><span class="ni-ic">⚖</span>القضايا والملفات</div>
-    <div class="ni" onclick="go('clients',this)"><span class="ni-ic">👤</span>العملاء والموكلين</div>
-    <div class="ni" onclick="go('sessions',this)"><span class="ni-ic">📅</span>الجلسات والمواعيد</div>
-    <div class="ni" onclick="go('fees',this)"><span class="ni-ic">💰</span>الأتعاب والفواتير</div>
-    <div class="ni" onclick="go('reports',this)"><span class="ni-ic">📊</span>تقارير المكتب</div>
-  </div>
-  <div class="nav-sec">
-    <div class="nav-lbl">صفحات أخرى</div>
-    <a class="ni" href="references.html"><span class="ni-ic">📖</span>المراجع القانونية</a>
-    <a class="ni" href="tools.html"><span class="ni-ic">🛠</span>الأدوات والتطوير</a>
-    <div class="ni" onclick="openGuide()" style="cursor:pointer;"><span class="ni-ic">❓</span>الدليل الإرشادي</div>
-  </div>
-  <div style="margin-top:auto;padding:12px;border-top:1px solid rgba(255,255,255,0.08);">
-    <div id="current-user-name" style="font-size:11px;color:rgba(255,255,255,0.6);text-align:center;margin-bottom:8px;padding:4px;"></div>
-    <button onclick="logout()" style="width:100%;padding:8px;background:none;border:1px solid rgba(200,50,50,0.35);color:rgba(220,100,100,0.8);font-family:'Cairo',sans-serif;font-size:11px;cursor:pointer;border-radius:4px;">⏻ تسجيل الخروج</button>
-  </div>
-</div>
-<div class="main">
-
-<!-- DASHBOARD -->
-<div id="pg-dashboard" class="pg on">
-  <div class="pg-hdr"><div><div class="pg-t">لوحة التحكم</div><div class="pg-s" id="dd"></div></div></div>
-  <div class="sg">
-    <div class="sc"><div class="sc-l">القضايا الجارية</div><div class="sc-v" id="s1">0</div><div class="sc-c">قضية نشطة</div></div>
-    <div class="sc"><div class="sc-l">الموكلين</div><div class="sc-v" id="s2">0</div><div class="sc-c">موكل مسجل</div></div>
-    <div class="sc"><div class="sc-l">جلسات قادمة</div><div class="sc-v" id="s3">0</div><div class="sc-c">خلال 7 أيام</div></div>
-    <div class="sc"><div class="sc-l">أتعاب محصلة</div><div class="sc-v" id="s4">0</div><div class="sc-c">جنيه إجمالي</div></div>
-  </div>
-  <div class="dg">
-    <div class="dc"><div class="dc-t">أحدث القضايا</div><div id="d-cases"></div></div>
-    <div class="dc"><div class="dc-t">الجلسات القادمة</div><div id="d-sessions"></div></div>
-  </div>
-</div>
-
-<!-- CASES -->
-<div id="pg-cases" class="pg">
-  <div class="pg-hdr">
-    <div><div class="pg-t">القضايا والملفات</div><div class="pg-s">كل قضية مرتبطة بموكلها وجلساتها وأتعابها</div></div>
-    <button class="ab" onclick="openCaseM()">+ قضية جديدة</button>
-  </div>
-  <div class="tb">
-    <input class="si-inp" placeholder="بحث في القضايا..." oninput="filt('cases-tb',this.value,[0,1,2,3])">
-    <span style="font-size:12px;color:var(--text3)" id="cases-c"></span>
-  </div>
-  <table class="dt"><thead><tr><th>رقم القضية</th><th>الموكل</th><th>النوع</th><th>المحكمة</th><th>الحالة</th><th>أقرب جلسة</th><th>الأتعاب</th><th>إجراءات</th></tr></thead><tbody id="cases-tb"></tbody></table>
-</div>
-
-<!-- CLIENTS -->
-<div id="pg-clients" class="pg">
-  <div class="pg-hdr">
-    <div><div class="pg-t">العملاء والموكلين</div></div>
-    <button class="ab" onclick="openClientM()">+ موكل جديد</button>
-  </div>
-  <div class="tb">
-    <input class="si-inp" placeholder="بحث في الموكلين..." oninput="filt('clients-tb',this.value,[0,1,2])">
-    <span style="font-size:12px;color:var(--text3)" id="clients-c"></span>
-  </div>
-  <table class="dt"><thead><tr><th>الاسم</th><th>الهاتف</th><th>البريد</th><th>النوع</th><th>القضايا</th><th>الأتعاب</th><th>إجراءات</th></tr></thead><tbody id="clients-tb"></tbody></table>
-</div>
-
-<!-- SESSIONS -->
-<div id="pg-sessions" class="pg">
-  <div class="pg-hdr">
-    <div><div class="pg-t">الجلسات والمواعيد</div><div class="pg-s">كل جلسة تُضاف تلقائياً لسجل القضية</div></div>
-    <button class="ab" onclick="openSessionM()">+ جلسة جديدة</button>
-  </div>
-  <div class="tb">
-    <input class="si-inp" placeholder="بحث في الجلسات..." oninput="filt('sessions-tb',this.value,[0,2,4])">
-    <span style="font-size:12px;color:var(--text3)" id="sessions-c"></span>
-  </div>
-  <table class="dt"><thead><tr><th>التاريخ</th><th>الوقت</th><th>الموكل</th><th>القضية</th><th>المحكمة</th><th>ملاحظات</th><th>إجراءات</th></tr></thead><tbody id="sessions-tb"></tbody></table>
-</div>
-
-<!-- FEES -->
-<div id="pg-fees" class="pg">
-  <div class="pg-hdr">
-    <div><div class="pg-t">الأتعاب والفواتير</div></div>
-    <button class="ab" onclick="openFeeM()">+ إضافة أتعاب</button>
-  </div>
-  <div class="fsm">
-    <div class="fsc"><div class="fsl">إجمالي الأتعاب</div><div class="fsv" id="ft">0</div><div class="fsu">جنيه</div></div>
-    <div class="fsc"><div class="fsl">المحصل</div><div class="fsv" id="fp">0</div><div class="fsu">جنيه</div></div>
-    <div class="fsc"><div class="fsl">المتبقي</div><div class="fsv" id="fr">0</div><div class="fsu">جنيه</div></div>
-  </div>
-  <table class="dt"><thead><tr><th>الموكل</th><th>القضية</th><th>الإجمالي</th><th>المدفوع</th><th>المتبقي</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="fees-tb"></tbody></table>
-</div>
-
-<!-- REPORTS -->
-<div id="pg-reports" class="pg">
-  <div class="pg-hdr">
-    <div><div class="pg-t">تقارير المكتب</div><div class="pg-s">ملخص أداء مكتبك من بياناتك الفعلية</div></div>
-    <select class="fs" id="report-period" onchange="rReports()" style="width:160px;padding:8px 12px;font-size:13px;">
-      <option value="all">كل الوقت</option><option value="month">هذا الشهر</option><option value="year">هذه السنة</option>
-    </select>
-  </div>
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;" id="report-stats"></div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-    <div class="dc"><div class="dc-t">القضايا حسب النوع</div><div id="rpt-type"></div></div>
-    <div class="dc"><div class="dc-t">القضايا حسب الحالة</div><div id="rpt-status"></div></div>
-    <div class="dc"><div class="dc-t">أعلى الموكلين دفعاً</div><div id="rpt-client"></div></div>
-    <div class="dc"><div class="dc-t">الجلسات القادمة — 30 يوماً</div><div id="rpt-sessions"></div></div>
-  </div>
-</div>
-
-</div><!-- /main -->
-</div><!-- /app -->
-
-<!-- CASE MODAL -->
-<div class="mo" id="mo-case"><div class="md">
-  <div class="md-t" id="cm-t">إضافة قضية جديدة</div>
-  <input type="hidden" id="cm-id">
-  <div class="fr">
-    <div class="fg"><label class="fl">الموكل *</label><select class="fs" id="cm-client" onchange="onClientChange()"><option value="">اختر موكل...</option><option value="__new__">+ موكل جديد</option></select></div>
-    <div class="fg"><label class="fl">نوع القضية</label><select class="fs" id="cm-type"><option value="">اختر النوع</option><option>جنائي</option><option>مدني</option><option>تجاري</option><option>أحوال شخصية</option><option>عقاري</option><option>إداري</option><option>عمالي</option><option>شركات واستثمار</option><option>تحكيم</option><option>أخرى</option></select></div>
-  </div>
-  <div id="nc-box" style="display:none;" class="nc-box">
-    <div class="nc-box-t">بيانات الموكل الجديد</div>
-    <div class="fr">
-      <div class="fg" style="margin:0"><label class="fl">الاسم *</label><input class="fi" id="nc-name" placeholder="الاسم الكامل"></div>
-      <div class="fg" style="margin:0"><label class="fl">الهاتف</label><input class="fi" id="nc-phone" placeholder="01x-xxxx-xxxx"></div>
-    </div>
-    <div class="fr" style="margin-top:10px;">
-      <div class="fg" style="margin:0"><label class="fl">البريد</label><input class="fi" id="nc-email" type="email"></div>
-      <div class="fg" style="margin:0"><label class="fl">النوع</label><select class="fs" id="nc-type"><option>فرد</option><option>شركة</option><option>مؤسسة</option></select></div>
-    </div>
-  </div>
-  <div class="fr">
-    <div class="fg"><label class="fl">المحكمة</label><input class="fi" id="cm-court" placeholder="اسم المحكمة"></div>
-    <div class="fg"><label class="fl">الحالة</label><select class="fs" id="cm-status"><option>جارية</option><option>منتظرة</option><option>منتهية</option><option>موقوفة</option></select></div>
-  </div>
-  <div class="fr">
-    <div class="fg"><label class="fl">تاريخ البدء</label><input class="fi" id="cm-start" type="date"></div>
-    <div class="fg"><label class="fl">أقرب جلسة</label><input class="fi" id="cm-next" type="date"></div>
-  </div>
-  <div class="fg"><label class="fl">ملاحظات</label><textarea class="fta" id="cm-notes" placeholder="وصف مختصر..."></textarea></div>
-  <div class="mf"><button class="bc2" onclick="closeM('mo-case')">إلغاء</button><button class="bs" onclick="saveCase()">حفظ القضية</button></div>
-</div></div>
-
-<!-- CASE DETAIL MODAL -->
-<div class="mo" id="mo-detail"><div class="md w">
-  <div class="md-t" id="cd-t">تفاصيل القضية</div>
-  <div class="dtabs">
-    <div class="dtab on" onclick="switchTab('tab-info',this)">البيانات والسجل</div>
-    <div class="dtab" onclick="switchTab('tab-fees',this)">الأتعاب والمدفوعات</div>
-  </div>
-  <div id="tab-info" class="dtab-content on">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px;">
-      <div>
-        <div class="sec-t">بيانات القضية</div>
-        <div class="dgrid" id="cd-info"></div>
-        <div class="sec-t" style="margin-top:16px;">إضافة إلى سجل القضية</div>
-        <div class="uf">
-          <div class="uf-r">
-            <select class="fs" id="ud-type" style="font-size:12px;padding:8px 10px;"><option>جلسة</option><option>تأجيل</option><option>حكم</option><option>مذكرة</option><option>دفعة</option><option>اتصال</option><option>ملاحظة</option></select>
-            <input class="fi" id="ud-date" type="date" style="font-size:12px;padding:8px 10px;">
-          </div>
-          <textarea class="fta" id="ud-text" placeholder="تفاصيل الإدخال..." style="min-height:58px;font-size:12px;margin-top:8px;"></textarea>
-          <button class="bs" style="margin-top:8px;padding:7px 16px;font-size:12px;" onclick="addSajlEntry()">+ إضافة للسجل</button>
-        </div>
-      </div>
-      <div><div class="sec-t">سجل القضية</div><div class="sj" id="cd-sj"></div></div>
-    </div>
-  </div>
-  <div id="tab-fees" class="dtab-content">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-      <div class="sec-t" style="margin:0;">الأتعاب والمدفوعات</div>
-      <button class="ab" style="font-size:12px;padding:7px 14px;" onclick="openFeeMForCase()">+ إضافة أتعاب</button>
-    </div>
-    <table class="fee-tbl"><thead><tr><th>الإجمالي</th><th>المدفوع</th><th>المتبقي</th><th>الحالة</th><th>ملاحظات</th></tr></thead><tbody id="cd-fees-body"></tbody></table>
-    <div class="sec-t" style="margin-top:16px;">تسجيل دفعة جديدة</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end;margin-top:8px;">
-      <div class="fg" style="margin:0;"><label class="fl">المبلغ</label><input class="fi" id="pay-amount" type="number" placeholder="0"></div>
-      <div class="fg" style="margin:0;"><label class="fl">التاريخ</label><input class="fi" id="pay-date" type="date"></div>
-      <div class="fg" style="margin:0;"><label class="fl">ملاحظة</label><input class="fi" id="pay-note" placeholder="اختياري"></div>
-      <button class="bs" style="padding:10px 16px;" onclick="addPayment()">تسجيل</button>
-    </div>
-    <div id="cd-payments-list" style="margin-top:14px;"></div>
-  </div>
-  <div class="mf"><button class="bc2" onclick="closeM('mo-detail')">إغلاق</button><button class="bs" onclick="editFromDetail()">تعديل بيانات القضية</button></div>
-</div></div>
-
-<!-- CLIENT MODAL -->
-<div class="mo" id="mo-client"><div class="md">
-  <div class="md-t" id="clm-t">إضافة موكل جديد</div>
-  <input type="hidden" id="clm-id">
-  <div class="fr">
-    <div class="fg"><label class="fl">الاسم الكامل *</label><input class="fi" id="clm-name"></div>
-    <div class="fg"><label class="fl">رقم الهاتف</label><input class="fi" id="clm-phone"></div>
-  </div>
-  <div class="fr">
-    <div class="fg"><label class="fl">البريد الإلكتروني</label><input class="fi" id="clm-email" type="email"></div>
-    <div class="fg"><label class="fl">النوع</label><select class="fs" id="clm-type"><option>فرد</option><option>شركة</option><option>مؤسسة</option><option>جهة حكومية</option></select></div>
-  </div>
-  <div class="fg"><label class="fl">ملاحظات</label><textarea class="fta" id="clm-notes"></textarea></div>
-  <div class="mf"><button class="bc2" onclick="closeM('mo-client')">إلغاء</button><button class="bs" onclick="saveClient()">حفظ</button></div>
-</div></div>
-
-<!-- SESSION MODAL -->
-<div class="mo" id="mo-session"><div class="md">
-  <div class="md-t" id="sm-t">إضافة جلسة جديدة</div>
-  <input type="hidden" id="sm-id">
-  <div class="fr">
-    <div class="fg"><label class="fl">القضية *</label><select class="fs" id="sm-case" onchange="onCaseSelect()"><option value="">اختر القضية...</option></select></div>
-    <div class="fg"><label class="fl">الموكل</label><input class="fi" id="sm-client" readonly style="background:#f5f3ee;cursor:default;" placeholder="يُملأ تلقائياً"></div>
-  </div>
-  <div class="fr">
-    <div class="fg"><label class="fl">التاريخ *</label><input class="fi" id="sm-date" type="date"></div>
-    <div class="fg"><label class="fl">الوقت</label><input class="fi" id="sm-time" type="time"></div>
-  </div>
-  <div class="fg"><label class="fl">المحكمة / المكان</label><input class="fi" id="sm-court"></div>
-  <div class="fg"><label class="fl">ملاحظات</label><textarea class="fta" id="sm-notes"></textarea></div>
-  <div class="mf"><button class="bc2" onclick="closeM('mo-session')">إلغاء</button><button class="bs" onclick="saveSession()">حفظ وإضافة لسجل القضية</button></div>
-</div></div>
-
-<!-- FEE MODAL -->
-<div class="mo" id="mo-fee"><div class="md">
-  <div class="md-t" id="fm-t">إضافة أتعاب</div>
-  <input type="hidden" id="fm-id">
-  <input type="hidden" id="fm-from-case">
-  <div class="fr">
-    <div class="fg"><label class="fl">القضية</label><select class="fs" id="fm-case" onchange="onFeeCaseSelect()"><option value="">اختر القضية...</option></select></div>
-    <div class="fg"><label class="fl">الموكل</label><input class="fi" id="fm-client"></div>
-  </div>
-  <div class="fr">
-    <div class="fg"><label class="fl">إجمالي الأتعاب</label><input class="fi" id="fm-total" type="number" placeholder="0"></div>
-    <div class="fg"><label class="fl">المدفوع مقدماً</label><input class="fi" id="fm-paid" type="number" placeholder="0"></div>
-  </div>
-  <div class="fg"><label class="fl">ملاحظات</label><textarea class="fta" id="fm-notes"></textarea></div>
-  <div class="mf"><button class="bc2" onclick="closeFeeModal()">إلغاء</button><button class="bs" onclick="saveFee()">حفظ</button></div>
-</div></div>
-
-<!-- CONFIRM MODAL -->
-<div class="mo" id="mo-confirm"><div class="md sm">
-  <div class="md-t" style="color:var(--danger);border-bottom-color:#f5c0b8;">تأكيد الحذف</div>
-  <div id="del-warn-box"></div>
-  <div id="conf-msg" style="font-size:13px;color:var(--text2);margin-bottom:16px;"></div>
-  <div style="display:flex;gap:10px;justify-content:flex-end;">
-    <button class="bc2" onclick="closeM('mo-confirm')">إلغاء</button>
-    <button class="bd" id="conf-ok">نعم، احذف</button>
-  </div>
-</div></div>
-
-<script>
-const DB={g(k){return JSON.parse(localStorage.getItem('mm_'+k)||'[]');},s(k,v){localStorage.setItem('mm_'+k,JSON.stringify(v));},id(){return Date.now().toString(36)+Math.random().toString(36).substr(2,5);}};
-let activeCase=null;
-function go(id,el){
-  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
-  document.getElementById('pg-'+id).classList.add('on');
-  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
-  if(el)el.classList.add('on');
-  ({cases:rCases,clients:rClients,sessions:rSessions,fees:rFees,dashboard:rDash,reports:rReports}[id]||function(){})();
-}
-function openM(id){document.getElementById(id).classList.add('on');}
-function closeM(id){
-  const m=document.getElementById(id);m.classList.remove('on');
-  m.querySelectorAll('input:not([type=hidden]),textarea').forEach(e=>e.value='');
-  m.querySelectorAll('select').forEach(e=>e.selectedIndex=0);
-  m.querySelectorAll('[type=hidden]').forEach(e=>e.value='');
-  const nb=document.getElementById('nc-box');if(nb)nb.style.display='none';
-}
-function bdg(s){const m={'جارية':'ba','منتظرة':'bp','منتهية':'bc','موقوفة':'bc','مسدد':'ba','جزئي':'bp','غير مسدد':'bu'};return`<span class="bx ${m[s]||'bp'}">${s}</span>`;}
-function fd(d){if(!d)return'—';try{return new Date(d+'T00:00:00').toLocaleDateString('ar-EG',{year:'numeric',month:'short',day:'numeric'});}catch(e){return d;}}
-function filt(id,q,cols){document.getElementById(id).querySelectorAll('tr').forEach(r=>{const c=r.querySelectorAll('td');r.style.display=(!q||cols.some(i=>c[i]&&c[i].textContent.includes(q)))?'':'none';});}
-function conf(msg,warnItems,cb){
-  document.getElementById('conf-msg').textContent=msg;
-  const wb=document.getElementById('del-warn-box');
-  wb.innerHTML=warnItems&&warnItems.length?`<div class="del-warn"><div class="del-warn-t">⚠ هذا الحذف سيؤثر على:</div>${warnItems.map(w=>`<div class="del-warn-item">${w}</div>`).join('')}</div>`:'';
-  document.getElementById('conf-ok').onclick=()=>{cb();closeM('mo-confirm');};
-  openM('mo-confirm');
-}
-function switchTab(tabId,el){
-  document.querySelectorAll('.dtab-content').forEach(t=>t.classList.remove('on'));
-  document.querySelectorAll('.dtab').forEach(t=>t.classList.remove('on'));
-  document.getElementById(tabId).classList.add('on');el.classList.add('on');
-  if(tabId==='tab-fees'&&activeCase)rCaseFees(activeCase);
-}
-function fillClientSel(selId,val){
-  const sel=document.getElementById(selId);
-  const clients=DB.g('clients');
-  sel.innerHTML='<option value="">اختر موكل...</option><option value="__new__">+ موكل جديد</option>';
-  clients.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent=c.name;if(c.id===val)o.selected=true;sel.appendChild(o);});
-}
-function fillCaseSel(selId,val){
-  const sel=document.getElementById(selId);
-  const cases=DB.g('cases');
-  sel.innerHTML='<option value="">اختر القضية...</option>';
-  cases.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent=(c.caseNum||'')+' — '+c.client;if(c.id===val)o.selected=true;sel.appendChild(o);});
-}
-function onClientChange(){document.getElementById('nc-box').style.display=document.getElementById('cm-client').value==='__new__'?'block':'none';}
-function onCaseSelect(){const cid=document.getElementById('sm-case').value;if(!cid){document.getElementById('sm-client').value='';return;}const c=DB.g('cases').find(x=>x.id===cid);if(c){document.getElementById('sm-client').value=c.client;document.getElementById('sm-court').value=c.court||'';}}
-function onFeeCaseSelect(){const cid=document.getElementById('fm-case').value;if(!cid)return;const c=DB.g('cases').find(x=>x.id===cid);if(c)document.getElementById('fm-client').value=c.client;}
-
-// CASES
-function openCaseM(id){
-  fillClientSel('cm-client','');
-  document.getElementById('cm-t').textContent='إضافة قضية جديدة';
-  document.getElementById('cm-id').value='';
-  if(id){const c=DB.g('cases').find(x=>x.id===id);if(c){document.getElementById('cm-t').textContent='تعديل القضية';document.getElementById('cm-id').value=c.id;fillClientSel('cm-client',c.clientId||'');document.getElementById('cm-type').value=c.type||'';document.getElementById('cm-court').value=c.court||'';document.getElementById('cm-status').value=c.status||'جارية';document.getElementById('cm-start').value=c.start||'';document.getElementById('cm-next').value=c.next||'';document.getElementById('cm-notes').value=c.notes||'';}}
-  openM('mo-case');
-}
-function saveCase(){
-  const csel=document.getElementById('cm-client').value;
-  if(!csel){alert('برجاء اختيار موكل');return;}
-  let clientId=csel,clientName='';
-  if(csel==='__new__'){
-    const name=document.getElementById('nc-name').value.trim();
-    if(!name){alert('برجاء إدخال اسم الموكل');return;}
-    const nc={id:DB.id(),name,phone:document.getElementById('nc-phone').value.trim(),email:document.getElementById('nc-email').value.trim(),type:document.getElementById('nc-type').value,addedDate:new Date().toLocaleDateString('ar-EG',{year:'numeric',month:'long'})};
-    const cls=DB.g('clients');cls.push(nc);DB.s('clients',cls);clientId=nc.id;clientName=nc.name;
-  }else{const cl=DB.g('clients').find(x=>x.id===csel);clientName=cl?cl.name:'';}
-  const cases=DB.g('cases');const eid=document.getElementById('cm-id').value;
-  const obj={clientId,client:clientName,type:document.getElementById('cm-type').value,court:document.getElementById('cm-court').value.trim(),status:document.getElementById('cm-status').value,start:document.getElementById('cm-start').value,next:document.getElementById('cm-next').value,notes:document.getElementById('cm-notes').value.trim()};
-  if(eid){const i=cases.findIndex(x=>x.id===eid);if(i>-1){obj.id=eid;obj.caseNum=cases[i].caseNum;obj.sajl=cases[i].sajl||[];obj.payments=cases[i].payments||[];cases[i]=obj;}}
-  else{obj.id=DB.id();obj.caseNum='#'+new Date().getFullYear()+'-'+String(cases.length+1).padStart(3,'0');obj.sajl=[{type:'فتح القضية',date:obj.start||new Date().toISOString().split('T')[0],text:`فتح ملف القضية — موكل: ${clientName}`}];obj.payments=[];cases.push(obj);}
-  DB.s('cases',cases);closeM('mo-case');rCases();rDash();
-}
-function rCases(){
-  const cases=DB.g('cases'),fees=DB.g('fees');
-  document.getElementById('cases-c').textContent=cases.length+' قضية';
-  const tb=document.getElementById('cases-tb');
-  if(!cases.length){tb.innerHTML=`<tr><td colspan="8"><div class="es"><div class="ei">⚖</div><div class="et">لا توجد قضايا بعد</div></div></td></tr>`;return;}
-  tb.innerHTML=cases.map(c=>{
-    const cf=fees.filter(f=>f.caseId===c.id);
-    const paid=cf.reduce((s,f)=>s+(f.paid||0),0),total=cf.reduce((s,f)=>s+(f.total||0),0);
-    return`<tr><td>${c.caseNum||'—'}</td><td>${c.client}</td><td>${c.type||'—'}</td><td>${c.court||'—'}</td><td>${bdg(c.status)}</td><td>${fd(c.next)}</td><td style="font-size:12px;">${total?paid.toLocaleString('ar-EG')+' / '+total.toLocaleString('ar-EG')+' ج':'—'}</td>
-    <td><div class="ra"><button class="v" onclick="viewCase('${c.id}')">عرض</button><button class="e" onclick="openCaseM('${c.id}')">تعديل</button><button class="d" onclick="askDelCase('${c.id}')">حذف</button></div></td></tr>`;
-  }).join('');
-}
-function askDelCase(id){
-  const c=DB.g('cases').find(x=>x.id===id);if(!c)return;
-  const sCount=DB.g('sessions').filter(s=>s.caseId===id).length;
-  const fCount=DB.g('fees').filter(f=>f.caseId===id).length;
-  const warns=[];if(sCount)warns.push(`${sCount} جلسة مرتبطة ستُحذف`);if(fCount)warns.push(`${fCount} سجل أتعاب سيُحذف`);
-  conf(`حذف القضية "${c.caseNum} — ${c.client}" نهائياً؟`,warns,()=>delCase(id));
-}
-function delCase(id){DB.s('cases',DB.g('cases').filter(x=>x.id!==id));DB.s('sessions',DB.g('sessions').filter(x=>x.caseId!==id));DB.s('fees',DB.g('fees').filter(x=>x.caseId!==id));rCases();rDash();}
-function viewCase(id){
-  activeCase=id;
-  document.querySelectorAll('.dtab-content').forEach(t=>t.classList.remove('on'));
-  document.querySelectorAll('.dtab').forEach(t=>t.classList.remove('on'));
-  document.getElementById('tab-info').classList.add('on');document.querySelectorAll('.dtab')[0].classList.add('on');
-  const c=DB.g('cases').find(x=>x.id===id);if(!c)return;
-  document.getElementById('cd-t').textContent=(c.caseNum||'')+' — '+c.client;
-  document.getElementById('cd-info').innerHTML=`<div><div class="dk">الموكل</div><div class="dv">${c.client}</div></div><div><div class="dk">نوع القضية</div><div class="dv">${c.type||'—'}</div></div><div><div class="dk">المحكمة</div><div class="dv">${c.court||'—'}</div></div><div><div class="dk">الحالة</div><div class="dv">${bdg(c.status)}</div></div><div><div class="dk">تاريخ البدء</div><div class="dv">${fd(c.start)}</div></div><div><div class="dk">أقرب جلسة</div><div class="dv">${fd(c.next)}</div></div>${c.notes?`<div style="grid-column:1/-1"><div class="dk">ملاحظات</div><div class="dv">${c.notes}</div></div>`:''}`;
-  document.getElementById('ud-date').value=new Date().toISOString().split('T')[0];
-  rSajl(c.sajl||[]);openM('mo-detail');
-}
-function rSajl(sajl){
-  if(!sajl.length){document.getElementById('cd-sj').innerHTML='<div style="color:var(--text3);font-size:12px;padding:8px 0;">لا توجد إدخالات بعد</div>';return;}
-  document.getElementById('cd-sj').innerHTML=[...sajl].reverse().map((t,i)=>`<div class="sj-i"><div class="sj-dot ${i===0?'f':''}">${i===0?'●':'○'}</div><div class="sj-body"><div class="sj-date">${fd(t.date)}</div><div class="sj-text">${t.text}</div><div class="sj-type">${t.type}</div></div></div>`).join('');
-}
-function addSajlEntry(){
-  const type=document.getElementById('ud-type').value,date=document.getElementById('ud-date').value||new Date().toISOString().split('T')[0],text=document.getElementById('ud-text').value.trim();
-  if(!text){alert('برجاء كتابة تفاصيل الإدخال');return;}
-  const cases=DB.g('cases');const i=cases.findIndex(x=>x.id===activeCase);if(i<0)return;
-  cases[i].sajl=cases[i].sajl||[];
-  const entry={type,date,text};
-  // إذا كان النوع جلسة، نضيفها للجلسات الرئيسية أيضاً
-  if(type==='جلسة'){
-    const sessions=DB.g('sessions'),sessionId=DB.id();
-    entry.sessionId=sessionId;
-    sessions.push({id:sessionId,caseId:activeCase,caseNum:cases[i].caseNum||'',client:cases[i].client||'',date,time:'',court:cases[i].court||'',notes:text});
-    DB.s('sessions',sessions);
-    if(!cases[i].next||date<cases[i].next)cases[i].next=date;
-  }
-  cases[i].sajl.push(entry);
-  DB.s('cases',cases);document.getElementById('ud-text').value='';
-  rSajl(cases[i].sajl);
-  if(type==='جلسة'){rSessions();rCases();rDash();}
-}
-function editFromDetail(){closeM('mo-detail');openCaseM(activeCase);}
-function rCaseFees(caseId){
-  const fees=DB.g('fees').filter(f=>f.caseId===caseId);
-  const tbody=document.getElementById('cd-fees-body');
-  if(!fees.length){tbody.innerHTML=`<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:16px;">لا توجد أتعاب مسجلة</td></tr>`;return;}
-  let t=0,p=0;
-  tbody.innerHTML=fees.map(f=>{t+=f.total||0;p+=f.paid||0;return`<tr><td>${(f.total||0).toLocaleString('ar-EG')} ج</td><td>${(f.paid||0).toLocaleString('ar-EG')} ج</td><td>${(f.remaining||0).toLocaleString('ar-EG')} ج</td><td>${bdg(f.status)}</td><td>${f.notes||'—'}</td></tr>`;}).join('')+`<tr class="fee-total-row"><td>${t.toLocaleString('ar-EG')} ج</td><td>${p.toLocaleString('ar-EG')} ج</td><td>${(t-p).toLocaleString('ar-EG')} ج</td><td colspan="2">الإجمالي</td></tr>`;
-  const cases=DB.g('cases');const c=cases.find(x=>x.id===caseId);
-  const payments=(c&&c.payments)||[];
-  const pl=document.getElementById('cd-payments-list');
-  pl.innerHTML=payments.length?`<div class="sec-t">الدفعات المسجلة</div><table class="fee-tbl"><thead><tr><th>المبلغ</th><th>التاريخ</th><th>ملاحظة</th></tr></thead><tbody>${payments.map(p=>`<tr><td>${(p.amount||0).toLocaleString('ar-EG')} ج</td><td>${fd(p.date)}</td><td>${p.note||'—'}</td></tr>`).join('')}</tbody></table>`:'<div style="font-size:12px;color:var(--text3);">لا توجد دفعات مسجلة بعد</div>';
-  document.getElementById('pay-date').value=new Date().toISOString().split('T')[0];
-}
-function addPayment(){
-  const amount=parseFloat(document.getElementById('pay-amount').value)||0;
-  if(!amount){alert('برجاء إدخال المبلغ');return;}
-  const date=document.getElementById('pay-date').value||new Date().toISOString().split('T')[0];
-  const note=document.getElementById('pay-note').value.trim();
-  const cases=DB.g('cases');const ci=cases.findIndex(x=>x.id===activeCase);if(ci<0)return;
-  cases[ci].payments=cases[ci].payments||[];cases[ci].payments.push({amount,date,note,id:DB.id()});
-  cases[ci].sajl=cases[ci].sajl||[];cases[ci].sajl.push({type:'دفعة',date,text:`تم استلام دفعة بمبلغ ${amount.toLocaleString('ar-EG')} جنيه${note?' — '+note:''}`});
-  const allFees=DB.g('fees');let remaining=amount;
-  for(let f of allFees){if(f.caseId===activeCase&&f.remaining>0&&remaining>0){const pay=Math.min(f.remaining,remaining);f.paid=(f.paid||0)+pay;f.remaining=f.total-f.paid;f.status=f.paid>=f.total?'مسدد':(f.paid>0?'جزئي':'غير مسدد');remaining-=pay;}}
-  DB.s('fees',allFees);DB.s('cases',cases);
-  document.getElementById('pay-amount').value='';document.getElementById('pay-note').value='';
-  rCaseFees(activeCase);rSajl(cases[ci].sajl);
-}
-function openFeeMForCase(){closeM('mo-detail');fillCaseSel('fm-case',activeCase);onFeeCaseSelect();document.getElementById('fm-from-case').value=activeCase;openM('mo-fee');}
-function closeFeeModal(){const fc=document.getElementById('fm-from-case').value;closeM('mo-fee');if(fc)viewCase(fc);}
-
-// CLIENTS
-function openClientM(id){
-  document.getElementById('clm-t').textContent='إضافة موكل جديد';document.getElementById('clm-id').value='';
-  if(id){const c=DB.g('clients').find(x=>x.id===id);if(c){document.getElementById('clm-t').textContent='تعديل الموكل';document.getElementById('clm-id').value=c.id;document.getElementById('clm-name').value=c.name||'';document.getElementById('clm-phone').value=c.phone||'';document.getElementById('clm-email').value=c.email||'';document.getElementById('clm-type').value=c.type||'فرد';document.getElementById('clm-notes').value=c.notes||'';}}
-  openM('mo-client');
-}
-function saveClient(){
-  const name=document.getElementById('clm-name').value.trim();if(!name){alert('برجاء إدخال اسم الموكل');return;}
-  const clients=DB.g('clients');const eid=document.getElementById('clm-id').value;
-  const obj={name,phone:document.getElementById('clm-phone').value.trim(),email:document.getElementById('clm-email').value.trim(),type:document.getElementById('clm-type').value,notes:document.getElementById('clm-notes').value.trim()};
-  if(eid){const i=clients.findIndex(x=>x.id===eid);if(i>-1){obj.id=eid;obj.addedDate=clients[i].addedDate;clients[i]=obj;DB.s('cases',DB.g('cases').map(c=>c.clientId===eid?{...c,client:name}:c));}}
-  else{obj.id=DB.id();obj.addedDate=new Date().toLocaleDateString('ar-EG',{year:'numeric',month:'long'});clients.push(obj);}
-  DB.s('clients',clients);closeM('mo-client');rClients();rDash();
-}
-function rClients(){
-  const clients=DB.g('clients'),cases=DB.g('cases'),fees=DB.g('fees');
-  document.getElementById('clients-c').textContent=clients.length+' موكل';
-  const tb=document.getElementById('clients-tb');
-  if(!clients.length){tb.innerHTML=`<tr><td colspan="7"><div class="es"><div class="ei">👤</div><div class="et">لا يوجد موكلون بعد</div></div></td></tr>`;return;}
-  tb.innerHTML=clients.map(c=>{
-    const cc=cases.filter(x=>x.clientId===c.id);const cf=fees.filter(f=>f.clientId===c.id);
-    const paid=cf.reduce((s,f)=>s+(f.paid||0),0),total=cf.reduce((s,f)=>s+(f.total||0),0);
-    return`<tr><td>${c.name}</td><td>${c.phone||'—'}</td><td>${c.email||'—'}</td><td>${c.type}</td><td>${cc.length}</td><td style="font-size:12px;">${total?paid.toLocaleString('ar-EG')+' / '+total.toLocaleString('ar-EG')+' ج':'—'}</td>
-    <td><div class="ra"><button class="e" onclick="openClientM('${c.id}')">تعديل</button><button class="d" onclick="askDelClient('${c.id}')">حذف</button></div></td></tr>`;
-  }).join('');
-}
-function askDelClient(id){const c=DB.g('clients').find(x=>x.id===id);if(!c)return;const n=DB.g('cases').filter(x=>x.clientId===id).length;conf(`حذف الموكل "${c.name}"؟`,n?[`${n} قضية مرتبطة — القضايا لن تُحذف`]:[],()=>delClient(id));}
-function delClient(id){DB.s('clients',DB.g('clients').filter(x=>x.id!==id));rClients();rDash();}
-
-// SESSIONS
-function openSessionM(id){
-  fillCaseSel('sm-case','');document.getElementById('sm-t').textContent='إضافة جلسة جديدة';document.getElementById('sm-id').value='';document.getElementById('sm-client').value='';
-  if(id){const s=DB.g('sessions').find(x=>x.id===id);if(s){document.getElementById('sm-t').textContent='تعديل الجلسة';document.getElementById('sm-id').value=s.id;fillCaseSel('sm-case',s.caseId||'');document.getElementById('sm-client').value=s.client||'';document.getElementById('sm-date').value=s.date||'';document.getElementById('sm-time').value=s.time||'';document.getElementById('sm-court').value=s.court||'';document.getElementById('sm-notes').value=s.notes||'';}}
-  openM('mo-session');
-}
-function saveSession(){
-  const caseId=document.getElementById('sm-case').value,date=document.getElementById('sm-date').value;
-  if(!date){alert('برجاء إدخال تاريخ الجلسة');return;}
-  const sessions=DB.g('sessions');const eid=document.getElementById('sm-id').value;
-  const time=document.getElementById('sm-time').value,court=document.getElementById('sm-court').value.trim(),notes=document.getElementById('sm-notes').value.trim(),client=document.getElementById('sm-client').value;
-  let caseNum='';if(caseId){const cas=DB.g('cases').find(x=>x.id===caseId);if(cas)caseNum=cas.caseNum;}
-  const obj={caseId,caseNum,client,date,time,court,notes};
-  const sajlText=`جلسة${court?' أمام '+court:''} ${time?'الساعة '+time:''} ${notes?'— '+notes:''}`.trim();
-  if(eid){
-    // تعديل جلسة موجودة
-    const i=sessions.findIndex(x=>x.id===eid);
-    const oldCaseId=i>-1?sessions[i].caseId:null;
-    if(i>-1){obj.id=eid;sessions[i]=obj;}
-    // تحديث/نقل سجل القضية المرتبط
-    const cases=DB.g('cases');
-    // لو الجلسة كانت مربوطة بقضية تانية، نشيلها من سجلها
-    if(oldCaseId&&oldCaseId!==caseId){
-      const oi=cases.findIndex(x=>x.id===oldCaseId);
-      if(oi>-1&&cases[oi].sajl)cases[oi].sajl=cases[oi].sajl.filter(s=>s.sessionId!==eid);
-    }
-    // تحديث/إضافة في سجل القضية الحالية
-    if(caseId){
-      const ci=cases.findIndex(x=>x.id===caseId);
-      if(ci>-1){
-        cases[ci].sajl=cases[ci].sajl||[];
-        const si=cases[ci].sajl.findIndex(s=>s.sessionId===eid);
-        if(si>-1){cases[ci].sajl[si]={type:'جلسة',sessionId:eid,date,text:sajlText};}
-        else cases[ci].sajl.push({type:'جلسة',sessionId:eid,date,text:sajlText});
-        if(!cases[ci].next||date<cases[ci].next)cases[ci].next=date;
-      }
-    }
-    DB.s('cases',cases);
-  } else {
-    // جلسة جديدة
-    obj.id=DB.id();sessions.push(obj);
-    if(caseId){
-      const cases=DB.g('cases');const ci=cases.findIndex(x=>x.id===caseId);
-      if(ci>-1){
-        cases[ci].sajl=cases[ci].sajl||[];
-        cases[ci].sajl.push({type:'جلسة',sessionId:obj.id,date,text:sajlText});
-        if(!cases[ci].next||date<cases[ci].next)cases[ci].next=date;
-        DB.s('cases',cases);
-      }
-    }
-  }
-  DB.s('sessions',sessions);closeM('mo-session');rSessions();rCases();rDash();
-  // لو فاتح modal تفاصيل القضية، نحدث السجل
-  if(activeCase){const c=DB.g('cases').find(x=>x.id===activeCase);if(c)rSajl(c.sajl||[]);}
-}
-function rSessions(){
-  const sessions=DB.g('sessions').sort((a,b)=>new Date(a.date)-new Date(b.date));
-  document.getElementById('sessions-c').textContent=sessions.length+' جلسة';
-  const tb=document.getElementById('sessions-tb');
-  if(!sessions.length){tb.innerHTML=`<tr><td colspan="7"><div class="es"><div class="ei">📅</div><div class="et">لا توجد جلسات بعد</div></div></td></tr>`;return;}
-  tb.innerHTML=sessions.map(s=>`<tr><td>${fd(s.date)}</td><td>${s.time||'—'}</td><td>${s.client||'—'}</td><td>${s.caseNum?`<span class="lnk" onclick="viewCase('${s.caseId}')">${s.caseNum}</span>`:'—'}</td><td>${s.court||'—'}</td><td>${s.notes||'—'}</td><td><div class="ra"><button class="e" onclick="openSessionM('${s.id}')">تعديل</button><button class="d" onclick="conf('حذف هذه الجلسة؟',[],()=>delSession('${s.id}'))">حذف</button></div></td></tr>`).join('');
-}
-function delSession(id){
-  const session=DB.g('sessions').find(x=>x.id===id);
-  DB.s('sessions',DB.g('sessions').filter(x=>x.id!==id));
-  // شيل الإدخال المرتبط من سجل القضية
-  if(session&&session.caseId){
-    const cases=DB.g('cases'),ci=cases.findIndex(x=>x.id===session.caseId);
-    if(ci>-1&&cases[ci].sajl){
-      cases[ci].sajl=cases[ci].sajl.filter(s=>s.sessionId!==id);
-      DB.s('cases',cases);
-    }
-  }
-  rSessions();rCases();rDash();
-  if(activeCase){const c=DB.g('cases').find(x=>x.id===activeCase);if(c)rSajl(c.sajl||[]);}
-}
-
-// FEES
-function openFeeM(id){
-  fillCaseSel('fm-case','');document.getElementById('fm-t').textContent='إضافة أتعاب';document.getElementById('fm-id').value='';document.getElementById('fm-from-case').value='';
-  if(id){const f=DB.g('fees').find(x=>x.id===id);if(f){document.getElementById('fm-t').textContent='تعديل الأتعاب';document.getElementById('fm-id').value=f.id;fillCaseSel('fm-case',f.caseId||'');document.getElementById('fm-client').value=f.client||'';document.getElementById('fm-total').value=f.total||0;document.getElementById('fm-paid').value=f.paid||0;document.getElementById('fm-notes').value=f.notes||'';}}
-  openM('mo-fee');
-}
-function saveFee(){
-  const caseId=document.getElementById('fm-case').value,client=document.getElementById('fm-client').value.trim();
-  if(!client&&!caseId){alert('برجاء اختيار القضية أو إدخال اسم الموكل');return;}
-  const fees=DB.g('fees');const eid=document.getElementById('fm-id').value;
-  const total=parseFloat(document.getElementById('fm-total').value)||0,paid=parseFloat(document.getElementById('fm-paid').value)||0;
-  let caseNum='',clientId='',clientName=client;
-  if(caseId){const cas=DB.g('cases').find(x=>x.id===caseId);if(cas){caseNum=cas.caseNum;clientId=cas.clientId;if(!client)clientName=cas.client;}}
-  const obj={caseId,caseNum,clientId,client:clientName,total,paid,remaining:total-paid,status:paid>=total?'مسدد':(paid>0?'جزئي':'غير مسدد'),notes:document.getElementById('fm-notes').value.trim()};
-  if(caseId&&paid>0&&!eid){const cases=DB.g('cases');const ci=cases.findIndex(x=>x.id===caseId);if(ci>-1){cases[ci].sajl=cases[ci].sajl||[];cases[ci].sajl.push({type:'دفعة',date:new Date().toISOString().split('T')[0],text:`دفعة مقدمة ${paid.toLocaleString('ar-EG')} جنيه من أصل ${total.toLocaleString('ar-EG')} جنيه`});DB.s('cases',cases);}}
-  if(eid){const i=fees.findIndex(x=>x.id===eid);if(i>-1){obj.id=eid;fees[i]=obj;}}else{obj.id=DB.id();fees.push(obj);}
-  DB.s('fees',fees);const fc=document.getElementById('fm-from-case').value;closeM('mo-fee');rFees();rClients();rCases();rDash();if(fc)viewCase(fc);
-}
-function rFees(){
-  const fees=DB.g('fees');let t=0,p=0;fees.forEach(f=>{t+=f.total||0;p+=f.paid||0;});
-  document.getElementById('ft').textContent=t.toLocaleString('ar-EG');document.getElementById('fp').textContent=p.toLocaleString('ar-EG');document.getElementById('fr').textContent=(t-p).toLocaleString('ar-EG');
-  const tb=document.getElementById('fees-tb');
-  if(!fees.length){tb.innerHTML=`<tr><td colspan="7"><div class="es"><div class="ei">💰</div><div class="et">لا توجد أتعاب بعد</div></div></td></tr>`;return;}
-  tb.innerHTML=fees.map(f=>`<tr><td>${f.client||'—'}</td><td>${f.caseNum?`<span class="lnk" onclick="viewCase('${f.caseId}')">${f.caseNum}</span>`:'—'}</td><td>${(f.total||0).toLocaleString('ar-EG')}</td><td>${(f.paid||0).toLocaleString('ar-EG')}</td><td>${(f.remaining||0).toLocaleString('ar-EG')}</td><td>${bdg(f.status)}</td><td><div class="ra"><button class="e" onclick="openFeeM('${f.id}')">تعديل</button><button class="d" onclick="conf('حذف هذه الأتعاب؟',[],()=>delFee('${f.id}'))">حذف</button></div></td></tr>`).join('');
-}
-function delFee(id){DB.s('fees',DB.g('fees').filter(x=>x.id!==id));rFees();rClients();rCases();rDash();}
-
-// REPORTS
-function rReports(){
-  const period=document.getElementById('report-period').value,now=new Date();
-  const allCases=DB.g('cases');
-  const cases=allCases.filter(c=>{
-    if(period==='all')return true;if(!c.start)return false;
-    const d=new Date(c.start+'T00:00:00');
-    return period==='month'?(d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear()):d.getFullYear()===now.getFullYear();
-  });
-  const fees=DB.g('fees'),sessions=DB.g('sessions');
-  const totalPaid=fees.reduce((s,f)=>s+(f.paid||0),0),totalFees=fees.reduce((s,f)=>s+(f.total||0),0);
-  const upcoming=sessions.filter(s=>{try{const d=new Date(s.date+'T00:00:00');return d>=now&&d<=new Date(now.getTime()+30*864e5);}catch(e){return false;}});
-  document.getElementById('report-stats').innerHTML=`
-    <div class="sc"><div class="sc-l">إجمالي القضايا</div><div class="sc-v">${cases.length}</div><div class="sc-c">في الفترة</div></div>
-    <div class="sc"><div class="sc-l">نسبة الإغلاق</div><div class="sc-v">${cases.length?Math.round(cases.filter(c=>c.status==='منتهية').length/cases.length*100):0}%</div></div>
-    <div class="sc"><div class="sc-l">إجمالي محصّل</div><div class="sc-v">${(totalPaid/1000).toFixed(1)}K</div><div class="sc-c">جنيه</div></div>
-    <div class="sc"><div class="sc-l">نسبة التحصيل</div><div class="sc-v">${totalFees?Math.round(totalPaid/totalFees*100):0}%</div></div>`;
-  const typeMap={};cases.forEach(c=>{if(c.type)typeMap[c.type]=(typeMap[c.type]||0)+1;});
-  document.getElementById('rpt-type').innerHTML=Object.entries(typeMap).sort((a,b)=>b[1]-a[1]).map(([t,n])=>`<div class="sr"><div class="sn">${t}</div><div class="sbar"><div class="sf" style="width:${cases.length?Math.round(n/cases.length*100):0}%"></div></div><div class="sp">${n}</div></div>`).join('')||'<div class="es" style="padding:16px 0"><div class="et">أضف قضايا لرؤية التقرير</div></div>';
-  const statMap={};cases.forEach(c=>{if(c.status)statMap[c.status]=(statMap[c.status]||0)+1;});
-  document.getElementById('rpt-status').innerHTML=Object.entries(statMap).map(([s,n])=>`<div class="si"><div class="si-d">${bdg(s)}</div><div class="si-i"><div class="si-n">${n} قضية</div><div class="si-c">${cases.length?Math.round(n/cases.length*100):0}%</div></div></div>`).join('')||'<div class="es" style="padding:16px 0"><div class="et">لا بيانات</div></div>';
-  const cliMap={};fees.forEach(f=>{if(f.client)cliMap[f.client]=(cliMap[f.client]||0)+(f.paid||0);});
-  document.getElementById('rpt-client').innerHTML=Object.entries(cliMap).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([n,p])=>`<div class="si"><div class="si-d">${(p/1000).toFixed(1)}K</div><div class="si-i"><div class="si-n">${n}</div></div></div>`).join('')||'<div class="es" style="padding:16px 0"><div class="et">أضف أتعاباً لرؤية التقرير</div></div>';
-  document.getElementById('rpt-sessions').innerHTML=upcoming.slice(0,6).map(s=>`<div class="si"><div class="si-d">${new Date(s.date+'T00:00:00').toLocaleDateString('ar-EG',{month:'short',day:'numeric'})}</div><div class="si-i"><div class="si-n">${s.client||'—'}</div><div class="si-c">${s.court||''}</div></div></div>`).join('')||'<div class="es" style="padding:16px 0"><div class="et">لا جلسات قادمة</div></div>';
-}
-
-// DASHBOARD
-function rDash(){
-  const cases=DB.g('cases'),clients=DB.g('clients'),sessions=DB.g('sessions'),fees=DB.g('fees');
-  const now=new Date(),week=new Date(now.getTime()+7*864e5);
-  const up=sessions.filter(s=>{try{const d=new Date(s.date+'T00:00:00');return d>=now&&d<=week;}catch(e){return false;}});
-  const tp=fees.reduce((s,f)=>s+(f.paid||0),0);
-  document.getElementById('s1').textContent=cases.filter(c=>c.status==='جارية').length;
-  document.getElementById('s2').textContent=clients.length;
-  document.getElementById('s3').textContent=up.length;
-  document.getElementById('s4').textContent=tp.toLocaleString('ar-EG');
-  document.getElementById('d-cases').innerHTML=[...cases].slice(-4).reverse().map(c=>`<div class="si"><div class="si-d">${bdg(c.status)}</div><div class="si-i"><div class="si-n">${c.client}</div><div class="si-c">${c.type||''} — ${c.court||'بدون محكمة'}</div></div></div>`).join('')||'<div class="es" style="padding:16px 0"><div class="et">لا توجد قضايا بعد</div></div>';
-  document.getElementById('d-sessions').innerHTML=up.slice(0,4).map(s=>`<div class="si"><div class="si-d">${new Date(s.date+'T00:00:00').toLocaleDateString('ar-EG',{month:'short',day:'numeric'})}</div><div class="si-i"><div class="si-n">${s.client||'—'}</div><div class="si-c">${s.court||''} ${s.time?'— '+s.time:''}</div></div></div>`).join('')||'<div class="es" style="padding:16px 0"><div class="et">لا توجد جلسات قادمة</div></div>';
-}
-
-window.addEventListener('click',e=>{if(e.target.classList.contains('mo'))e.target.classList.remove('on');});
-document.getElementById('dd').textContent=new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-rDash();
-</script>
-
-<!-- ============================================================ -->
-<!-- ONBOARDING GUIDE MODAL                                        -->
-<!-- ============================================================ -->
-<style>
-.gd-mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:5000;align-items:center;justify-content:center;padding:20px;}
-.gd-mo.on{display:flex;}
-.gd-md{background:white;border-radius:8px;width:100%;max-width:840px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.3);}
-.gd-hd{padding:18px 24px;background:linear-gradient(135deg,#0c1a2e 0%,#1a2a3e 100%);color:white;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--gold);}
-.gd-hd-t{font-family:'Amiri',serif;font-size:22px;font-weight:700;color:var(--gold-l);}
-.gd-hd-c{cursor:pointer;color:rgba(255,255,255,0.7);background:none;border:none;font-size:24px;padding:0 8px;}
-.gd-hd-c:hover{color:white;}
-.gd-tabs{display:flex;background:#fafaf7;border-bottom:1px solid var(--border);overflow-x:auto;}
-.gd-tab{padding:12px 16px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);border-bottom:2px solid transparent;background:none;border-right:none;border-left:none;border-top:none;font-family:'Cairo',sans-serif;white-space:nowrap;}
-.gd-tab.on{color:var(--gold);border-bottom-color:var(--gold);background:white;}
-.gd-tab:hover:not(.on){background:white;}
-.gd-bd{padding:24px 28px;overflow-y:auto;flex:1;line-height:1.9;color:var(--text);}
-.gd-pn{display:none;}
-.gd-pn.on{display:block;}
-.gd-pn h3{font-family:'Amiri',serif;font-size:22px;color:var(--navy);margin-bottom:14px;font-weight:700;}
-.gd-pn h4{font-size:15px;color:var(--gold);margin:18px 0 8px;font-weight:700;border-right:3px solid var(--gold);padding-right:10px;}
-.gd-pn p{font-size:14px;color:var(--text);margin-bottom:10px;}
-.gd-step{background:var(--gold-bg);border:1px solid var(--border2);border-radius:6px;padding:14px;margin-bottom:12px;display:flex;gap:14px;align-items:flex-start;}
-.gd-step-n{flex-shrink:0;width:32px;height:32px;background:var(--navy);color:var(--gold-l);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;font-family:'Amiri',serif;}
-.gd-step-c{flex:1;}
-.gd-step-c .t{font-weight:700;color:var(--navy);margin-bottom:4px;font-size:14px;}
-.gd-step-c .d{font-size:13px;color:var(--text2);line-height:1.8;}
-.gd-tip{background:#eff8ff;border-right:3px solid #2980b9;padding:10px 14px;border-radius:0 4px 4px 0;font-size:13px;color:var(--text2);margin:10px 0;line-height:1.8;}
-.gd-warn{background:#fff8f0;border-right:3px solid #d4860b;padding:10px 14px;border-radius:0 4px 4px 0;font-size:13px;color:var(--text2);margin:10px 0;line-height:1.8;}
-.gd-pn ul{list-style:disc;margin:8px 22px;font-size:13px;color:var(--text);}
-.gd-pn ul li{margin-bottom:6px;line-height:1.8;}
-.gd-feature{display:flex;gap:14px;padding:14px;background:#fafaf7;border:1px solid var(--border);border-radius:6px;margin-bottom:10px;}
-.gd-feature-ic{font-size:28px;flex-shrink:0;}
-.gd-feature-c{flex:1;}
-.gd-feature-c .t{font-weight:700;font-size:14px;color:var(--navy);margin-bottom:4px;}
-.gd-feature-c .d{font-size:12px;color:var(--text2);line-height:1.7;}
-.gd-ft{padding:14px 24px;border-top:1px solid var(--border);background:#fafaf7;display:flex;gap:10px;justify-content:space-between;align-items:center;}
-.gd-checkbox{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);cursor:pointer;}
-.gd-checkbox input{cursor:pointer;}
-.gd-nav{display:flex;gap:8px;}
-.gd-btn{padding:8px 18px;background:var(--navy);color:white;border:none;font-family:'Cairo',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;}
-.gd-btn:hover{background:#1a2a3e;}
-.gd-btn.sec{background:white;color:var(--navy);border:1px solid var(--border);}
-.gd-btn.sec:hover{background:var(--bg);}
-.gd-btn:disabled{opacity:0.4;cursor:not-allowed;}
-.gd-welcome{text-align:center;padding:20px 0;}
-.gd-welcome .ic{font-size:64px;margin-bottom:14px;}
-.gd-welcome h3{font-size:26px;}
-.gd-welcome p{font-size:14px;color:var(--text2);max-width:500px;margin:0 auto;line-height:1.9;}
-</style>
-
-<div class="gd-mo" id="gd-modal">
-  <div class="gd-md">
-    <div class="gd-hd">
-      <div class="gd-hd-t">📖 الدليل الإرشادي</div>
-      <button class="gd-hd-c" onclick="closeGuide()">×</button>
-    </div>
-    <div class="gd-tabs" id="gd-tabs">
-      <button class="gd-tab on" onclick="gdTab('welcome',this)">مرحباً</button>
-      <button class="gd-tab" onclick="gdTab('overview',this)">نظرة عامة</button>
-      <button class="gd-tab" onclick="gdTab('clients',this)">الموكلين</button>
-      <button class="gd-tab" onclick="gdTab('cases',this)">القضايا</button>
-      <button class="gd-tab" onclick="gdTab('sessions',this)">الجلسات</button>
-      <button class="gd-tab" onclick="gdTab('fees',this)">الأتعاب</button>
-      <button class="gd-tab" onclick="gdTab('reports',this)">التقارير</button>
-      <button class="gd-tab" onclick="gdTab('tools',this)">الأدوات</button>
-      <button class="gd-tab" onclick="gdTab('refs',this)">المراجع</button>
-      <button class="gd-tab" onclick="gdTab('backup',this)">النسخ الاحتياطي</button>
-      <button class="gd-tab" onclick="gdTab('tips',this)">نصائح</button>
-    </div>
-    <div class="gd-bd">
-
-      <!-- WELCOME -->
-      <div class="gd-pn on" id="gd-welcome">
-        <div class="gd-welcome">
-          <div class="ic">⚖️</div>
-          <h3>أهلاً بيك في مشروع محامي</h3>
-          <p>السيستم ده مصمم خصيصاً لمساعدتك في إدارة مكتب المحاماة الخاص بيك بكفاءة. هتلاقي هنا كل اللي محتاجه: الموكلين، القضايا، الجلسات، الأتعاب، وأكتر.</p>
-        </div>
-        <h4>إيه اللي هتلاقيه في الدليل ده؟</h4>
-        <div class="gd-feature">
-          <div class="gd-feature-ic">📊</div>
-          <div class="gd-feature-c"><div class="t">شرح كل صفحة</div><div class="d">شرح تفصيلي لكل قسم في السيستم وإزاي تستخدمه</div></div>
-        </div>
-        <div class="gd-feature">
-          <div class="gd-feature-ic">📝</div>
-          <div class="gd-feature-c"><div class="t">خطوات عملية</div><div class="d">خطوات مرقمة لكل عملية شائعة (إضافة موكل، تسجيل جلسة، إلخ)</div></div>
-        </div>
-        <div class="gd-feature">
-          <div class="gd-feature-ic">💡</div>
-          <div class="gd-feature-c"><div class="t">نصائح وأفكار</div><div class="d">نصائح من خبرة الاستخدام عشان توفر وقتك وتنظم شغلك</div></div>
-        </div>
-        <div class="gd-tip">💡 تقدر ترجع للدليل ده أي وقت من زرار <strong>"الدليل الإرشادي ❓"</strong> في القائمة على اليمين.</div>
-      </div>
-
-      <!-- OVERVIEW -->
-      <div class="gd-pn" id="gd-overview">
-        <h3>نظرة عامة على السيستم</h3>
-        <p>السيستم بيشتغل على 3 صفحات رئيسية، كل واحدة ليها دور:</p>
-        
-        <div class="gd-feature">
-          <div class="gd-feature-ic">◈</div>
-          <div class="gd-feature-c"><div class="t">إدارة المكتب (الصفحة الحالية)</div><div class="d">القلب الرئيسي للسيستم — هنا بتدير الموكلين، القضايا، الجلسات، والأتعاب</div></div>
-        </div>
-        <div class="gd-feature">
-          <div class="gd-feature-ic">📖</div>
-          <div class="gd-feature-c"><div class="t">المراجع القانونية</div><div class="d">دليل المواعيد القانونية، قاموس المصطلحات، مكتبة الدفوع، ودليل المحكمة</div></div>
-        </div>
-        <div class="gd-feature">
-          <div class="gd-feature-ic">🛠</div>
-          <div class="gd-feature-c"><div class="t">الأدوات والتطوير</div><div class="d">حاسبة الأتعاب، نماذج العقود، مساري المهني، أهدافي السنوية، ودليل الصفات</div></div>
-        </div>
-
-        <h4>القائمة الجانبية</h4>
-        <p>كل أقسام السيستم منظمة في القائمة على اليمين:</p>
-        <ul>
-          <li><strong>لوحة التحكم</strong> — نظرة سريعة على المكتب والإحصائيات</li>
-          <li><strong>القضايا والملفات</strong> — كل قضاياك مع تفاصيلها</li>
-          <li><strong>العملاء والموكلين</strong> — قاعدة بيانات الموكلين</li>
-          <li><strong>الجلسات والمواعيد</strong> — جدولك القادم</li>
-          <li><strong>الأتعاب والفواتير</strong> — متابعة المدفوعات والمستحقات</li>
-          <li><strong>تقارير المكتب</strong> — تقارير شاملة عن الأداء</li>
-        </ul>
-        
-        <div class="gd-tip">💡 ابدأ دايماً بإضافة الموكل الأول، ثم القضية المرتبطة بيه، ثم الجلسات والأتعاب.</div>
-      </div>
-
-      <!-- CLIENTS -->
-      <div class="gd-pn" id="gd-clients">
-        <h3>👥 إدارة الموكلين</h3>
-        <p>قاعدة بيانات الموكلين هي الأساس. كل قضية لازم تكون مربوطة بموكل.</p>
-
-        <h4>إزاي تضيف موكل جديد؟</h4>
-        <div class="gd-step">
-          <div class="gd-step-n">١</div>
-          <div class="gd-step-c"><div class="t">روح لقسم "العملاء والموكلين"</div><div class="d">من القائمة الجانبية على اليمين</div></div>
-        </div>
-        <div class="gd-step">
-          <div class="gd-step-n">٢</div>
-          <div class="gd-step-c"><div class="t">اضغط زرار "+ موكل جديد"</div><div class="d">في أعلى الصفحة (الزرار الأسود)</div></div>
-        </div>
-        <div class="gd-step">
-          <div class="gd-step-n">٣</div>
-          <div class="gd-step-c"><div class="t">املأ البيانات</div><div class="d">الاسم، الهاتف، الإيميل، النوع (فرد/شركة)، وأي ملاحظات مهمة</div></div>
-        </div>
-        <div class="gd-step">
-          <div class="gd-step-n">٤</div>
-          <div class="gd-step-c"><div class="t">اضغط حفظ</div><div class="d">الموكل هيظهر في الجدول، وتقدر تستخدمه في إنشاء القضايا</div></div>
-        </div>
-
-        <h4>تعديل أو حذف موكل</h4>
-        <p>كل موكل في الجدول له زرارين:</p>
-        <ul>
-          <li><strong>تعديل</strong> — لتحديث البيانات في أي وقت</li>
-          <li><strong>حذف</strong> — لإزالة الموكل (مع تأكيد)</li>
-        </ul>
-
-        <div class="gd-warn">⚠️ حذف موكل لا يحذف قضاياه. لو محتاج تنضف بياناته، احذف القضايا المرتبطة الأول.</div>
-        
-        <div class="gd-tip">💡 الموكلين ممكن يكونوا أفراد أو شركات. للشركات، اكتب اسم الشركة كاملاً في خانة الاسم.</div>
-      </div>
-
-      <!-- CASES -->
-      <div class="gd-pn" id="gd-cases">
-        <h3>📁 إدارة القضايا</h3>
-        <p>كل قضية بتحتوي على معلومات شاملة وسجل كامل لكل اللي بيحصل فيها.</p>
-
-        <h4>إنشاء قضية جديدة</h4>
-        <div class="gd-step">
-          <div class="gd-step-n">١</div>
-          <div class="gd-step-c"><div class="t">اضغط "+ قضية جديدة"</div><div class="d">من صفحة القضايا أو لوحة التحكم</div></div>
-        </div>
-        <div class="gd-step">
-          <div class="gd-step-n">٢</div>
-          <div class="gd-step-c"><div class="t">اختار الموكل</div><div class="d">من القائمة المنسدلة (لازم تكون أضفته قبل كده)</div></div>
-        </div>
-        <div class="gd-step">
-          <div class="gd-step-n">٣</div>
-          <div class="gd-step-c"><div class="t">املأ تفاصيل القضية</div><div class="d">رقم القضية، النوع (مدني/جنائي/تجاري...)، المحكمة، تاريخ البدء</div></div>
-        </div>
-        <div class="gd-step">
-          <div class="gd-step-n">٤</div>
-          <div class="gd-step-c"><div class="t">احفظ القضية</div><div class="d">هتقدر تضيف لها جلسات وسجل أحداث بعد كده</div></div>
-        </div>
-
-        <h4>سجل القضية (Sajl)</h4>
-        <p>كل قضية بيكون لها سجل أحداث. تقدر تضيف فيه:</p>
-        <ul>
-          <li><strong>جلسة</strong> — هتظهر تلقائياً في صفحة الجلسات</li>
-          <li><strong>مذكرة</strong> — مذكرات قانونية تم تقديمها</li>
-          <li><strong>حكم</strong> — أي حكم صدر</li>
-          <li><strong>تأجيل</strong> — تأجيل جلسة</li>
-          <li><strong>دفعة</strong> — دفعة من الموكل</li>
-          <li><strong>اتصال / ملاحظة</strong> — أي تواصل أو ملاحظة مهمة</li>
-        </ul>
-
-        <h4>عرض تفاصيل قضية</h4>
-        <p>اضغط زرار <strong>"عرض"</strong> جنب أي قضية في الجدول، هيفتحلك نافذة فيها كل تفاصيلها وسجلها.</p>
-        
-        <div class="gd-tip">💡 لما تضيف "جلسة" في سجل قضية، السيستم بيضيفها تلقائياً في صفحة الجلسات والمواعيد.</div>
-      </div>
-
-      <!-- SESSIONS -->
-      <div class="gd-pn" id="gd-sessions">
-        <h3>📅 الجلسات والمواعيد</h3>
-        <p>صفحة الجلسات هتساعدك تتابع كل مواعيدك في المحاكم.</p>
-
-        <h4>إضافة جلسة</h4>
-        <p>عندك طريقتين:</p>
-        <div class="gd-step">
-          <div class="gd-step-n">أ</div>
-          <div class="gd-step-c"><div class="t">من صفحة الجلسات مباشرة</div><div class="d">اضغط "+ جلسة جديدة" واختار القضية والتاريخ والمحكمة</div></div>
-        </div>
-        <div class="gd-step">
-          <div class="gd-step-n">ب</div>
-          <div class="gd-step-c"><div class="t">من تفاصيل قضية معينة</div><div class="d">افتح القضية، اختار "جلسة" من قائمة سجل القضية، وحط التاريخ والملاحظات</div></div>
-        </div>
-
-        <h4>عرض الجلسات</h4>
-        <ul>
-          <li><strong>الكل</strong> — كل الجلسات (قديمة وجديدة)</li>
-          <li><strong>القادمة</strong> — الجلسات اللي لسه ما حصلتش</li>
-          <li><strong>اليوم</strong> — جلسات النهاردة بس</li>
-          <li><strong>هذا الأسبوع</strong> — جلسات الأسبوع الحالي</li>
-        </ul>
-
-        <h4>تعديل أو حذف جلسة</h4>
-        <p>كل جلسة في الجدول ليها زرار تعديل وحذف. لما تعدل أو تحذف جلسة، السيستم بيحدث سجل القضية المرتبطة تلقائياً.</p>
-        
-        <div class="gd-warn">⚠️ راجع جلساتك القادمة بشكل يومي عشان ما تفوّتش أي ميعاد. لوحة التحكم بتظهر أقرب 3 جلسات.</div>
-      </div>
-
-      <!-- FEES -->
-      <div class="gd-pn" id="gd-fees">
-        <h3>💰 الأتعاب والفواتير</h3>
-        <p>تتبّع المدفوعات والمستحقات لكل قضية.</p>
-
-        <h4>تسجيل أتعاب قضية</h4>
-        <div class="gd-step">
-          <div class="gd-step-n">١</div>
-          <div class="gd-step-c"><div class="t">روح لصفحة "الأتعاب والفواتير"</div><div class="d">من القائمة الجانبية</div></div>
-        </div>
-        <div class="gd-step">
-          <div class="gd-step-n">٢</div>
-          <div class="gd-step-c"><div class="t">اضغط "+ سجل أتعاب جديد"</div><div class="d">واختار القضية</div></div>
-        </div>
-        <div class="gd-step">
-          <div class="gd-step-n">٣</div>
-          <div class="gd-step-c"><div class="t">حط القيمة الإجمالية</div><div class="d">المبلغ المتفق عليه مع الموكل</div></div>
-        </div>
-        <div class="gd-step">
-          <div class="gd-step-n">٤</div>
-          <div class="gd-step-c"><div class="t">سجل المدفوعات أول بأول</div><div class="d">كل ما الموكل يدفع، تضيف الدفعة بتاريخها</div></div>
-        </div>
-
-        <h4>حالات الأتعاب</h4>
-        <ul>
-          <li><strong>مسدد</strong> — تم دفع كامل المبلغ ✓</li>
-          <li><strong>جزئي</strong> — تم دفع جزء فقط</li>
-          <li><strong>غير مسدد</strong> — لم يتم دفع شيء بعد</li>
-        </ul>
-        
-        <div class="gd-tip">💡 السيستم بيحسب المتبقي تلقائياً (الإجمالي - المدفوع). تقدر تشوف ملخص مالي شامل في صفحة التقارير.</div>
-      </div>
-
-      <!-- REPORTS -->
-      <div class="gd-pn" id="gd-reports">
-        <h3>📊 تقارير المكتب</h3>
-        <p>تقارير شاملة عن أداء مكتبك.</p>
-
-        <h4>التقارير المتاحة</h4>
-        <div class="gd-feature">
-          <div class="gd-feature-ic">📈</div>
-          <div class="gd-feature-c"><div class="t">إحصائيات عامة</div><div class="d">عدد الموكلين، القضايا، الجلسات، إجمالي الأتعاب</div></div>
-        </div>
-        <div class="gd-feature">
-          <div class="gd-feature-ic">⚖️</div>
-          <div class="gd-feature-c"><div class="t">القضايا حسب النوع</div><div class="d">توزيع قضاياك (مدني، جنائي، تجاري، إلخ)</div></div>
-        </div>
-        <div class="gd-feature">
-          <div class="gd-feature-ic">💰</div>
-          <div class="gd-feature-c"><div class="t">الملخص المالي</div><div class="d">إجمالي الأتعاب، المحصّل، المتبقي على الموكلين</div></div>
-        </div>
-        <div class="gd-feature">
-          <div class="gd-feature-ic">📅</div>
-          <div class="gd-feature-c"><div class="t">الجلسات القادمة</div><div class="d">قائمة بأقرب الجلسات لمتابعتها</div></div>
-        </div>
-        
-        <div class="gd-tip">💡 راجع التقارير شهرياً عشان تاخد قرارات صح بناءً على بيانات حقيقية.</div>
-      </div>
-
-      <!-- TOOLS -->
-      <div class="gd-pn" id="gd-tools">
-        <h3>🛠 الأدوات والتطوير</h3>
-        <p>صفحة الأدوات مليانة أدوات لمساعدتك في تطوير شغلك:</p>
-
-        <div class="gd-feature">
-          <div class="gd-feature-ic">🧮</div>
-          <div class="gd-feature-c"><div class="t">حاسبة الأتعاب</div><div class="d">احسب أتعابك بناءً على نوع القضية، صعوبتها، ومرحلتك المهنية</div></div>
-        </div>
-        <div class="gd-feature">
-          <div class="gd-feature-ic">📝</div>
-          <div class="gd-feature-c"><div class="t">نماذج العقود</div><div class="d">مكتبة عقود قانونية جاهزة للاستخدام</div></div>
-        </div>
-        <div class="gd-feature">
-          <div class="gd-feature-ic">💾</div>
-          <div class="gd-feature-c"><div class="t">النسخ الاحتياطي</div><div class="d">احفظ نسخة شاملة من بياناتك (PDF و Excel) — مهم جداً!</div></div>
-        </div>
-        <div class="gd-feature">
-          <div class="gd-feature-ic">🎯</div>
-          <div class="gd-feature-c"><div class="t">مساري المهني</div><div class="d">حدد مرحلتك الحالية وتابع أهدافها</div></div>
-        </div>
-        <div class="gd-feature">
-          <div class="gd-feature-ic">🏆</div>
-          <div class="gd-feature-c"><div class="t">أهدافي السنوية</div><div class="d">حدد دخلك المستهدف وأهدافك المهنية لكل سنة</div></div>
-        </div>
-        <div class="gd-feature">
-          <div class="gd-feature-ic">⭐</div>
-          <div class="gd-feature-c"><div class="t">دليل صفات المحامي</div><div class="d">100 صفة في 10 محاور — تطوير مستمر لشخصيتك المهنية</div></div>
-        </div>
-      </div>
-
-      <!-- REFERENCES -->
-      <div class="gd-pn" id="gd-refs">
-        <h3>📖 المراجع القانونية</h3>
-        <p>مكتبة قانونية شاملة في متناول يدك:</p>
-
-        <div class="gd-feature">
-          <div class="gd-feature-ic">⏰</div>
-          <div class="gd-feature-c"><div class="t">جدول المواعيد القانونية</div><div class="d">63 ميعاد قانوني (مرافعات + مدني) مع المادة المرجعية لكل واحد</div></div>
-        </div>
-        <div class="gd-feature">
-          <div class="gd-feature-ic">📚</div>
-          <div class="gd-feature-c"><div class="t">قاموس المصطلحات</div><div class="d">شرح للمصطلحات القانونية الشائعة</div></div>
-        </div>
-        <div class="gd-feature">
-          <div class="gd-feature-ic">⚖️</div>
-          <div class="gd-feature-c"><div class="t">مكتبة الدفوع</div><div class="d">111 دفع جنائي + 7 فئات دفوع مدنية وتجارية</div></div>
-        </div>
-        <div class="gd-feature">
-          <div class="gd-feature-ic">🏛️</div>
-          <div class="gd-feature-c"><div class="t">دليل المحكمة والدفوع</div><div class="d">12 مصطلح من مصطلحات المحكمة + دليل تفصيلي</div></div>
-        </div>
-        
-        <div class="gd-tip">💡 استخدم خانة البحث في كل صفحة عشان تلاقي اللي محتاجه بسرعة.</div>
-      </div>
-
-      <!-- BACKUP -->
-      <div class="gd-pn" id="gd-backup">
-        <h3>💾 النسخ الاحتياطي</h3>
-        <p style="color:var(--danger);font-weight:600;">أهم خطوة لازم تعملها بشكل دوري!</p>
-
-        <h4>ليه النسخ الاحتياطي مهم؟</h4>
-        <ul>
-          <li>لو حصلت أي مشكلة في السيستم، تكون عندك نسخة آمنة</li>
-          <li>لو محتاج بيانات قضية قديمة، تلاقيها في النسخة المحفوظة</li>
-          <li>للأرشفة الورقية ولأي طلب رسمي</li>
-        </ul>
-
-        <h4>إزاي تاخد نسخة احتياطية؟</h4>
-        <div class="gd-step">
-          <div class="gd-step-n">١</div>
-          <div class="gd-step-c"><div class="t">روح لصفحة "الأدوات والتطوير"</div><div class="d">من القائمة الجانبية</div></div>
-        </div>
-        <div class="gd-step">
-          <div class="gd-step-n">٢</div>
-          <div class="gd-step-c"><div class="t">اختار "النسخ الاحتياطي"</div><div class="d">من قسم "أدوات المكتب"</div></div>
-        </div>
-        <div class="gd-step">
-          <div class="gd-step-n">٣</div>
-          <div class="gd-step-c"><div class="t">حمّل نسخة شاملة (PDF)</div><div class="d">للأرشيف والطباعة — فيها كل التفاصيل</div></div>
-        </div>
-        <div class="gd-step">
-          <div class="gd-step-n">٤</div>
-          <div class="gd-step-c"><div class="t">حمّل ملف Excel</div><div class="d">للتحليل أو الاستيراد لأي سيستم تاني</div></div>
-        </div>
-        
-        <div class="gd-warn">⚠️ السيستم بيذكّرك تاخد نسخة كل أسبوع تلقائياً. متجاهلش التذكير ده!</div>
-      </div>
-
-      <!-- TIPS -->
-      <div class="gd-pn" id="gd-tips">
-        <h3>💡 نصائح للاستخدام الأمثل</h3>
-
-        <h4>عادات يومية</h4>
-        <ul>
-          <li>افتح <strong>لوحة التحكم</strong> أول حاجة الصبح عشان تشوف جلسات اليوم</li>
-          <li>سجل أي اتصال أو ملاحظة في سجل القضية فوراً</li>
-          <li>راجع الجلسات القادمة آخر اليوم وحضّر لكل واحدة</li>
-        </ul>
-
-        <h4>عادات أسبوعية</h4>
-        <ul>
-          <li>خد <strong>نسخة احتياطية</strong> كاملة (PDF + Excel) كل أسبوع</li>
-          <li>راجع الأتعاب المستحقة وذكّر الموكلين</li>
-          <li>راجع التقارير وشوف لو في قضية محتاجة متابعة</li>
-        </ul>
-
-        <h4>عادات شهرية</h4>
-        <ul>
-          <li>راجع <strong>أهدافك السنوية</strong> وقيّم تقدمك</li>
-          <li>خد جلسة تقييم ذاتي مع <strong>دليل الصفات</strong></li>
-          <li>راجع التقارير المالية واتخذ قرارات بناءً عليها</li>
-        </ul>
-
-        <h4>اختصارات مفيدة</h4>
-        <ul>
-          <li>زرار <strong>عرض</strong> في أي جدول → يفتح التفاصيل الكاملة</li>
-          <li>زرار <strong>تعديل</strong> → لتحديث أي بيانات بسرعة</li>
-          <li>خانة <strong>البحث</strong> في كل صفحة → بحث live في البيانات</li>
-        </ul>
-
-        <h4>أخطاء شائعة تجنبها</h4>
-        <div class="gd-warn">❌ ما تنساش تسجل الجلسات المؤجلة في السجل</div>
-        <div class="gd-warn">❌ ما تخليش الموكل ينسى دفعاته — سجل التذكير في النظام</div>
-        <div class="gd-warn">❌ ما تستناش لآخر السنة تاخد نسخة احتياطية</div>
-        
-        <div class="gd-tip" style="margin-top:18px;">💡 السيستم أداة، بس النجاح بيجي من <strong>الانتظام</strong> في استخدامها. خصص 10 دقائق يومياً للتحديث.</div>
-      </div>
-
-    </div>
-    <div class="gd-ft">
-      <label class="gd-checkbox">
-        <input type="checkbox" id="gd-noshow" onchange="toggleGuideAutoshow(this.checked)">
-        <span>لا تظهر هذه الرسالة تلقائياً</span>
-      </label>
-      <div class="gd-nav">
-        <button class="gd-btn sec" onclick="closeGuide()">إغلاق</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
 // ============================================================
-// ONBOARDING GUIDE
+// TAB NAVIGATION
 // ============================================================
-function openGuide(){
-  document.getElementById('gd-modal').classList.add('on');
-  document.getElementById('gd-noshow').checked = localStorage.getItem('mm_guide_seen') === '1';
-}
-function closeGuide(){
-  document.getElementById('gd-modal').classList.remove('on');
-}
-function gdTab(tab, btn){
-  document.querySelectorAll('.gd-pn').forEach(p => p.classList.remove('on'));
-  document.getElementById('gd-' + tab).classList.add('on');
-  document.querySelectorAll('.gd-tab').forEach(t => t.classList.remove('on'));
+function showTab(tab, btn){
+  document.querySelectorAll('.pn').forEach(p => p.classList.remove('on'));
+  document.getElementById('pn-' + tab).classList.add('on');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
   btn.classList.add('on');
-  // Scroll body to top
-  document.querySelector('.gd-bd').scrollTop = 0;
+  // Clear messages
+  document.querySelectorAll('.msg').forEach(m => {if(!m.classList.contains('info')) m.classList.remove('show');});
 }
-function toggleGuideAutoshow(checked){
-  localStorage.setItem('mm_guide_seen', checked ? '1' : '0');
-}
-// Close on outside click
-document.getElementById('gd-modal').addEventListener('click', function(e){
-  if(e.target === this) closeGuide();
-});
-// Close on Escape
-document.addEventListener('keydown', function(e){
-  if(e.key === 'Escape' && document.getElementById('gd-modal').classList.contains('on')) closeGuide();
-});
-// Auto-show first time
-setTimeout(() => {
-  if(localStorage.getItem('mm_guide_seen') !== '1' && document.getElementById('auth-loading').style.display === 'none'){
-    openGuide();
-    localStorage.setItem('mm_guide_seen', '1');
-    document.getElementById('gd-noshow').checked = true;
-  }
-}, 1500);
-</script>
 
+// ============================================================
+// MESSAGE HELPER
+// ============================================================
+function showMsg(panel, type, text){
+  const m = document.getElementById('msg-' + panel);
+  m.className = 'msg show ' + type;
+  m.textContent = text;
+}
+function clearMsg(panel){
+  const m = document.getElementById('msg-' + panel);
+  m.classList.remove('show');
+}
+
+// ============================================================
+// SIGN IN
+// ============================================================
+async function doSignIn(){
+  const email = document.getElementById('si-email').value.trim();
+  const pwd = document.getElementById('si-pwd').value;
+  const btn = document.getElementById('si-btn');
+  
+  clearMsg('signin');
+  if(!email || !pwd){showMsg('signin','err','برجاء إدخال الإيميل والباسوورد');return;}
+  
+  btn.disabled = true;
+  btn.innerHTML = '<span class="ldr"></span>جاري الدخول...';
+  
+  try{
+    const {data, error} = await sb.auth.signInWithPassword({email, password: pwd});
+    if(error) throw error;
+    
+    // Check account status
+    const {data: profile, error: pe} = await sb.from('profiles').select('status, is_admin, activation_code').eq('id', data.user.id).single();
+    if(pe) throw new Error('خطأ في قراءة بيانات الحساب');
+    
+    if(profile.status === 'suspended'){
+      await sb.auth.signOut();
+      throw new Error('حسابك معلّق. تواصل مع الدعم');
+    }
+    if(profile.status === 'banned'){
+      await sb.auth.signOut();
+      throw new Error('حسابك محظور. تواصل مع الدعم');
+    }
+    
+    // If user has a pending_code in metadata and hasn't redeemed yet, redeem it now
+    const pendingCode = data.user.user_metadata?.pending_code;
+    if(pendingCode && !profile.activation_code){
+      const {data: redeemResult} = await sb.rpc('redeem_code', {code_to_redeem: pendingCode});
+      if(redeemResult && redeemResult.success){
+        // Clear pending_code from metadata
+        await sb.auth.updateUser({data: {pending_code: null}});
+      }
+    }
+    
+    // Update profile name from metadata if missing
+    if(!profile.full_name && data.user.user_metadata?.full_name){
+      await sb.from('profiles').update({full_name: data.user.user_metadata.full_name}).eq('id', data.user.id);
+    }
+    
+    // Update last login
+    await sb.from('profiles').update({last_login_at: new Date().toISOString()}).eq('id', data.user.id);
+    
+    // Redirect — admin to admin.html, regular user to index.html
+    if(profile.is_admin){
+      window.location.href = 'admin.html';
+    } else {
+      window.location.href = 'index.html';
+    }
+  }catch(e){
+    let msg = e.message;
+    if(msg === 'Invalid login credentials') msg = 'الإيميل أو الباسوورد غير صحيح';
+    if(msg === 'Email not confirmed') msg = 'برجاء تأكيد الإيميل أولاً (تفقد البريد الوارد)';
+    showMsg('signin','err', msg);
+  }finally{
+    btn.disabled = false;
+    btn.textContent = 'دخول';
+  }
+}
+
+// ============================================================
+// SIGN UP — مع تفعيل الكود في خطوة واحدة
+// ============================================================
+async function doSignUp(){
+  const name = document.getElementById('su-name').value.trim();
+  const email = document.getElementById('su-email').value.trim();
+  const pwd = document.getElementById('su-pwd').value;
+  const code = document.getElementById('su-code').value.trim().toUpperCase();
+  const btn = document.getElementById('su-btn');
+  
+  clearMsg('signup');
+  
+  // Validation
+  if(!name || name.length < 3){showMsg('signup','err','برجاء إدخال الاسم بالكامل');return;}
+  if(!email || !email.includes('@')){showMsg('signup','err','برجاء إدخال إيميل صحيح');return;}
+  if(!pwd || pwd.length < 6){showMsg('signup','err','الباسوورد يجب أن يكون 6 أحرف على الأقل');return;}
+  if(!code){showMsg('signup','err','برجاء إدخال كود التفعيل');return;}
+  if(!/^MM-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code)){showMsg('signup','err','صيغة الكود غير صحيحة. يجب أن يكون MM-XXXX-XXXX');return;}
+  
+  btn.disabled = true;
+  btn.innerHTML = '<span class="ldr"></span>جاري إنشاء الحساب...';
+  
+  try{
+    // Step 1: Validate code FIRST (before creating any account)
+    const {data: checkResult, error: checkErr} = await sb.rpc('check_code', {code_to_check: code});
+    
+    if(checkErr) throw new Error('خطأ في التحقق من الكود: ' + checkErr.message);
+    if(!checkResult || !checkResult.valid){
+      throw new Error(checkResult?.error || 'كود التفعيل غير صحيح');
+    }
+    
+    // Step 2: Code is valid — create the user account
+    // Save the code in user metadata so we can redeem it after email confirmation
+    const {data: signupData, error: signupErr} = await sb.auth.signUp({
+      email,
+      password: pwd,
+      options: {
+        data: {full_name: name, pending_code: code},
+        emailRedirectTo: window.location.origin + window.location.pathname.replace(/login\.html$/, '') + 'login.html'
+      }
+    });
+    
+    if(signupErr) throw signupErr;
+    if(!signupData.user) throw new Error('فشل إنشاء الحساب');
+    
+    // Step 3: Update profile with name (might fail if no session, that's ok)
+    if(signupData.session){
+      await sb.from('profiles').update({
+        full_name: name,
+        email: email
+      }).eq('id', signupData.user.id);
+    }
+    
+    // Step 4: Try to redeem code if session is available (no email confirmation needed)
+    if(signupData.session){
+      const {data: redeemResult, error: redeemErr} = await sb.rpc('redeem_code', {code_to_redeem: code});
+      
+      if(redeemErr || !redeemResult || !redeemResult.success){
+        const errMsg = redeemErr?.message || redeemResult?.error || 'خطأ في تفعيل الكود';
+        showMsg('signup','err','تم إنشاء حسابك ولكن: ' + errMsg);
+        return;
+      }
+      
+      // Show success and redirect
+      document.getElementById('signup-form').style.display = 'none';
+      document.getElementById('signup-success').style.display = 'block';
+      setTimeout(() => {window.location.href = 'index.html';}, 2000);
+    } else {
+      // Email confirmation required — code is saved in metadata, will be redeemed after confirmation
+      document.getElementById('signup-form').style.display = 'none';
+      document.getElementById('signup-success').style.display = 'block';
+      document.getElementById('signup-success').innerHTML = `
+        <div class="success-screen">
+          <div class="ic" style="color:#2980b9;">📧</div>
+          <h3>تم إنشاء حسابك</h3>
+          <p>تم إرسال رسالة تأكيد على إيميلك:<br><strong>${email}</strong></p>
+          <p style="margin-top:12px;font-size:12px;color:var(--text3);">اضغط على الرابط في الرسالة لتأكيد حسابك، ثم سجل الدخول من تاب "تسجيل الدخول". الكود محفوظ ومش هتحتاج تكتبه تاني.</p>
+          <p style="margin-top:8px;font-size:11px;color:var(--text3);">⚠️ لو ملقتش الرسالة، شوف في الـ Spam</p>
+        </div>
+      `;
+    }
+    
+  }catch(e){
+    let msg = e.message;
+    if(msg.includes('User already registered') || msg.includes('already exists')) msg = 'هذا الإيميل مسجل بالفعل. حاول تسجيل الدخول.';
+    if(msg.includes('weak password') || msg.includes('Password should be')) msg = 'الباسوورد ضعيف. اختر باسوورد أقوى';
+    showMsg('signup','err', msg);
+  }finally{
+    btn.disabled = false;
+    btn.textContent = 'إنشاء حساب وتفعيل';
+  }
+}
+
+// ============================================================
+// FORGOT PASSWORD
+// ============================================================
+async function doForgot(){
+  const email = document.getElementById('fp-email').value.trim();
+  const btn = document.getElementById('fp-btn');
+  
+  clearMsg('forgot');
+  if(!email){showMsg('forgot','err','برجاء إدخال الإيميل');return;}
+  
+  btn.disabled = true;
+  btn.innerHTML = '<span class="ldr"></span>جاري الإرسال...';
+  
+  try{
+    const {error} = await sb.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/login.html'
+    });
+    if(error) throw error;
+    showMsg('forgot','ok','تم إرسال الرابط لإيميلك. تفقد البريد الوارد (وspam لو ما جاش).');
+    document.getElementById('fp-email').value = '';
+  }catch(e){
+    showMsg('forgot','err', e.message || 'خطأ في الإرسال');
+  }finally{
+    btn.disabled = false;
+    btn.textContent = 'إرسال رابط إعادة التعيين';
+  }
+}
+
+// ============================================================
+// CODE INPUT FORMATTER — convert MMxxxxxxxx to MM-XXXX-XXXX
+// ============================================================
+document.getElementById('su-code').addEventListener('input', function(e){
+  // Strip everything except letters, digits, dashes
+  let raw = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  // Limit to 10 chars (MM + 4 + 4)
+  if(raw.length > 10) raw = raw.substring(0, 10);
+  // Format: MM-XXXX-XXXX
+  let formatted = '';
+  if(raw.length > 0){
+    formatted = raw.substring(0, 2);
+    if(raw.length > 2) formatted += '-' + raw.substring(2, 6);
+    if(raw.length > 6) formatted += '-' + raw.substring(6, 10);
+  }
+  e.target.value = formatted;
+});
+
+// ============================================================
+// ENTER KEY HANDLERS
+// ============================================================
+document.getElementById('si-pwd').addEventListener('keypress', e => {if(e.key==='Enter') doSignIn();});
+document.getElementById('su-code').addEventListener('keypress', e => {if(e.key==='Enter') doSignUp();});
+document.getElementById('fp-email').addEventListener('keypress', e => {if(e.key==='Enter') doForgot();});
+</script>
 </body>
 </html>
