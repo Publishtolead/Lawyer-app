@@ -208,7 +208,7 @@ async function doSignIn(){
     if(error) throw error;
     
     // Check account status
-    const {data: profile, error: pe} = await sb.from('profiles').select('status, is_admin').eq('id', data.user.id).single();
+    const {data: profile, error: pe} = await sb.from('profiles').select('status, is_admin, activation_code').eq('id', data.user.id).single();
     if(pe) throw new Error('خطأ في قراءة بيانات الحساب');
     
     if(profile.status === 'suspended'){
@@ -218,6 +218,21 @@ async function doSignIn(){
     if(profile.status === 'banned'){
       await sb.auth.signOut();
       throw new Error('حسابك محظور. تواصل مع الدعم');
+    }
+    
+    // If user has a pending_code in metadata and hasn't redeemed yet, redeem it now
+    const pendingCode = data.user.user_metadata?.pending_code;
+    if(pendingCode && !profile.activation_code){
+      const {data: redeemResult} = await sb.rpc('redeem_code', {code_to_redeem: pendingCode});
+      if(redeemResult && redeemResult.success){
+        // Clear pending_code from metadata
+        await sb.auth.updateUser({data: {pending_code: null}});
+      }
+    }
+    
+    // Update profile name from metadata if missing
+    if(!profile.full_name && data.user.user_metadata?.full_name){
+      await sb.from('profiles').update({full_name: data.user.user_metadata.full_name}).eq('id', data.user.id);
     }
     
     // Update last login
@@ -272,33 +287,33 @@ async function doSignUp(){
     }
     
     // Step 2: Code is valid — create the user account
+    // Save the code in user metadata so we can redeem it after email confirmation
     const {data: signupData, error: signupErr} = await sb.auth.signUp({
       email,
       password: pwd,
       options: {
-        data: {full_name: name}
+        data: {full_name: name, pending_code: code},
+        emailRedirectTo: window.location.origin + window.location.pathname.replace(/login\.html$/, '') + 'login.html'
       }
     });
     
     if(signupErr) throw signupErr;
     if(!signupData.user) throw new Error('فشل إنشاء الحساب');
     
-    // Step 3: Update profile with name
-    await sb.from('profiles').update({
-      full_name: name,
-      email: email
-    }).eq('id', signupData.user.id);
+    // Step 3: Update profile with name (might fail if no session, that's ok)
+    if(signupData.session){
+      await sb.from('profiles').update({
+        full_name: name,
+        email: email
+      }).eq('id', signupData.user.id);
+    }
     
-    // Step 4: If session created (no email confirmation required), redeem the code
+    // Step 4: Try to redeem code if session is available (no email confirmation needed)
     if(signupData.session){
       const {data: redeemResult, error: redeemErr} = await sb.rpc('redeem_code', {code_to_redeem: code});
       
-      if(redeemErr){
-        showMsg('signup','err','تم إنشاء حسابك ولكن فشل تفعيل الكود: ' + redeemErr.message);
-        return;
-      }
-      if(!redeemResult || !redeemResult.success){
-        const errMsg = redeemResult?.error || 'خطأ في تفعيل الكود';
+      if(redeemErr || !redeemResult || !redeemResult.success){
+        const errMsg = redeemErr?.message || redeemResult?.error || 'خطأ في تفعيل الكود';
         showMsg('signup','err','تم إنشاء حسابك ولكن: ' + errMsg);
         return;
       }
@@ -308,8 +323,18 @@ async function doSignUp(){
       document.getElementById('signup-success').style.display = 'block';
       setTimeout(() => {window.location.href = 'index.html';}, 2000);
     } else {
-      // Email confirmation required
-      showMsg('signup','info','تم إنشاء حسابك. برجاء تأكيد الإيميل من الرسالة المرسلة، ثم سجّل الدخول وادخل الكود.');
+      // Email confirmation required — code is saved in metadata, will be redeemed after confirmation
+      document.getElementById('signup-form').style.display = 'none';
+      document.getElementById('signup-success').style.display = 'block';
+      document.getElementById('signup-success').innerHTML = `
+        <div class="success-screen">
+          <div class="ic" style="color:#2980b9;">📧</div>
+          <h3>تم إنشاء حسابك</h3>
+          <p>تم إرسال رسالة تأكيد على إيميلك:<br><strong>${email}</strong></p>
+          <p style="margin-top:12px;font-size:12px;color:var(--text3);">اضغط على الرابط في الرسالة لتأكيد حسابك، ثم سجل الدخول من تاب "تسجيل الدخول". الكود محفوظ ومش هتحتاج تكتبه تاني.</p>
+          <p style="margin-top:8px;font-size:11px;color:var(--text3);">⚠️ لو ملقتش الرسالة، شوف في الـ Spam</p>
+        </div>
+      `;
     }
     
   }catch(e){
